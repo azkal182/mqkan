@@ -12,6 +12,7 @@ interface DataTableSearchProps {
     value: string | ((old: string) => string | null) | null,
     options?: Options | undefined
   ) => Promise<URLSearchParams>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setPage: <Shallow>(
     value: number | ((old: number) => number | null) | null,
     options?: Options | undefined

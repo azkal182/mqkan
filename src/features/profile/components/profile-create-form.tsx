@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import {
   Accordion,
@@ -116,7 +117,6 @@ const ProfileCreateForm: React.FC<ProfileFormType> = ({
   };
 
   const processForm: SubmitHandler<ProfileFormValues> = (data) => {
-    console.log('data ==>', data);
     setData(data);
     // api call and reset
     // form.reset();
@@ -600,7 +600,7 @@ const ProfileCreateForm: React.FC<ProfileFormType> = ({
             type='button'
             onClick={prev}
             disabled={currentStep === 0}
-            className='rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 ring-1 shadow-xs ring-sky-300 ring-inset hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50'
+            className='rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-xs ring-1 ring-sky-300 ring-inset hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50'
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'
@@ -621,7 +621,7 @@ const ProfileCreateForm: React.FC<ProfileFormType> = ({
             type='button'
             onClick={next}
             disabled={currentStep === steps.length - 1}
-            className='rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 ring-1 shadow-xs ring-sky-300 ring-inset hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50'
+            className='rounded bg-white px-2 py-1 text-sm font-semibold text-sky-900 shadow-xs ring-1 ring-sky-300 ring-inset hover:bg-sky-50 disabled:cursor-not-allowed disabled:opacity-50'
           >
             <svg
               xmlns='http://www.w3.org/2000/svg'

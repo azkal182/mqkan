@@ -27,8 +27,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarRail,
-  useSidebar
+  SidebarRail
+  //   useSidebar
 } from '@/components/ui/sidebar';
 import { navItems } from '@/constants/data';
 import {
@@ -55,7 +55,7 @@ export const company = {
 export default function AppSidebar() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const { state, isMobile } = useSidebar();
+  //   const { state, isMobile } = useSidebar();
 
   return (
     <Sidebar collapsible='icon'>

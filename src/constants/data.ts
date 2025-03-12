@@ -57,6 +57,20 @@ export const navItems: NavItem[] = [
     shortcut: ['k', 'k'],
     isActive: false,
     items: [] // No child items
+  },
+  {
+    title: 'Users',
+    url: '/dashboard/users',
+    icon: 'kanban',
+    isActive: false,
+    items: [] // No child items
+  },
+  {
+    title: 'Roles',
+    url: '/dashboard/roles',
+    icon: 'kanban',
+    isActive: false,
+    items: [] // No child items
   }
 ];
 

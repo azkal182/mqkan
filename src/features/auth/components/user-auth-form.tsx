@@ -10,41 +10,42 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+// import { signIn } from 'next-auth/react';
+// import { useSearchParams } from 'next/navigation';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import * as z from 'zod';
+// import * as z from 'zod';
 import GithubSignInButton from './github-auth-button';
-
-const formSchema = z.object({
-  email: z.string().email({ message: 'Enter a valid email address' })
-});
-
-type UserFormValue = z.infer<typeof formSchema>;
+import { LoginInput, LoginSchema } from '@/schemas/login-schema';
+import { login } from '@/actions/login-action';
 
 export default function UserAuthForm() {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl');
-  const [loading, startTransition] = useTransition();
+  //   const searchParams = useSearchParams();
+  //   const callbackUrl = searchParams.get('callbackUrl');
+  const [isPending, startTransition] = useTransition();
   const defaultValues = {
-    email: 'demo@gmail.com'
+    username: 'admin',
+    password: 'admin'
   };
-  const form = useForm<UserFormValue>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(LoginSchema),
     defaultValues
   });
 
-  const onSubmit = async (data: UserFormValue) => {
-    startTransition(() => {
-      signIn('credentials', {
-        email: data.email,
-        callbackUrl: callbackUrl ?? '/dashboard'
+  const onSubmit = async (data: LoginInput) => {
+    startTransition(async () => {
+      await login(data).then((data) => {
+        if (data?.error) {
+          toast.error(data?.error);
+        } else {
+          toast.success('Signed In Successfully!');
+        }
       });
-      toast.success('Signed In Successfully!');
     });
   };
+
+  const isLoading = isPending || form.formState.isSubmitting;
 
   return (
     <>
@@ -55,15 +56,31 @@ export default function UserAuthForm() {
         >
           <FormField
             control={form.control}
-            name='email'
+            name='username'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Username</FormLabel>
                 <FormControl>
                   <Input
-                    type='email'
-                    placeholder='Enter your email...'
-                    disabled={loading}
+                    placeholder='Enter your username...'
+                    disabled={isLoading}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Enter your password...'
+                    disabled={isLoading}
                     {...field}
                   />
                 </FormControl>
@@ -72,8 +89,8 @@ export default function UserAuthForm() {
             )}
           />
 
-          <Button disabled={loading} className='ml-auto w-full' type='submit'>
-            Continue With Email
+          <Button disabled={isLoading} className='ml-auto w-full' type='submit'>
+            Login
           </Button>
         </form>
       </Form>
@@ -82,7 +99,7 @@ export default function UserAuthForm() {
           <span className='w-full border-t' />
         </div>
         <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-background px-2 text-muted-foreground'>
+          <span className='bg-background text-muted-foreground px-2'>
             Or continue with
           </span>
         </div>
