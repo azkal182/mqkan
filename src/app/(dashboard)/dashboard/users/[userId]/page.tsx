@@ -8,7 +8,7 @@ import { getRoles } from '@/actions/role-action';
 import { getRegions } from '@/actions/region-action';
 
 export const metadata = {
-  title: 'Dashboard : Role View'
+  title: 'Dashboard : User View'
 };
 
 type PageProps = { params: Promise<{ userId: string }> };

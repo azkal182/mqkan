@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import logoPic from '../../../public/images/logo.png';
 import amtsilatiPic from '../../../public/images/amtsilati.jpg';
+import CompetitionSection from './competition-section';
 
 const listMenu = [
   'home',
@@ -24,6 +25,7 @@ const listMenu = [
   'Pendafatarn',
   'Kontak'
 ];
+
 const Page = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -261,12 +263,12 @@ const Page = () => {
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
-          <motion.h2
-            className='mb-16 text-center text-3xl font-bold text-gray-800'
-            variants={sectionVariants}
-          >
-            Latar Belakang
-          </motion.h2>
+          <motion.div className='mb-16 text-center' variants={sectionVariants}>
+            <h2 className='mb-4 text-4xl font-bold text-gray-800'>
+              Latar Belakang
+            </h2>
+            <div className='mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-[#0C713D] to-[#2ea66a]' />
+          </motion.div>
           <motion.div
             className='rounded-xl bg-white p-8 shadow-sm'
             initial={{ opacity: 0, y: 50 }}
@@ -306,12 +308,12 @@ const Page = () => {
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
-          <motion.h2
-            className='mb-16 text-center text-3xl font-bold text-gray-800'
-            variants={sectionVariants}
-          >
-            Jadwal Pelaksanaan
-          </motion.h2>
+          <motion.div className='mb-16 text-center' variants={sectionVariants}>
+            <h2 className='mb-4 text-4xl font-bold text-gray-800'>
+              Jadwal Pelaksanaan
+            </h2>
+            <div className='mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-[#0C713D] to-[#2ea66a]' />
+          </motion.div>
           <div className='grid gap-8 md:grid-cols-2'>
             <motion.div
               className='rounded-xl bg-[#f8f6f1] p-8 shadow-sm'
@@ -323,6 +325,7 @@ const Page = () => {
               <h3 className='mb-6 text-xl font-semibold'>
                 Competition Categories
               </h3>
+
               <div className='space-y-4'>
                 {[
                   { title: 'Junior Category', desc: 'Ages 12-15' },
@@ -381,6 +384,8 @@ const Page = () => {
         </div>
       </motion.section>
 
+      {/* cabang lomba */}
+      <CompetitionSection />
       {/* Prizes Section */}
       <motion.section
         id='prizes'
@@ -391,46 +396,32 @@ const Page = () => {
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
-          <motion.h2
-            className='mb-16 text-center text-3xl font-bold text-gray-800'
-            variants={sectionVariants}
-          >
-            Prizes & Benefits
-          </motion.h2>
+          <motion.div className='mb-16 text-center' variants={sectionVariants}>
+            <h2 className='mb-4 text-4xl font-bold text-gray-800'>Hadiah</h2>
+            <div className='mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-[#0C713D] to-[#2ea66a]' />
+          </motion.div>
           <div className='grid gap-8 md:grid-cols-3'>
             {[
               {
                 icon: 'fa-trophy',
                 color: '#FFD700',
-                title: 'Juara Umum',
+                title: 'Juara 1',
                 prize: 'Rp 15.000.000',
-                benefits: [
-                  'Piala & Sertifikat',
-                  'Study Tour ke Timur Tengah',
-                  'Complete Set of Islamic Books'
-                ]
+                benefits: ['Mendali', 'Sertifikat']
               },
               {
                 icon: 'fa-medal',
                 color: '#C0C0C0',
-                title: 'Second Prize',
+                title: 'Juara 2',
                 prize: 'Rp 10.000.000',
-                benefits: [
-                  'Piala & Sertifikat',
-                  'Complete Set of Islamic Books',
-                  'Educational Scholarship'
-                ]
+                benefits: ['Mendali', 'Sertifikat']
               },
               {
                 icon: 'fa-award',
                 color: '#CD7F32',
-                title: 'Third Prize',
-                prize: 'Rp 7.500.000',
-                benefits: [
-                  'Piala & Sertifikat',
-                  'Selected Islamic Books',
-                  'Educational Scholarship'
-                ]
+                title: 'Juara 3',
+                prize: 'Rp 5.000.000',
+                benefits: ['Mendali', 'Sertifikat']
               }
             ].map((prize, index) => (
               <motion.div
@@ -472,12 +463,12 @@ const Page = () => {
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
-          <motion.h2
-            className='mb-16 text-center text-3xl font-bold text-gray-800'
-            variants={sectionVariants}
-          >
-            Daftar Sekarang
-          </motion.h2>
+          <motion.div className='mb-16 text-center' variants={sectionVariants}>
+            <h2 className='mb-4 text-4xl font-bold text-gray-800'>
+              Daftar Sekarang
+            </h2>
+            <div className='mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-[#0C713D] to-[#2ea66a]' />
+          </motion.div>
           <motion.div
             className='mx-auto max-w-2xl rounded-xl bg-[#f8f6f1] p-8'
             initial={{ opacity: 0, scale: 0.95 }}

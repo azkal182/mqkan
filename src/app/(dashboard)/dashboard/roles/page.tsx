@@ -8,6 +8,10 @@ import { buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
+export const metadata = {
+  title: 'Dashboard : Role'
+};
+
 export default async function RolePage() {
   const roles = await getRoles();
   return (

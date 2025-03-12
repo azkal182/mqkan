@@ -31,14 +31,7 @@ import {
   //   useSidebar
 } from '@/components/ui/sidebar';
 import { navItems } from '@/constants/data';
-import {
-  BadgeCheck,
-  Bell,
-  ChevronRight,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut
-} from 'lucide-react';
+import { ChevronRight, ChevronsUpDown, LogOut } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -83,8 +76,7 @@ export default function AppSidebar() {
                 const Icon = item.icon ? Icons[item.icon] : Icons.logo;
 
                 const permission = item.permission
-                  ? // @ts-ignore
-                    hasPermission(sessionUser, item.permission)
+                  ? hasPermission(sessionUser, item.permission)
                   : true;
 
                 if (!permission) return null; // Jangan render menu jika tidak punya izin
@@ -197,21 +189,6 @@ export default function AppSidebar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Notifications
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>
                   <LogOut />
                   Log out

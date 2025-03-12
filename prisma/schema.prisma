@@ -5,80 +5,123 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // directUrl = env("DIRECT_DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+    // directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
-  id        String       @id @default(uuid())
-  name      String
-  username  String       @unique
-  password  String
-  roles     UserRole[]
-  regions   UserRegion[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+    id        String       @id @default(uuid())
+    name      String
+    username  String       @unique
+    password  String
+    roles     UserRole[]
+    regions   UserRegion[]
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
 }
 
 model Role {
-  id          String           @id @default(uuid())
-  name        String
-  permissions RolePermission[]
-  users       UserRole[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+    id          String           @id @default(uuid())
+    name        String
+    permissions RolePermission[]
+    users       UserRole[]
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String
-  label       String
-  description String?
-  roles       RolePermission[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+    id          String           @id @default(uuid())
+    name        String
+    label       String
+    description String?
+    roles       RolePermission[]
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
 }
 
 model RolePermission {
-  roleId       String
-  permissionId String
+    roleId       String
+    permissionId String
 
-  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+    role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
-  @@id([roleId, permissionId])
+    @@id([roleId, permissionId])
 }
 
 model UserRole {
-  userId String
-  roleId String
+    userId String
+    roleId String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
-  @@id([roleId, userId])
+    @@id([roleId, userId])
 }
 
 model Region {
-  id        String       @id @default(uuid())
-  name      String
-  coverage  String[]
-  users     UserRegion[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+    id        String       @id @default(uuid())
+    name      String
+    coverage  String[]
+    users     UserRegion[]
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
 }
 
 model UserRegion {
-  userId   String
-  regionId String
+    userId   String
+    regionId String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
 
-  @@id([regionId, userId])
+    @@id([regionId, userId])
+}
+
+model Province {
+    id   Int    @id @default(autoincrement())
+    name String
+    code String
+
+    regencies Regency[]
+}
+
+model Regency {
+    id        Int        @id @default(autoincrement())
+    name      String
+    label     String?
+    type      String?
+    code      String
+    fullCode  String
+    districts District[]
+
+    provinceId Int
+    province   Province @relation(fields: [provinceId], references: [id])
+}
+
+model District {
+    id       Int       @id @default(autoincrement())
+    name     String
+    code     String
+    fullCode String
+    villages Village[]
+
+    regencyId Int
+    regency   Regency @relation(fields: [regencyId], references: [id])
+}
+
+model Village {
+    id         Int    @id @default(autoincrement())
+    name       String
+    code       String
+    fullCode   String
+    postalCode String
+
+    districtId Int
+    district   District @relation(fields: [districtId], references: [id])
 }

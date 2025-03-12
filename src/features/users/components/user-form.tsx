@@ -1,6 +1,10 @@
 'use client';
 import React from 'react';
-import { createUser, UserWithRolesAndRegions } from '@/actions/user-action';
+import {
+  createUser,
+  updateUser,
+  UserWithRolesAndRegions
+} from '@/actions/user-action';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { User, UserSchema } from '@/schemas/user-schema';
@@ -33,12 +37,14 @@ import {
 import { MultiSelect } from '@/components/multi-select';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+
 interface UserFormProps {
   initialData: UserWithRolesAndRegions | null;
   pageTitle: string;
   roles: any;
   regions: any;
 }
+
 const UserForm = ({
   initialData,
   pageTitle,
@@ -58,36 +64,45 @@ const UserForm = ({
 
   const form = useForm<User>({
     resolver: zodResolver(UserSchema),
-    values: defaultValues
+    defaultValues
   });
 
-  function onSubmit(values: User) {
-    // console.log(values);
+  const onSubmit = async (values: User) => {
+    try {
+      const isUpdate = !!initialData;
+      const action = isUpdate
+        ? updateUser({ id: initialData.id, ...values })
+        : createUser(values);
 
-    if (initialData) {
-      alert('edit');
-    } else {
-      createUser(values).then((result) => {
-        if ('error' in result) {
-          toast.error(result.error);
-        } else if ('success' in result && result.success) {
-          toast.success('Successfully created user');
-          router.push('/dashboard/users');
-        }
-      });
+      const result = await action;
+      const actionName = isUpdate
+        ? `User ${initialData.name} berhasil diupdate`
+        : 'User berhasil dibuat';
+
+      if (result.success) {
+        toast.success(actionName);
+        router.push('/dashboard/users');
+      } else {
+        toast.error(result.error.message);
+      }
+    } catch (error) {
+      toast.error('Terjadi kesalahan, coba lagi nanti.');
     }
-  }
+  };
 
   return (
-    <Card>
+    <Card className='mx-auto max-w-2xl rounded-lg p-4 shadow-lg'>
       <CardHeader>
-        <CardTitle className='text-left text-2xl font-bold'>
+        <CardTitle className='text-left text-3xl font-semibold'>
           {pageTitle}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='flex flex-col gap-2'
+          >
             <FormField
               control={form.control}
               name='name'
@@ -114,25 +129,25 @@ const UserForm = ({
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type={'password'}
-                      placeholder='Enter Password'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
+            {!initialData && (
+              <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type='password'
+                        placeholder='Enter password'
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name='roleId'
@@ -144,36 +159,31 @@ const UserForm = ({
                       <FormControl>
                         <Button
                           variant='outline'
-                          role='combobox'
-                          className={cn(
-                            'w-[200px] justify-between',
-                            !field.value && 'text-muted-foreground'
-                          )}
+                          className='w-full justify-between'
                         >
                           {field.value
                             ? roles.find((role: any) => role.id === field.value)
                                 ?.name
-                            : 'Select language'}
+                            : 'Select role'}
                           <ChevronsUpDown size={16} className='opacity-50' />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className='w-[200px] p-0'>
+                    <PopoverContent className='w-full p-0'>
                       <Command>
                         <CommandInput
-                          placeholder='Search framework...'
+                          placeholder='Search role...'
                           className='h-9'
                         />
                         <CommandList>
-                          <CommandEmpty>No framework found.</CommandEmpty>
+                          <CommandEmpty>No roles found.</CommandEmpty>
                           <CommandGroup>
                             {roles.map((role: any) => (
                               <CommandItem
-                                value={role.id}
                                 key={role.id}
-                                onSelect={() => {
-                                  form.setValue('roleId', role.id);
-                                }}
+                                onSelect={() =>
+                                  form.setValue('roleId', role.id)
+                                }
                               >
                                 {role.name}
                                 <Check
@@ -203,75 +213,16 @@ const UserForm = ({
                 <FormItem className='flex flex-col'>
                   <FormLabel>Region</FormLabel>
                   <MultiSelect
-                    maxCount={7}
+                    maxCount={5}
                     options={regions}
                     onValueChange={(data) => form.setValue('regionId', data)}
-                    defaultValue={
-                      initialData?.regions.length
-                        ? initialData.regions.map((region) => region.regionId)
-                        : []
-                    }
+                    defaultValue={defaultValues.regionId}
                   />
-                  {/*<Popover>*/}
-                  {/*  <PopoverTrigger asChild>*/}
-                  {/*    <FormControl>*/}
-                  {/*      <Button*/}
-                  {/*        variant='outline'*/}
-                  {/*        role='combobox'*/}
-                  {/*        className={cn(*/}
-                  {/*          'w-[200px] justify-between',*/}
-                  {/*          !field.value && 'text-muted-foreground'*/}
-                  {/*        )}*/}
-                  {/*      >*/}
-                  {/*        {field.value*/}
-                  {/*          ? regions.find(*/}
-                  {/*              (region) => region.id === field.value*/}
-                  {/*            )?.name*/}
-                  {/*          : 'Select Region'}*/}
-                  {/*        <ChevronsUpDown size={16} className='opacity-50' />*/}
-                  {/*      </Button>*/}
-                  {/*    </FormControl>*/}
-                  {/*  </PopoverTrigger>*/}
-                  {/*  <PopoverContent className='w-[200px] p-0'>*/}
-                  {/*    <Command>*/}
-                  {/*      <CommandInput*/}
-                  {/*        placeholder='Search framework...'*/}
-                  {/*        className='h-9'*/}
-                  {/*      />*/}
-                  {/*      <CommandList>*/}
-                  {/*        <CommandEmpty>No framework found.</CommandEmpty>*/}
-                  {/*        <CommandGroup>*/}
-                  {/*          {regions.map((region) => (*/}
-                  {/*            <CommandItem*/}
-                  {/*              value={region.id}*/}
-                  {/*              key={region.id}*/}
-                  {/*              onSelect={() => {*/}
-                  {/*                form.setValue('roleId', region.id);*/}
-                  {/*              }}*/}
-                  {/*            >*/}
-                  {/*              {region.name}*/}
-                  {/*              <Check*/}
-                  {/*                size={16}*/}
-                  {/*                className={cn(*/}
-                  {/*                  'ml-auto',*/}
-                  {/*                  region.id === field.value*/}
-                  {/*                    ? 'opacity-100'*/}
-                  {/*                    : 'opacity-0'*/}
-                  {/*                )}*/}
-                  {/*              />*/}
-                  {/*            </CommandItem>*/}
-                  {/*          ))}*/}
-                  {/*        </CommandGroup>*/}
-                  {/*      </CommandList>*/}
-                  {/*    </Command>*/}
-                  {/*  </PopoverContent>*/}
-                  {/*</Popover>*/}
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <Button type='submit'>
+            <Button type='submit' className='mt-2 w-full'>
               {initialData ? 'Update' : 'Create'} User
             </Button>
           </form>

@@ -1,19 +1,8 @@
-export type User = {
-  user: UserClass;
-  expires: Date;
-};
+import { Session } from 'next-auth';
 
-export type UserClass = {
-  name: string;
-  id: string;
-  username: string;
-  roles: string[];
-  permissions: any[];
-  regions: any[];
-};
-
-export const hasPermission = (user: User, permission: string): boolean => {
-  // console.log(permission);
-
-  return user?.user?.permissions.includes(permission);
+export const hasPermission = (
+  session: Session,
+  permission: string
+): boolean => {
+  return session?.user?.permissions.includes(permission);
 };

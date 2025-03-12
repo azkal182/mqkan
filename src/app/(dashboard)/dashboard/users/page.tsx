@@ -8,6 +8,9 @@ import { cn } from '@/lib/utils';
 import { buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 
+export const metadata = {
+  title: 'Dashboard : Users'
+};
 const Page = async () => {
   const users = await getUsers();
 

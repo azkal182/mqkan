@@ -7,8 +7,8 @@ import {
   User,
   UserSchema
 } from '@/schemas/user-schema';
-import { hashSync } from 'bcryptjs';
-import { handleError } from '@/lib/error-handler';
+import { hash } from 'bcryptjs';
+import { handleError, ResponseType } from '@/lib/error-handler';
 import { revalidatePath } from 'next/cache';
 
 export type UserWithRolesAndRegions = Prisma.UserGetPayload<{
@@ -89,21 +89,21 @@ export const getUserById = async (id: string) => {
   });
 };
 
-export const createUser = async (data: User) => {
+export const createUser = async (data: User): Promise<ResponseType> => {
   try {
     const validated = UserSchema.safeParse(data);
     if (!validated.success) {
-      return { error: 'Invalid user fields' };
+      return handleError('Invalid user fields', 'createUser');
     }
 
     const { username, password, roleId, regionId, name } = validated.data!;
     const userExist = await prisma.user.findUnique({ where: { username } });
 
     if (userExist) {
-      return { error: 'Username already exists' };
+      return handleError('Username sudah terpakai', 'createUser');
     }
 
-    const hashPassword = hashSync(password, 10);
+    const hashPassword = await hash(password, 10);
 
     await prisma.user.create({
       data: {
@@ -127,21 +127,32 @@ export const createUser = async (data: User) => {
   }
 };
 
-export const updateUser = async (data: UpdateUser) => {
+export const updateUser = async (data: UpdateUser): Promise<ResponseType> => {
   try {
     const validated = UpdateUserSchema.safeParse(data);
     if (!validated.success) {
-      return { error: 'Invalid user data' };
+      return handleError('Invalid user data', 'updateUser');
     }
 
-    const { id, username, password, roleId, regionId, name } = validated.data!;
+    const { id, username, roleId, regionId, name } = validated.data!;
 
-    const updatedData: Record<string, any> = {
+    const updatedData: Prisma.UserUpdateInput = {
       ...(username && { username }),
       ...(name && { name }),
-      ...(password && { password: hashSync(password, 10) }),
-      ...(roleId && { roles: { set: [{ id: roleId }] } }),
-      ...(regionId && { regions: { set: [{ id: regionId }] } })
+      // ...(password && { password: await hash(password, 10) }),
+      ...(roleId && {
+        roles: {
+          deleteMany: {}, // Hapus semua role lama
+          create: roleId ? { roleId } : undefined // Tambahkan role baru jika ada
+        }
+      }),
+
+      ...(regionId && {
+        regions: {
+          deleteMany: {}, // Hapus semua region lama
+          create: regionId.map((id) => ({ regionId: id })) || undefined // Tambahkan region baru jika ada
+        }
+      })
     };
 
     await prisma.user.update({
@@ -149,22 +160,44 @@ export const updateUser = async (data: UpdateUser) => {
       data: updatedData
     });
 
-    return { success: true, message: 'User updated successfully' };
+    return { success: true, message: 'User berhasil dibuat!' };
   } catch (error) {
     return handleError(error, 'updateUser');
   }
 };
 
-export const deleteUser = async (id: string) => {
+export const deleteUser = async (id: string): Promise<ResponseType> => {
   try {
     const userExist = await prisma.user.findUnique({ where: { id } });
     if (!userExist) {
-      return { error: 'User not found' };
+      return handleError('tidak ada user yang terdaftar', 'deleteUser');
     }
 
     await prisma.user.delete({ where: { id } });
+    revalidatePath('/dashboard/users');
+    return { success: true, message: 'User berhasil dihapus!' };
+  } catch (error) {
+    return handleError(error, 'deleteUser');
+  }
+};
 
-    return { success: true, message: 'User deleted successfully' };
+export const changePassword = async (
+  id: string,
+  password: string
+): Promise<ResponseType> => {
+  try {
+    const userExist = await prisma.user.findUnique({ where: { id } });
+    if (!userExist) {
+      return handleError('tidak ada user yang terdaftar', 'deleteUser');
+    }
+
+    const hashPassword = await hash(password, 10);
+    await prisma.user.update({
+      where: { id },
+      data: { password: hashPassword }
+    });
+    revalidatePath('/dashboard/users');
+    return { success: true, message: 'Ganti Password Berhasil!' };
   } catch (error) {
     return handleError(error, 'deleteUser');
   }

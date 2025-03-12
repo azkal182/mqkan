@@ -7,7 +7,7 @@ export const getPermissions = async () => {
     select: { id: true, name: true, label: true }
   });
 
-  logger.info({ permissions });
+  logger.info('getPermissions', { permissions });
 
   return permissions;
 };
