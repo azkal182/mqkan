@@ -52,6 +52,8 @@ model RolePermission {
     permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
     @@id([roleId, permissionId])
+    @@index([roleId])
+    @@index([permissionId])
 }
 
 model UserRole {
@@ -62,6 +64,8 @@ model UserRole {
     role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
     @@id([roleId, userId])
+    @@index([userId])
+    @@index([roleId])
 }
 
 model Region {
@@ -81,6 +85,8 @@ model UserRegion {
     region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
 
     @@id([regionId, userId])
+    @@index([userId])
+    @@index([regionId])
 }
 
 model Province {
@@ -102,6 +108,8 @@ model Regency {
 
     provinceId Int
     province   Province @relation(fields: [provinceId], references: [id])
+
+    @@index([provinceId])
 }
 
 model District {
@@ -113,6 +121,8 @@ model District {
 
     regencyId Int
     regency   Regency @relation(fields: [regencyId], references: [id])
+
+    @@index([regencyId])
 }
 
 model Village {
@@ -124,4 +134,6 @@ model Village {
 
     districtId Int
     district   District @relation(fields: [districtId], references: [id])
+
+    @@index([districtId])
 }
