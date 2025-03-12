@@ -15,6 +15,7 @@ import {
   YoutubeIcon
 } from 'lucide-react';
 import logoPic from '../../../public/images/logo.png';
+import amtsilatiPic from '../../../public/images/amtsilati.jpg';
 
 const listMenu = [
   'home',
@@ -82,7 +83,7 @@ const Page = () => {
         <div className='container mx-auto px-4'>
           <nav className='flex h-20 items-center justify-between'>
             <div className='flex items-center gap-3'>
-              <Image src={logoPic} alt='Picture of the logo' height={52} />
+              <Image src={logoPic} alt='Picture of the logo' height={42} />
             </div>
             <div className='hidden items-center gap-8 lg:flex'>
               {listMenu.map((item) => (
@@ -150,9 +151,9 @@ const Page = () => {
         variants={sectionVariants}
       >
         <div className='absolute inset-0 z-0'>
-          <img
+          <Image
             className='h-full w-full object-cover'
-            src='https://storage.googleapis.com/uxpilot-auth.appspot.com/263c041445-0b819336f890b05a16ca.png'
+            src={amtsilatiPic}
             alt='islamic students reading classical books'
           />
           <div className='absolute inset-0 bg-black/50' />
@@ -200,7 +201,7 @@ const Page = () => {
         className='flex min-h-[calc(100dvh-52px)] items-center bg-white py-20'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -256,7 +257,7 @@ const Page = () => {
         className='flex min-h-[calc(100dvh-52px)] items-center bg-[#f8f6f1] py-20'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -301,7 +302,7 @@ const Page = () => {
         className='flex min-h-[calc(100dvh-52px)] items-center bg-white py-20'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -386,7 +387,7 @@ const Page = () => {
         className='bg-[#f8f6f1] py-20'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -461,78 +462,13 @@ const Page = () => {
           </div>
         </div>
       </motion.section>
-
-      {/* Testimonials Section */}
-      {/*<motion.section*/}
-      {/*  id='testimonials'*/}
-      {/*  className='bg-[#f8f6f1] py-20'*/}
-      {/*  initial='hidden'*/}
-      {/*  whileInView='visible'*/}
-      {/*  viewport={{ once: true, amount: 0.3 }}*/}
-      {/*  variants={sectionVariants}*/}
-      {/*>*/}
-      {/*  <div className='container mx-auto px-4'>*/}
-      {/*    <motion.h2*/}
-      {/*      className='mb-16 text-center text-3xl font-bold text-gray-800'*/}
-      {/*      variants={sectionVariants}*/}
-      {/*    >*/}
-      {/*      What Participants Say*/}
-      {/*    </motion.h2>*/}
-      {/*    <div className='grid gap-8 md:grid-cols-3'>*/}
-      {/*      {[*/}
-      {/*        {*/}
-      {/*          name: 'Ahmad Fauzi',*/}
-      {/*          role: 'Previous Winner',*/}
-      {/*          img: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg',*/}
-      {/*          text: 'This competition has truly enhanced my understanding of classical Islamic texts. The experience was both challenging and rewarding.'*/}
-      {/*        },*/}
-      {/*        {*/}
-      {/*          name: 'Fatima Zahra',*/}
-      {/*          role: 'Participant',*/}
-      {/*          img: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg',*/}
-      {/*          text: 'The competition provided an excellent platform to showcase our knowledge and learn from other participants. A truly enriching experience.'*/}
-      {/*        },*/}
-      {/*        {*/}
-      {/*          name: 'Muhammad Hasan',*/}
-      {/*          role: 'Scholar',*/}
-      {/*          img: 'https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg',*/}
-      {/*          text: "It's heartening to see young scholars deeply engaged with classical texts. This competition plays a vital role in preserving our intellectual heritage."*/}
-      {/*        }*/}
-      {/*      ].map((testimonial, index) => (*/}
-      {/*        <motion.div*/}
-      {/*          key={index}*/}
-      {/*          className='rounded-xl bg-white p-8 shadow-sm'*/}
-      {/*          variants={itemVariants}*/}
-      {/*          initial='hidden'*/}
-      {/*          whileInView='visible'*/}
-      {/*          viewport={{ once: true }}*/}
-      {/*          transition={{ delay: index * 0.1 }}*/}
-      {/*        >*/}
-      {/*          <div className='mb-6 flex items-center gap-4'>*/}
-      {/*            <img*/}
-      {/*              src={testimonial.img}*/}
-      {/*              alt='Testimonial'*/}
-      {/*              className='h-16 w-16 rounded-full'*/}
-      {/*            />*/}
-      {/*            <div>*/}
-      {/*              <h4 className='font-semibold'>{testimonial.name}</h4>*/}
-      {/*              <p className='text-sm text-gray-600'>{testimonial.role}</p>*/}
-      {/*            </div>*/}
-      {/*          </div>*/}
-      {/*          <p className='text-gray-600'>{testimonial.text}</p>*/}
-      {/*        </motion.div>*/}
-      {/*      ))}*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</motion.section>*/}
-
       {/* Registration Section */}
       <motion.section
         id='registration'
         className='bg-white py-20'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -639,7 +575,7 @@ const Page = () => {
         className='bg-[#f8f6f1] py-20'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -737,7 +673,7 @@ const Page = () => {
         className='bg-primary py-12 text-white'
         initial='hidden'
         whileInView='visible'
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
         variants={sectionVariants}
       >
         <div className='container mx-auto px-4'>
@@ -818,7 +754,7 @@ const Page = () => {
                 <input
                   type='email'
                   placeholder='Your email'
-                  className='w-full rounded-l-lg border border-2 px-4 py-2'
+                  className='w-full rounded-l-lg border-2 px-4 py-2'
                 />
                 <motion.button
                   className='rounded-r-lg bg-white px-4 text-[#0C713D]'

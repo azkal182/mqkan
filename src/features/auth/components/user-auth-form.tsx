@@ -16,7 +16,6 @@ import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 // import * as z from 'zod';
-import GithubSignInButton from './github-auth-button';
 import { LoginInput, LoginSchema } from '@/schemas/login-schema';
 import { login } from '@/actions/login-action';
 
@@ -94,7 +93,7 @@ export default function UserAuthForm() {
           </Button>
         </form>
       </Form>
-      <div className='relative'>
+      {/* <div className='relative'>
         <div className='absolute inset-0 flex items-center'>
           <span className='w-full border-t' />
         </div>
@@ -103,8 +102,8 @@ export default function UserAuthForm() {
             Or continue with
           </span>
         </div>
-      </div>
-      <GithubSignInButton />
+      </div> */}
+      {/* <GithubSignInButton /> */}
     </>
   );
 }

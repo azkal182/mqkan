@@ -4,257 +4,267 @@ import { hashSync } from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.region.createMany({
+  await prisma.permission.createMany({
     data: [
       {
-        name: 'Jatim 1',
-        coverage: [
-          'Bojonegoro',
-          'Mojokerto',
-          'Jombang',
-          'Nganjuk',
-          'Kediri',
-          'Ngawi'
-        ]
+        name: 'member:view',
+        label: 'member'
       },
       {
-        name: 'Jatim 2',
-        coverage: ['Seluruh daerah Madura']
+        name: 'member:create',
+        label: 'member'
       },
       {
-        name: 'Jatim 3',
-        coverage: [
-          'Banyuwangi',
-          'Bondowoso',
-          'Jember',
-          'Lumajang',
-          'Malang',
-          'Probolinggo',
-          'Pasuruan',
-          'Situbondo'
-        ]
+        name: 'member:edit',
+        label: 'member'
       },
       {
-        name: 'Jatim 4',
-        coverage: [
-          'Madiun',
-          'Ponorogo',
-          'Trenggalek',
-          'Tulung Agung',
-          'Pacitan',
-          'Magetan',
-          'Blitar'
-        ]
+        name: 'member:delete',
+        label: 'member'
       },
       {
-        name: 'Jatim 5',
-        coverage: ['Tuban', 'Lamongan', 'Gresik', 'Sidoarjo', 'Surabaya']
+        name: 'user:view',
+        label: 'user'
       },
       {
-        name: 'Jateng 1',
-        coverage: [
-          'Rembang',
-          'Blora',
-          'Pati',
-          'Grobogan',
-          'Kudus',
-          'Demak',
-          'Semarang',
-          'Kendal',
-          'Sragen'
-        ]
+        name: 'user:edit',
+        label: 'user'
       },
       {
-        name: 'Jateng 2',
-        coverage: [
-          'Magelang',
-          'Temanggung',
-          'Wonosobo',
-          'Purworejo',
-          'Banjarnegara',
-          'Kebumen'
-        ]
-      },
-      {
-        name: 'Jateng 3',
-        coverage: [
-          'Batang',
-          'Pekalongan',
-          'Pemalang',
-          'Tegal',
-          'Brebes',
-          'Purbalingga',
-          'Banyumas',
-          'Cilacap'
-        ]
-      },
-      {
-        name: 'Jateng 4',
-        coverage: [
-          'Karanganyar',
-          'Wonogiri',
-          'Sukoharjo',
-          'Surakarta',
-          'Boyolali',
-          'Klaten'
-        ]
-      },
-      {
-        name: 'Jabar 1',
-        coverage: [
-          'Subang',
-          'Sukabumi',
-          'Cianjur',
-          'Cimahi',
-          'Bandung',
-          'Garut',
-          'Purwakarta',
-          'Karawang'
-        ]
-      },
-      {
-        name: 'Jabar 2',
-        coverage: [
-          'Indramayu',
-          'Cirebon',
-          'Sumedang',
-          'Majalengka',
-          'Kuningan',
-          'Ciamis',
-          'Tasikmalaya',
-          'Kota Banjar',
-          'Kab. Pangandaran'
-        ]
-      },
-      {
-        name: 'Jabar 3',
-        coverage: [
-          'Kab. Bekasi',
-          'Kota Bekasi',
-          'Kab. Depok',
-          'Kota Depok',
-          'Kab. Bogor',
-          'Kota Bogor'
-        ]
-      },
-      {
-        name: 'DKI Jakarta',
-        coverage: ['Kota Tanggerang', 'Tanggerang Selatan', 'Prov. Jakarta']
-      },
-      {
-        name: 'Banten',
-        coverage: [
-          'Kota Banten',
-          'Kab. Cilegon',
-          'Kab. Serang',
-          'Kota Lebak',
-          'Kota Serang'
-        ]
-      },
-      {
-        name: 'Yogyakarta',
-        coverage: ['Yogyakarta']
-      },
-      {
-        name: 'Kalsel',
-        coverage: ['Kalimantan Selatan']
-      },
-      {
-        name: 'Kaltim',
-        coverage: ['Seluruh Daerah Kalimantan Barat']
-      },
-      {
-        name: 'Bali',
-        coverage: ['Bali']
-      },
-      {
-        name: 'Lombok',
-        coverage: ['NTB']
-      },
-      {
-        name: 'Lampung',
-        coverage: ['Lampung']
-      },
-      {
-        name: 'Riau',
-        coverage: ['Riau']
-      },
-      {
-        name: 'Jambi',
-        coverage: ['Jambi']
-      },
-      {
-        name: 'Sumbar',
-        coverage: ['Sumatra Barat']
-      },
-      {
-        name: 'Batam',
-        coverage: ['Batam']
-      },
-      {
-        name: 'Sumsel',
-        coverage: ['Sumatra Selatan']
-      },
-      {
-        name: 'D.I Jepara',
-        coverage: ['Jepara']
-      },
-      {
-        name: 'Sulawesi',
-        coverage: ['Sulawesi']
+        name: 'user:delete',
+        label: 'user'
       }
     ]
   });
+  // 1. Insert Regions
+  const regionsData = [
+    {
+      name: 'Jatim 1',
+      coverage: [
+        'Bojonegoro',
+        'Mojokerto',
+        'Jombang',
+        'Nganjuk',
+        'Kediri',
+        'Ngawi'
+      ]
+    },
+    {
+      name: 'Jatim 2',
+      coverage: ['Seluruh daerah Madura']
+    },
+    {
+      name: 'Jatim 3',
+      coverage: [
+        'Banyuwangi',
+        'Bondowoso',
+        'Jember',
+        'Lumajang',
+        'Malang',
+        'Probolinggo',
+        'Pasuruan',
+        'Situbondo'
+      ]
+    },
+    {
+      name: 'Jatim 4',
+      coverage: [
+        'Madiun',
+        'Ponorogo',
+        'Trenggalek',
+        'Tulung Agung',
+        'Pacitan',
+        'Magetan',
+        'Blitar'
+      ]
+    },
+    {
+      name: 'Jatim 5',
+      coverage: ['Tuban', 'Lamongan', 'Gresik', 'Sidoarjo', 'Surabaya']
+    },
+    {
+      name: 'Jateng 1',
+      coverage: [
+        'Rembang',
+        'Blora',
+        'Pati',
+        'Grobogan',
+        'Kudus',
+        'Demak',
+        'Semarang',
+        'Kendal',
+        'Sragen'
+      ]
+    },
+    {
+      name: 'Jateng 2',
+      coverage: [
+        'Magelang',
+        'Temanggung',
+        'Wonosobo',
+        'Purworejo',
+        'Banjarnegara',
+        'Kebumen'
+      ]
+    },
+    {
+      name: 'Jateng 3',
+      coverage: [
+        'Batang',
+        'Pekalongan',
+        'Pemalang',
+        'Tegal',
+        'Brebes',
+        'Purbalingga',
+        'Banyumas',
+        'Cilacap'
+      ]
+    },
+    {
+      name: 'Jateng 4',
+      coverage: [
+        'Karanganyar',
+        'Wonogiri',
+        'Sukoharjo',
+        'Surakarta',
+        'Boyolali',
+        'Klaten'
+      ]
+    },
+    {
+      name: 'Jabar 1',
+      coverage: [
+        'Subang',
+        'Sukabumi',
+        'Cianjur',
+        'Cimahi',
+        'Bandung',
+        'Garut',
+        'Purwakarta',
+        'Karawang'
+      ]
+    },
+    {
+      name: 'Jabar 2',
+      coverage: [
+        'Indramayu',
+        'Cirebon',
+        'Sumedang',
+        'Majalengka',
+        'Kuningan',
+        'Ciamis',
+        'Tasikmalaya',
+        'Kota Banjar',
+        'Kab. Pangandaran'
+      ]
+    },
+    {
+      name: 'Jabar 3',
+      coverage: [
+        'Kab. Bekasi',
+        'Kota Bekasi',
+        'Kab. Depok',
+        'Kota Depok',
+        'Kab. Bogor',
+        'Kota Bogor'
+      ]
+    },
+    {
+      name: 'DKI Jakarta',
+      coverage: ['Kota Tanggerang', 'Tanggerang Selatan', 'Prov. Jakarta']
+    },
+    {
+      name: 'Banten',
+      coverage: [
+        'Kota Banten',
+        'Kab. Cilegon',
+        'Kab. Serang',
+        'Kota Lebak',
+        'Kota Serang'
+      ]
+    },
+    {
+      name: 'Yogyakarta',
+      coverage: ['Yogyakarta']
+    },
+    {
+      name: 'Kalsel',
+      coverage: ['Kalimantan Selatan']
+    },
+    {
+      name: 'Kaltim',
+      coverage: ['Seluruh Daerah Kalimantan Barat']
+    },
+    {
+      name: 'Bali',
+      coverage: ['Bali']
+    },
+    {
+      name: 'Lombok',
+      coverage: ['NTB']
+    },
+    {
+      name: 'Lampung',
+      coverage: ['Lampung']
+    },
+    {
+      name: 'Riau',
+      coverage: ['Riau']
+    },
+    {
+      name: 'Jambi',
+      coverage: ['Jambi']
+    },
+    {
+      name: 'Sumbar',
+      coverage: ['Sumatra Barat']
+    },
+    {
+      name: 'Batam',
+      coverage: ['Batam']
+    },
+    {
+      name: 'Sumsel',
+      coverage: ['Sumatra Selatan']
+    },
+    {
+      name: 'D.I Jepara',
+      coverage: ['Jepara']
+    },
+    {
+      name: 'Sulawesi',
+      coverage: ['Sulawesi']
+    }
+  ];
 
+  await prisma.region.createMany({ data: regionsData });
   console.log('Regions have been seeded successfully');
 
-  // Create roles first
-  const adminRole = await prisma.role.create({
-    data: {
-      name: 'admin'
-    }
-  });
+  // 2. Retrieve Region IDs
+  const regions = await prisma.region.findMany();
+  const allPermissions = await prisma.permission.findMany();
 
-  const userRole = await prisma.role.create({
-    data: {
-      name: 'user'
-    }
-  });
+  // 3. Create Roles
+  const [adminRole, userRole] = await Promise.all([
+    prisma.role.create({
+      data: {
+        name: 'admin',
+        // Connect admin role to user-related permissions
+        permissions: {
+          create: allPermissions
+            .filter(
+              (p) => p.name.startsWith('user:') || p.name.startsWith('member:')
+            )
+            .map((p) => ({
+              permissionId: p.id
+            }))
+        }
+      }
+    }),
+    prisma.role.create({ data: { name: 'user' } })
+  ]);
 
-  // Create the permissions for the roles
-  const adminPermission = await prisma.permission.create({
-    data: {
-      name: 'admin_permissions',
-      label: 'admin',
-      description: 'Permissions for admin users'
-    }
-  });
-
-  const userPermission = await prisma.permission.create({
-    data: {
-      name: 'create:member',
-      label: 'member',
-      description: 'Permissions for region-based users'
-    }
-  });
-
-  // Create RolePermissions for admin and user roles
-  await prisma.rolePermission.create({
-    data: {
-      roleId: adminRole.id,
-      permissionId: adminPermission.id
-    }
-  });
-
-  await prisma.rolePermission.create({
-    data: {
-      roleId: userRole.id,
-      permissionId: userPermission.id
-    }
-  });
-
-  // Create Admin User (admin users do not need regions)
-  const adminUser = await prisma.user.create({
+  await prisma.user.create({
     data: {
       name: 'Admin User',
       username: 'admin',
@@ -267,49 +277,20 @@ async function main() {
     }
   });
 
-  // Create Region-Based Users (assigned to specific regions)
-  const regionUser = await prisma.user.create({
-    data: {
-      name: 'Region User 1',
-      username: 'jatim1',
-      password: hashSync('jatim1'),
-      roles: {
-        create: {
-          roleId: userRole.id
-        }
-      },
-      regions: {
-        create: [
-          {
-            regionId: '5b626edc-7d21-4f1f-bb0c-01bc7cf86238' // Replace with an actual region ID
-          }
-        ]
+  // 4. Create Users based on Regions
+  for (const region of regions) {
+    await prisma.user.create({
+      data: {
+        name: `User ${region.name}`,
+        username: region.name.toLowerCase().replace(/\s+/g, ''), // Convert to lowercase and remove spaces
+        password: hashSync('password123'), // Hash the password
+        roles: { create: { roleId: userRole.id } },
+        regions: { create: { regionId: region.id } }
       }
-    }
-  });
+    });
+  }
 
-  // You can add more users and assign them to different regions
-  const anotherRegionUser = await prisma.user.create({
-    data: {
-      name: 'jatim 2',
-      username: 'jatim2',
-      password: 'jatim2',
-      roles: {
-        create: {
-          roleId: userRole.id
-        }
-      },
-      regions: {
-        create: [
-          {
-            regionId: '1dbe64c2-5c71-4499-afda-9a7bcfd9b1b4'
-          }
-        ]
-      }
-    }
-  });
-
-  console.log('Admin and Region-based users seeded successfully');
+  console.log('Users have been seeded successfully');
 }
 
 main()

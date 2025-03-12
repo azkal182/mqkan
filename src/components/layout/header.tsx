@@ -4,7 +4,7 @@ import { Separator } from '../ui/separator';
 import { Breadcrumbs } from '../breadcrumbs';
 import SearchInput from '../search-input';
 import { UserNav } from './user-nav';
-import ThemeToggle from './ThemeToggle/theme-toggle';
+// import ThemeToggle from './ThemeToggle/theme-toggle';
 
 export default function Header() {
   return (
@@ -20,7 +20,7 @@ export default function Header() {
           <SearchInput />
         </div>
         <UserNav />
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
       </div>
     </header>
   );

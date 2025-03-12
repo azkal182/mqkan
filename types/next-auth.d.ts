@@ -1,13 +1,32 @@
-import NextAuth, { DefaultSession } from 'next-auth';
+import NextAuth, { DefaultSession, DefaultUser } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 
+// Extend tipe bawaan User di NextAuth
 declare module 'next-auth' {
-  type UserSession = DefaultSession['user'];
   interface Session {
-    user: UserSession;
+    user: {
+      id: string;
+      username: string;
+      roles: string[];
+      permissions: string[];
+      regions: string[];
+    } & DefaultSession['user'];
   }
 
-  interface CredentialsInputs {
-    email: string;
-    password: string;
+  interface User extends DefaultUser {
+    username: string;
+    roles: string[];
+    permissions: string[];
+    regions: string[];
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+    username: string;
+    roles: string[];
+    permissions: string[];
+    regions: string[];
   }
 }
