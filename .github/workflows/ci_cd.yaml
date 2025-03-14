@@ -23,7 +23,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8 # Sesuaikan dengan versi pnpm yang Anda gunakan
+          version: 9.15.4 # Sesuaikan dengan versi pnpm yang Anda gunakan
 
       - name: Cache pnpm store
         uses: actions/cache@v3
