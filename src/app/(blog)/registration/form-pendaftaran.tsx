@@ -31,24 +31,40 @@ export function generateRandomNumber(length: number = 8): string {
   return `${timestamp}${randomDigits}`.slice(0, length);
 }
 
+// Tipe data untuk wilayah
+interface Region {
+  id: string;
+  name: string;
+}
+
+// Definisi tipe untuk objek dengan index signature
+interface CityMap {
+  [key: string]: Region[];
+}
+interface DistrictMap {
+  [key: string]: Region[];
+}
+interface VillageMap {
+  [key: string]: Region[];
+}
 // Dummy Data untuk Wilayah
-const provinces = [
+const provinces: Region[] = [
   { id: '1', name: 'Jawa Barat' },
   { id: '2', name: 'Jawa Tengah' }
 ];
-const cities = {
+const cities: CityMap = {
   '1': [
     { id: '11', name: 'Bandung' },
     { id: '12', name: 'Bekasi' }
   ],
   '2': [{ id: '21', name: 'Semarang' }]
 };
-const districts = {
+const districts: DistrictMap = {
   '11': [{ id: '111', name: 'Cimahi' }],
   '12': [{ id: '121', name: 'Tambun' }],
   '21': [{ id: '211', name: 'Tembalang' }]
 };
-const villages = {
+const villages: VillageMap = {
   '111': [{ id: '1111', name: 'Cimahi Utara' }],
   '121': [{ id: '1211', name: 'Tambun Selatan' }],
   '211': [{ id: '2111', name: 'Tembalang Barat' }]
