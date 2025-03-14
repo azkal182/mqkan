@@ -8,10 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
       - name: Print current branch
         run: echo ${{ github.ref }}
 
@@ -20,20 +20,38 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8 # Sesuaikan dengan versi pnpm yang Anda gunakan
+
+      - name: Cache pnpm store
+        uses: actions/cache@v3
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Print DATABASE_URL
-        run: echo ${{ secrets.DATABASE_URL }}
 
       - name: Run Prisma Migrations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
-        run: npx prisma migrate deploy || sleep 10 && npx prisma migrate deploy
+        run: |
+          for i in {1..3}; do
+            npx prisma migrate deploy && break
+            echo "Migration failed, retrying in 5 seconds ($i/3)..."
+            sleep 5
+          done
 
       - name: Build Next.js application
         env:
@@ -44,75 +62,63 @@ jobs:
           NEXTAUTH_URL: ${{ secrets.AUTH_TRUST_HOST }}
         run: pnpm build
 
-      - name: Add SSH key
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-files
+          path: |
+            .next/
+            public/
+            package.json
+            pnpm-lock.yaml
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-files
+
+      - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add server to known_hosts
-        run: ssh-keyscan 165.22.106.176 >> ~/.ssh/known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Deploy to VPS
         run: |
+          rsync -avz --delete .next/ public/ package.json pnpm-lock.yaml azkal@165.22.106.176:/home/azkal/project/mqkan/
           ssh -tt azkal@165.22.106.176 << 'EOF'
-              # Verifikasi apakah direktori /home/azkal/project/mqkan ada
-              if [ ! -d "/home/azkal/project/mqkan" ]; then
-              echo "Directory /home/azkal/project/mqkan does not exist. Cloning project..."
-              git clone https://github.com/azkal182/mqkan.git /home/azkal/project/mqkan
-              cd /home/azkal/project/mqkan
+            cd /home/azkal/project/mqkan
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/azkal182/mqkan.git .
               git checkout main
-              else
-              echo "Directory /home/azkal/project/mqkan exists. Pulling latest changes..."
-              cd /home/azkal/project/mqkan
+            else
               git checkout main
               git pull origin main
-              fi
-              exit
-          EOF
-
-      - name: Copy build files to VPS
-        run: |
-          rsync -avz --delete .next/ azkal@165.22.106.176:/home/azkal/project/mqkan/.next/
-          rsync -avz --delete public/ azkal@165.22.106.176:/home/azkal/project/mqkan/public/
-          rsync -avz --delete package.json pnpm-lock.yaml azkal@165.22.106.176:/home/azkal/project/mqkan/
-
-      - name: Install Dependencies and Restart App
-        run: |
-          ssh -tt azkal@165.22.106.176 << 'EOF'
-              # Masuk ke direktori project
-              cd /home/azkal/project/mqkan
-
-              # Hentikan aplikasi yang berjalan (jika menggunakan PM2)
-              if pm2 describe mqkan > /dev/null; then
+            fi
+            npm install -g pnpm
+            pnpm install --production
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+            echo "DIRECT_DATABASE_URL=${{ secrets.DIRECT_DATABASE_URL }}" >> .env
+            echo "NEXTAUTH_URL=${{ secrets.AUTH_TRUST_HOST }}" >> .env
+            echo "AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}" >> .env
+            echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> .env
+            if pm2 describe mqkan > /dev/null; then
               pm2 stop mqkan
               pm2 delete mqkan
-              else
-              echo "PM2 application 'mqkan' not found, skipping stop."
-              fi
-
-              # Install dependencies tanpa build
-              pnpm install --production
-
-              # Update variabel di file .env
-              sed -i '/^DIRECT_DATABASE_URL=/d' .env
-              echo "DATABASE_URL=${{ secrets.DIRECT_DATABASE_URL }}" >> .env
-
-              sed -i '/^DATABASE_URL=/d' .env
-              echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-
-              sed -i '/^NEXTAUTH_URL=/d' .env
-              echo "NEXTAUTH_URL=${{ secrets.AUTH_TRUST_HOST }}" >> .env
-
-              sed -i '/^AUTH_TRUST_HOST=/d' .env
-              echo "AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}" >> .env
-
-              sed -i '/^AUTH_SECRET=/d' .env
-              echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> .env
-
-
-              # Restart aplikasi dengan PM2 tanpa build
-              pm2 start npm --name "mqkan" -- start -- -p 7070
-
-              # Keluar dari SSH
-              exit
+            fi
+            pm2 start npm --name "mqkan" -- start -- -p 7070
+            exit
           EOF
+
+      - name: Verify Deployment
+        run: |
+          ssh azkal@165.22.106.176 "pm2 logs mqkan --lines 10"
