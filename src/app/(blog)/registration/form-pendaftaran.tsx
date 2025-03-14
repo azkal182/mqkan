@@ -47,6 +47,7 @@ interface DistrictMap {
 interface VillageMap {
   [key: string]: Region[];
 }
+
 // Dummy Data untuk Wilayah
 const provinces: Region[] = [
   { id: '1', name: 'Jawa Barat' },
@@ -78,8 +79,11 @@ const formSchema = z.object({
   birthPlace: z.string().min(3, 'Tempat lahir minimal 3 karakter'),
   birthDate: z.string().min(1, 'Tanggal lahir harus diisi'),
   gender: z.string().min(1, 'Jenis kelamin harus dipilih'),
-  category: z.string().min(1, 'Kategori  harus dipilih'), // Validasi kategori
-  classLevel: z.string().min(1, 'Kelas harus dipilih'), // Validasi kelas
+  category: z.string().min(1, 'Kategori harus dipilih'),
+  classLevel: z.string().min(1, 'Kelas harus dipilih'),
+  institutionName: z.string().min(3, 'Nama lembaga minimal 3 karakter'), // Nama Lembaga
+  institutionAddress: z.string().min(10, 'Alamat lembaga minimal 10 karakter'), // Alamat Lembaga
+  korwil: z.string().min(3, 'Korwil minimal 3 karakter'), // Korwil
   province: z.string().min(1, 'Provinsi harus dipilih'),
   city: z.string().min(1, 'Kota/Kabupaten harus dipilih'),
   district: z.string().min(1, 'Kecamatan harus dipilih'),
@@ -89,6 +93,12 @@ const formSchema = z.object({
     .min(5, 'Kode pos harus 5 digit')
     .max(5, 'Kode pos harus 5 digit'),
   address: z.string().min(10, 'Alamat minimal 10 karakter'),
+  fatherName: z.string().min(3, 'Nama ayah minimal 3 karakter'), // Nama Ayah
+  motherName: z.string().min(3, 'Nama ibu minimal 3 karakter'), // Nama Ibu
+  parentPhone: z
+    .string()
+    .min(10, 'Nomor telepon minimal 10 digit')
+    .max(15, 'Nomor telepon maksimal 15 digit'), // Nomor Telepon Orang Tua
   kk: z
     .instanceof(File)
     .refine((file) => file?.size <= 5 * 1024 * 1024, 'File maksimum 5MB')
@@ -104,6 +114,13 @@ const formSchema = z.object({
       (file) =>
         ['image/jpeg', 'image/png', 'application/pdf'].includes(file?.type),
       'File harus berupa JPG, PNG, atau PDF'
+    ),
+  photo: z
+    .instanceof(File)
+    .refine((file) => file?.size <= 2 * 1024 * 1024, 'File maksimum 2MB') // Pas Foto 3x4
+    .refine(
+      (file) => ['image/jpeg', 'image/png'].includes(file?.type),
+      'File harus berupa JPG atau PNG'
     )
 });
 
@@ -117,22 +134,33 @@ const RegistrationForm = () => {
       birthPlace: '',
       birthDate: '',
       gender: '',
-      category: '', // Default untuk kategori
-      classLevel: '', // Default untuk kelas
+      category: '',
+      classLevel: '',
+      institutionName: '',
+      institutionAddress: '',
+      korwil: '',
       province: '',
       city: '',
       district: '',
       village: '',
       postalCode: '',
       address: '',
+      fatherName: '',
+      motherName: '',
+      parentPhone: '',
       kk: null,
-      ijazah: null
+      ijazah: null,
+      photo: null
     }
   });
 
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
+
+  const [kkPreview, setKkPreview] = useState<string | null>(null);
+  const [ijazahPreview, setIjazahPreview] = useState<string | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const onSubmit = (data: any) => {
     console.log('Form Data:', data);
@@ -266,8 +294,8 @@ const RegistrationForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='Laki-laki'>Laki-laki</SelectItem>
-                      <SelectItem value='Perempuan'>Perempuan</SelectItem>
+                      <SelectItem value='01'>PUTRA</SelectItem>
+                      <SelectItem value='02'>PUTRI</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -296,9 +324,9 @@ const RegistrationForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='MQK'>MQK</SelectItem>
-                      <SelectItem value='Olimpiade'>Olimpiade</SelectItem>
-                      <SelectItem value='Dakwah'>Dakwah</SelectItem>
+                      <SelectItem value='01'>OLIMPIADE AMTSILATI</SelectItem>
+                      <SelectItem value='02'>MQK</SelectItem>
+                      <SelectItem value='03'>DAKWAH</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -311,7 +339,7 @@ const RegistrationForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Kelas
+                    JENJANG
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
@@ -319,12 +347,13 @@ const RegistrationForm = () => {
                   >
                     <FormControl>
                       <SelectTrigger className='border-gray-300 focus:border-blue-500'>
-                        <SelectValue placeholder='Pilih kelas' />
+                        <SelectValue placeholder='Pilih JENJANG' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='Ula'>Ula</SelectItem>
-                      <SelectItem value='Ulya'>Ulya</SelectItem>
+                      <SelectItem value='01'>ULA</SelectItem>
+                      <SelectItem value='02'>WUSTHO</SelectItem>
+                      <SelectItem value='03'>ULYA</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -333,7 +362,78 @@ const RegistrationForm = () => {
             />
           </div>
 
-          {/* Bagian Alamat */}
+          {/* Bagian Informasi Lembaga */}
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <FormField
+              control={form.control}
+              name='institutionName'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Nama Lembaga
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder='Masukkan nama lembaga'
+                      className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='korwil'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Di Bawah Naungan Korwil
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                          <SelectValue placeholder='Pilih Nama Korwil' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value='01'>JATENG 1</SelectItem>
+                        <SelectItem value='02'>JATENG 2</SelectItem>
+                        <SelectItem value='03'>JATIM 1</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='institutionAddress'
+              render={({ field }) => (
+                <FormItem className='md:col-span-2'>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Alamat Lengkap Lembaga
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder='Masukkan alamat lengkap lembaga'
+                      className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Bagian Alamat Pribadi */}
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <FormField
               control={form.control}
@@ -493,7 +593,7 @@ const RegistrationForm = () => {
               render={({ field }) => (
                 <FormItem className='md:col-span-2'>
                   <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Alamat Lengkap
+                    Alamat Lengkap Pribadi
                   </FormLabel>
                   <FormControl>
                     <Textarea
@@ -508,8 +608,69 @@ const RegistrationForm = () => {
             />
           </div>
 
-          {/* Bagian Upload Dokumen */}
+          {/* Bagian Informasi Orang Tua */}
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <FormField
+              control={form.control}
+              name='fatherName'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Nama Ayah
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder='Masukkan nama ayah'
+                      className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='motherName'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Nama Ibu
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder='Masukkan nama ibu'
+                      className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='parentPhone'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Nomor Telepon Orang Tua
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder='Masukkan nomor telepon (contoh: 08123456789)'
+                      className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {/* Bagian Upload Dokumen */}
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
             <FormField
               control={form.control}
               name='kk'
@@ -522,10 +683,27 @@ const RegistrationForm = () => {
                     <Input
                       type='file'
                       accept='.jpg,.jpeg,.png,.pdf'
-                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        field.onChange(file);
+                        if (file && file.type.startsWith('image/')) {
+                          setKkPreview(URL.createObjectURL(file));
+                        } else {
+                          setKkPreview(null); // Reset preview jika bukan gambar
+                        }
+                      }}
                       className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
+                  {kkPreview && (
+                    <div className='mt-2'>
+                      <img
+                        src={kkPreview}
+                        alt='Preview Kartu Keluarga'
+                        className='h-32 w-auto rounded-md object-cover'
+                      />
+                    </div>
+                  )}
                   <FormDescription>
                     File maksimum 5MB (JPG, PNG, atau PDF).
                   </FormDescription>
@@ -545,12 +723,69 @@ const RegistrationForm = () => {
                     <Input
                       type='file'
                       accept='.jpg,.jpeg,.png,.pdf'
-                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        field.onChange(file);
+                        if (file && file.type.startsWith('image/')) {
+                          setIjazahPreview(URL.createObjectURL(file));
+                        } else {
+                          setIjazahPreview(null); // Reset preview jika bukan gambar
+                        }
+                      }}
                       className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
+                  {ijazahPreview && (
+                    <div className='mt-2'>
+                      <img
+                        src={ijazahPreview}
+                        alt='Preview Ijazah'
+                        className='h-32 w-auto rounded-md object-cover'
+                      />
+                    </div>
+                  )}
                   <FormDescription>
                     File maksimum 5MB (JPG, PNG, atau PDF).
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='photo'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Upload Pas Foto 3x4
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type='file'
+                      accept='.jpg,.jpeg,.png'
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        field.onChange(file);
+                        if (file) {
+                          setPhotoPreview(URL.createObjectURL(file));
+                        } else {
+                          setPhotoPreview(null); // Reset preview jika tidak ada file
+                        }
+                      }}
+                      className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  {photoPreview && (
+                    <div className='mt-2'>
+                      <img
+                        src={photoPreview}
+                        alt='Preview Pas Foto'
+                        className='h-32 w-auto rounded-md object-cover'
+                      />
+                    </div>
+                  )}
+                  <FormDescription>
+                    File maksimum 2MB (JPG atau PNG).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -560,12 +795,7 @@ const RegistrationForm = () => {
 
           {/* Tombol Submit */}
           <div className='flex justify-end'>
-            <Button
-              type='submit'
-              className='bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700'
-            >
-              Submit Pendaftaran
-            </Button>
+            <Button type='submit'>Submit</Button>
           </div>
         </form>
       </Form>
