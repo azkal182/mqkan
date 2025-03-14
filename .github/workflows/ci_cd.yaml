@@ -92,6 +92,8 @@ jobs:
             public/
             package.json
             pnpm-lock.yaml
+          compression-level: 6 # Optional: Adjust compression level
+          retention-days: 1 # Optional: Set retention period
 
   deploy:
     needs: build
@@ -101,13 +103,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-files
-          path: ./ # Pastikan diunduh ke direktori kerja saat ini
+          path: ./
 
       - name: Check downloaded files
         run: |
           ls -la
           if [ -d ".next" ]; then
             echo ".next directory found"
+            ls -la .next
           else
             echo "Error: .next directory not downloaded"
             exit 1
