@@ -12,6 +12,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Get Project Info
+        run: |
+          echo "PROJECT_NAME=$(jq -r .name package.json)" >> $GITHUB_ENV
+          echo "PROJECT_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+
+      - name: Send Telegram Notification (Build Started)
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "text=🚀 Build Started for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }}"
+
       - name: Verify pnpm-lock.yaml exists
         run: |
           ls -la
@@ -138,3 +149,20 @@ jobs:
       - name: Verify Deployment
         run: |
           ssh azkal@165.22.106.176 "pm2 logs mqkan --lines 10 --nostream"
+
+  notify:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Notification (Build Successful)
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "text=✅ Deployment Successful for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }}"
+
+      - name: Send Telegram Notification (Build Failed)
+        if: failure()
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d "text=❌ Deployment Failed for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }}. Please check logs!"
