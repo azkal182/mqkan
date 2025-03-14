@@ -162,11 +162,11 @@ jobs:
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=✅ Deploy Success\n📦 Project: ${{ env.PROJECT_NAME }}\n🔖 Version: ${{ env.PROJECT_VERSION }}\n🌍 URL: https://example.com\n🕒 Time: ${{ env.TIMESTAMP }}"
+          -d "text=✅ Deploy Success%0A📦 Project: ${{ env.PROJECT_NAME }}%0A🔖 Version: ${{ env.PROJECT_VERSION }}%0A🌍 URL: https://example.com\n🕒 Time: ${{ env.TIMESTAMP }}"
 
       - name: Send Telegram Notification (Deploy Failed)
         if: failure()
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=❌ Deployment Failed\n📦 Project: ${{ env.PROJECT_NAME }}\n🔖 Version: ${{ env.PROJECT_VERSION }}\n🕒 Time: ${{ env.TIMESTAMP }}\nPlease check logs!"
+          -d "text=❌ Deployment Failed%0A📦 Project: ${{ env.PROJECT_NAME }}%0A🔖 Version: ${{ env.PROJECT_VERSION }}%0A🕒 Time: ${{ env.TIMESTAMP }}%0APlease check logs!"
