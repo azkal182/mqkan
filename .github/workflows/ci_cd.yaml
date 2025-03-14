@@ -79,6 +79,10 @@ jobs:
             exit 1
           fi
 
+      - name: Check files before upload
+        run: |
+          ls -la .next/ public/ package.json pnpm-lock.yaml || echo "Some files missing"
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -97,6 +101,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-files
+          path: ./ # Pastikan diunduh ke direktori kerja saat ini
 
       - name: Check downloaded files
         run: |
