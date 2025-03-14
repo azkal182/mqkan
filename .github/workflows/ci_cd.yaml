@@ -61,7 +61,7 @@ jobs:
             exit 1
           fi
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3#c7d967512cc1d2305f1ea3e8f917e37787309843
+        uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: |
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3#c7d967512cc1d2305f1ea3e8f917e37787309843
+        uses: actions/download-artifact@v4
         with:
           name: build-files
       - name: Check downloaded files
