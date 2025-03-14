@@ -82,6 +82,7 @@ jobs:
       - name: Package artifacts
         run: |
           tar -czf build-files.tar.gz .next/ public/ package.json pnpm-lock.yaml node_modules/
+          tar -czf build-files.tar.gz -C /home/azkal/project/mqkan .next public package.json pnpm-lock.yaml node_modules
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -146,4 +147,4 @@ jobs:
 
       - name: Verify Deployment
         run: |
-          ssh azkal@165.22.106.176 "pm2 logs mqkan --lines 10"
+          ssh azkal@165.22.106.176 "pm2 logs mqkan --lines 10 --nostream"
