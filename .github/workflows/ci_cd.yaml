@@ -31,13 +31,13 @@ jobs:
 
       - name: Run Prisma Migrations
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
         run: npx prisma migrate deploy || sleep 10 && npx prisma migrate deploy
 
       - name: Build Next.js application
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           AUTH_TRUST_HOST: ${{ secrets.AUTH_TRUST_HOST }}
           NEXTAUTH_URL: ${{ secrets.AUTH_TRUST_HOST }}
@@ -93,8 +93,8 @@ jobs:
               pnpm install --production
 
               # Update variabel di file .env
-              sed -i '/^DIRECT_URL=/d' .env
-              echo "DATABASE_URL=${{ secrets.DIRECT_URL }}" >> .env
+              sed -i '/^DIRECT_DATABASE_URL=/d' .env
+              echo "DATABASE_URL=${{ secrets.DIRECT_DATABASE_URL }}" >> .env
 
               sed -i '/^DATABASE_URL=/d' .env
               echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
