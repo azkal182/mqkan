@@ -8,21 +8,25 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      project_name: ${{ steps.set_outputs.outputs.project_name }}
+      project_version: ${{ steps.set_outputs.outputs.project_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Get Project Info
+        id: set_outputs
         run: |
-          echo "PROJECT_NAME=$(jq -r .name package.json)" >> $GITHUB_ENV
-          echo "PROJECT_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          echo "project_name=$(jq -r .name package.json)" >> $GITHUB_OUTPUT
+          echo "project_version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
           echo "TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
 
       - name: Send Telegram Notification (Build Started)
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=🚀 Build Started for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }} at ${{ env.TIMESTAMP }}"
+          -d "text=🚀 Build Started for ${{ steps.set_outputs.outputs.project_name }} v${{ steps.set_outputs.outputs.project_version }} at ${{ env.TIMESTAMP }}"
 
       - name: Verify pnpm-lock.yaml exists
         run: |
@@ -105,6 +109,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: ${{ needs.build.outputs.project_name }}
+      PROJECT_VERSION: ${{ needs.build.outputs.project_version }}
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -154,6 +161,9 @@ jobs:
   notify:
     needs: deploy
     runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: ${{ needs.build.outputs.project_name }}
+      PROJECT_VERSION: ${{ needs.build.outputs.project_version }}
     steps:
       - name: Set Timestamp
         run: echo "TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
@@ -162,7 +172,7 @@ jobs:
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=✅ Deploy Success%0A📦 Project: ${{ env.PROJECT_NAME }}%0A🔖 Version: ${{ env.PROJECT_VERSION }}%0A🌍 URL: https://example.com\n🕒 Time: ${{ env.TIMESTAMP }}"
+          -d "text=✅ Deploy Success%0A📦 Project: ${{ env.PROJECT_NAME }}%0A🔖 Version: ${{ env.PROJECT_VERSION }}%0A🌍 URL: https://mqkan.amtsilatipusat.com/%0A🕒 Time: ${{ env.TIMESTAMP }}"
 
       - name: Send Telegram Notification (Deploy Failed)
         if: failure()
