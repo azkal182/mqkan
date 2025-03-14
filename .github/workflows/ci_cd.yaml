@@ -16,12 +16,13 @@ jobs:
         run: |
           echo "PROJECT_NAME=$(jq -r .name package.json)" >> $GITHUB_ENV
           echo "PROJECT_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          echo "TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
 
       - name: Send Telegram Notification (Build Started)
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=🚀 Build Started for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }}"
+          -d "text=🚀 Build Started for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }} at ${{ env.TIMESTAMP }}"
 
       - name: Verify pnpm-lock.yaml exists
         run: |
@@ -154,15 +155,18 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Send Telegram Notification (Build Successful)
+      - name: Set Timestamp
+        run: echo "TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
+
+      - name: Send Telegram Notification (Deploy Successful)
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=✅ Deployment Successful for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }}"
+          -d "text=✅ Deploy Success\n📦 Project: ${{ env.PROJECT_NAME }}\n🔖 Version: ${{ env.PROJECT_VERSION }}\n🌍 URL: https://example.com\n🕒 Time: ${{ env.TIMESTAMP }}"
 
-      - name: Send Telegram Notification (Build Failed)
+      - name: Send Telegram Notification (Deploy Failed)
         if: failure()
         run: |
           curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
           -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d "text=❌ Deployment Failed for ${{ env.PROJECT_NAME }} v${{ env.PROJECT_VERSION }}. Please check logs!"
+          -d "text=❌ Deployment Failed\n📦 Project: ${{ env.PROJECT_NAME }}\n🔖 Version: ${{ env.PROJECT_VERSION }}\n🕒 Time: ${{ env.TIMESTAMP }}\nPlease check logs!"
