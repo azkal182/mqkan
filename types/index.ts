@@ -1,5 +1,9 @@
 import { Icons } from '@/components/icons';
 
+export interface SideMenu {
+  title: string;
+  navItems: NavItem[];
+}
 export interface NavItem {
   title: string;
   url: string;

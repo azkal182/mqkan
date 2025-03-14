@@ -11,6 +11,7 @@ import {
   FileText,
   HelpCircle,
   Image,
+  Key,
   Laptop,
   LayoutDashboardIcon,
   Loader2,
@@ -36,6 +37,7 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  key: Key,
   dashboard: LayoutDashboardIcon,
   logo: Command,
   login: LogIn,

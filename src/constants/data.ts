@@ -1,4 +1,4 @@
-import { NavItem } from 'types';
+import { SideMenu } from 'types';
 
 export type Product = {
   photo_url: string;
@@ -12,29 +12,41 @@ export type Product = {
 };
 
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
-export const navItems: NavItem[] = [
+export const sideMenu: SideMenu[] = [
   {
-    title: 'Dashboard',
-    url: '/dashboard',
-    icon: 'dashboard',
-    isActive: false,
-    shortcut: ['d', 'd'],
-    items: [] // Empty array as there are no child items for Dashboard
+    title: 'overview',
+    navItems: [
+      {
+        title: 'Dashboard',
+        url: '/dashboard',
+        icon: 'dashboard',
+        isActive: false,
+        shortcut: ['d', 'd'],
+        items: [] // Empty array as there are no child items for Dashboard
+      }
+    ]
   },
   {
-    title: 'Users',
-    url: '/dashboard/users',
-    icon: 'kanban',
-    isActive: false,
-    items: [], // No child items
-    permission: 'user:view'
-  },
-  {
-    title: 'Roles',
-    url: '/dashboard/roles',
-    icon: 'kanban',
-    isActive: false,
-    items: [] // No child items
+    title: 'User Manager',
+    navItems: [
+      {
+        title: 'Users',
+        url: '/dashboard/users',
+        icon: 'user',
+        isActive: false,
+        items: [],
+        shortcut: ['d', 'u'],
+        permission: 'user:view'
+      },
+      {
+        title: 'Roles',
+        url: '/dashboard/roles',
+        icon: 'key',
+        isActive: false,
+        items: [],
+        shortcut: ['d', 'r']
+      }
+    ]
   }
 ];
 

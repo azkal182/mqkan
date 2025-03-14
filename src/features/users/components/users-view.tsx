@@ -16,8 +16,6 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { hasPermission } from '@/lib/check-permission';
-import { useCurrentSession } from '@/hooks/use-current-user';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -45,17 +43,19 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/context/auth-context';
+import { useHasPermission } from '@/hooks/use-has-permission';
 
 interface UsersViewProps {
   users: UserWithRolesAndRegions[];
 }
 
 const UsersView = ({ users }: UsersViewProps) => {
-  const { session } = useCurrentSession();
-  const canEdit = session && hasPermission(session, 'user:edit');
-  const canDelete = session && hasPermission(session, 'user:delete');
-  const canReset = session && hasPermission(session, 'user:reset-password');
-  const showActions = canEdit || canDelete || canReset;
+  const { session } = useAuth();
+  const canEdit = useHasPermission('user:edit');
+  const canDelete = useHasPermission('user:delete');
+  const canReset = useHasPermission('user:reset-password');
+  const showActions = session && (canEdit || canDelete || canReset);
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingName, setDeletingName] = useState<string | null>(null);

@@ -29,17 +29,18 @@ import {
   SidebarRail
   //   useSidebar
 } from '@/components/ui/sidebar';
-import { navItems } from '@/constants/data';
+import { sideMenu } from '@/constants/data';
 import { ChevronRight, ChevronsUpDown, LogOut } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Icons } from '../icons';
-import { useCurrentSession } from '@/hooks/use-current-user';
-import { hasPermission } from '@/lib/check-permission';
 import amtsilatiPic from '../../../public/images/logo2.png';
 import Image from 'next/image';
+import { useAuth } from '@/context/auth-context';
+import { useHasPermission } from '@/hooks/use-has-permission';
+import { hasPermission } from '@/lib/check-permission';
 
 export const company = {
   name: 'MQKAN',
@@ -48,10 +49,8 @@ export const company = {
 };
 
 export default function AppSidebar() {
-  const { session: sessionUser } = useCurrentSession();
-
+  const { session: sessionUser } = useAuth();
   const pathname = usePathname();
-  //   const { state, isMobile } = useSidebar();
 
   return (
     <Sidebar collapsible='icon'>
@@ -68,70 +67,74 @@ export default function AppSidebar() {
       </SidebarHeader>
       <SidebarContent className='overflow-x-hidden'>
         <SidebarGroup>
-          <SidebarGroupLabel>Overview</SidebarGroupLabel>
-          <SidebarMenu>
-            {sessionUser &&
-              navItems.map((item) => {
-                const Icon = item.icon ? Icons[item.icon] : Icons.logo;
+          {sessionUser &&
+            sideMenu.map((menu, i) => (
+              <React.Fragment key={i}>
+                <SidebarGroupLabel>{menu.title}</SidebarGroupLabel>
+                <SidebarMenu>
+                  {menu.navItems.map((item) => {
+                    const Icon = item.icon ? Icons[item.icon] : Icons.logo;
 
-                const permission = item.permission
-                  ? hasPermission(sessionUser, item.permission)
-                  : true;
+                    const permission = item.permission
+                      ? hasPermission(sessionUser, item.permission)
+                      : true;
 
-                if (!permission) return null; // Jangan render menu jika tidak punya izin
+                    if (!permission) return null; // Jangan render menu jika tidak punya izin
 
-                return item?.items && item?.items?.length > 0 ? (
-                  <Collapsible
-                    key={item.title}
-                    asChild
-                    defaultOpen={item.isActive}
-                    className='group/collapsible'
-                  >
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
+                    return item?.items && item?.items?.length > 0 ? (
+                      <Collapsible
+                        key={item.title}
+                        asChild
+                        defaultOpen={item.isActive}
+                        className='group/collapsible'
+                      >
+                        <SidebarMenuItem>
+                          <CollapsibleTrigger asChild>
+                            <SidebarMenuButton
+                              tooltip={item.title}
+                              isActive={pathname === item.url}
+                            >
+                              {item.icon && <Icon />}
+                              <span>{item.title}</span>
+                              <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+                            </SidebarMenuButton>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <SidebarMenuSub>
+                              {item.items?.map((subItem) => (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={pathname === subItem.url}
+                                  >
+                                    <Link href={subItem.url}>
+                                      <span>{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </CollapsibleContent>
+                        </SidebarMenuItem>
+                      </Collapsible>
+                    ) : (
+                      <SidebarMenuItem key={item.title}>
                         <SidebarMenuButton
+                          asChild
                           tooltip={item.title}
                           isActive={pathname === item.url}
                         >
-                          {item.icon && <Icon />}
-                          <span>{item.title}</span>
-                          <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+                          <Link href={item.url}>
+                            <Icon />
+                            <span>{item.title}</span>
+                          </Link>
                         </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.items?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton
-                                asChild
-                                isActive={pathname === subItem.url}
-                              >
-                                <Link href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </Link>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                ) : (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      isActive={pathname === item.url}
-                    >
-                      <Link href={item.url}>
-                        <Icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-          </SidebarMenu>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </React.Fragment>
+            ))}
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

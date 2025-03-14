@@ -10,6 +10,7 @@ import {
 import { hash } from 'bcryptjs';
 import { handleError, ResponseType } from '@/lib/error-handler';
 import { revalidatePath } from 'next/cache';
+import { logger } from '@/lib/logger';
 
 export type UserWithRolesAndRegions = Prisma.UserGetPayload<{
   include: {
@@ -19,9 +20,7 @@ export type UserWithRolesAndRegions = Prisma.UserGetPayload<{
           include: {
             permissions: {
               include: {
-                permission: {
-                  select: { name: true };
-                };
+                permission: { select: { name: true } };
               };
             };
           };
@@ -30,16 +29,65 @@ export type UserWithRolesAndRegions = Prisma.UserGetPayload<{
     };
     regions: {
       include: {
-        region: {
-          select: { name: true };
-        };
+        region: { select: { name: true } };
       };
     };
   };
 }>;
 
-export const getUsers = async (): Promise<UserWithRolesAndRegions[]> => {
-  return await prisma.user.findMany({
+export interface GetUsersResponse {
+  totalUsers: number;
+  users: UserWithRolesAndRegions[];
+}
+
+export const getUsers = async (filters: {
+  roleId?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}): Promise<GetUsersResponse> => {
+  const { roleId, search, page = 1, limit = 10 } = filters;
+  logger.info('getUsers', filters);
+
+  // Jika ada roleId, pisahkan berdasarkan titik '.'
+  const roleIds = roleId ? roleId.split('.') : [];
+
+  // 1. Total user sebelum filter
+  const totalUsers = await prisma.user.count({
+    where: {
+      AND: [
+        search
+          ? {
+              OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { username: { contains: search, mode: 'insensitive' } }
+              ]
+            }
+          : {},
+        roleIds.length > 0
+          ? { roles: { some: { roleId: { in: roleIds } } } }
+          : {}
+      ]
+    }
+  });
+
+  // 2. Query dengan filter, search, dan pagination
+  const users = await prisma.user.findMany({
+    where: {
+      AND: [
+        search
+          ? {
+              OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { username: { contains: search, mode: 'insensitive' } }
+              ]
+            }
+          : {},
+        roleIds.length > 0
+          ? { roles: { some: { roleId: { in: roleIds } } } }
+          : {}
+      ]
+    },
     include: {
       roles: {
         include: {
@@ -59,8 +107,15 @@ export const getUsers = async (): Promise<UserWithRolesAndRegions[]> => {
           region: { select: { name: true } }
         }
       }
+    },
+    skip: (page - 1) * limit,
+    take: limit,
+    orderBy: {
+      createdAt: 'desc'
     }
   });
+
+  return { totalUsers, users };
 };
 
 export const getUserById = async (id: string) => {

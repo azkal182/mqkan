@@ -1,4 +1,13 @@
 import winston from 'winston';
+import fs from 'fs';
+import path from 'path';
+
+const logDir = path.join(process.cwd(), 'logs');
+
+// Pastikan folder "logs" ada
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir, { recursive: true });
+}
 
 // Tentukan apakah mode produksi atau tidak
 const isProduction = process.env.NODE_ENV === 'production';

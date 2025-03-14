@@ -10,10 +10,10 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { useCurrentSession } from '@/hooks/use-current-user';
+import { useAuth } from '@/context/auth-context';
 import { signOut } from 'next-auth/react';
 export function UserNav() {
-  const { session } = useCurrentSession();
+  const { session } = useAuth();
   if (session) {
     return (
       <DropdownMenu>
