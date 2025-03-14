@@ -128,7 +128,7 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          rsync -avz --delete .next/ public/ package.json pnpm-lock.yaml node_modules/ azkal@165.22.106.176:/home/azkal/project/mqkan/
+          rsync -avz --delete --exclude=".env" .next public package.json pnpm-lock.yaml node_modules azkal@165.22.106.176:/home/azkal/project/mqkan/
           ssh -tt azkal@165.22.106.176 << 'EOF'
             cd /home/azkal/project/mqkan
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
