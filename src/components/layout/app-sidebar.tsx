@@ -39,7 +39,6 @@ import { Icons } from '../icons';
 import amtsilatiPic from '../../../public/images/logo2.png';
 import Image from 'next/image';
 import { useAuth } from '@/context/auth-context';
-import { useHasPermission } from '@/hooks/use-has-permission';
 import { hasPermission } from '@/lib/check-permission';
 
 export const company = {
