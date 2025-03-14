@@ -79,13 +79,9 @@ jobs:
             exit 1
           fi
 
-      - name: Check files before upload
-        run: |
-          ls -la .next/ public/ package.json pnpm-lock.yaml || echo "Some files missing"
-
       - name: Package artifacts
         run: |
-          tar -czf build-files.tar.gz .next/ public/ package.json pnpm-lock.yaml
+          tar -czf build-files.tar.gz .next/ public/ package.json pnpm-lock.yaml node_modules/
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -132,19 +128,9 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ls -la # Debug: lihat isi direktori sebelum rsync
-          rsync -avz --delete .next/ public/ package.json pnpm-lock.yaml azkal@165.22.106.176:/home/azkal/project/mqkan/
+          rsync -avz --delete .next/ public/ package.json pnpm-lock.yaml node_modules/ azkal@165.22.106.176:/home/azkal/project/mqkan/
           ssh -tt azkal@165.22.106.176 << 'EOF'
             cd /home/azkal/project/mqkan
-            if [ ! -d ".git" ]; then
-              git clone https://github.com/azkal182/mqkan.git .
-              git checkout main
-            else
-              git checkout main
-              git pull origin main
-            fi
-            npm install -g pnpm
-            pnpm install --production
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
             echo "DIRECT_DATABASE_URL=${{ secrets.DIRECT_DATABASE_URL }}" >> .env
             echo "NEXTAUTH_URL=${{ secrets.AUTH_TRUST_HOST }}" >> .env
