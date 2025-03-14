@@ -83,17 +83,16 @@ jobs:
         run: |
           ls -la .next/ public/ package.json pnpm-lock.yaml || echo "Some files missing"
 
+      - name: Package artifacts
+        run: |
+          tar -czf build-files.tar.gz .next/ public/ package.json pnpm-lock.yaml
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-files
-          path: |
-            .next/
-            public/
-            package.json
-            pnpm-lock.yaml
-          compression-level: 6 # Optional: Adjust compression level
-          retention-days: 1 # Optional: Set retention period
+          path: build-files.tar.gz
+          retention-days: 1
 
   deploy:
     needs: build
@@ -104,6 +103,10 @@ jobs:
         with:
           name: build-files
           path: ./
+
+      - name: Extract artifacts
+        run: |
+          tar -xzf build-files.tar.gz
 
       - name: Check downloaded files
         run: |
