@@ -16,7 +16,8 @@
         "lint:strict": "eslint --max-warnings=0 src",
         "format": "prettier --write .",
         "format:check": "prettier -c -w .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "test": "playwright test"
     },
     "prisma": {
         "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -99,6 +100,7 @@
     },
     "devDependencies": {
         "@faker-js/faker": "^9.3.0",
+        "@playwright/test": "^1.51.0",
         "@types/bcryptjs": "^2.4.6",
         "@types/sort-by": "^1.2.3",
         "@types/uuid": "^10.0.0",

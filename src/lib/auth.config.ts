@@ -47,12 +47,14 @@ const authConfig = {
         });
 
         if (!user) {
-          throw new Error('User not found.');
+          //   throw new Error('User not found.');
+          return null;
         }
 
         const compare = await bcrypt.compare(password, user.password);
         if (!compare) {
-          throw new Error('Invalid credentials.');
+          return null;
+          //   throw new Error('Invalid credentials.');
         }
 
         return {

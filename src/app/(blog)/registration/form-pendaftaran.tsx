@@ -24,6 +24,7 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { Card } from '@/components/ui/card';
 
 export function generateRandomNumber(length: number = 8): string {
   const timestamp = Date.now().toString().slice(-5);
@@ -71,6 +72,25 @@ const villages: VillageMap = {
   '211': [{ id: '2111', name: 'Tembalang Barat' }]
 };
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MIN_DIMENSIONS = { width: 200, height: 200 };
+const MAX_DIMENSIONS = { width: 4096, height: 4096 };
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp'
+];
+
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
+
 // Skema Validasi dengan Zod
 const formSchema = z.object({
   noPendaftaran: z.string().min(1),
@@ -83,7 +103,7 @@ const formSchema = z.object({
   classLevel: z.string().min(1, 'Kelas harus dipilih'),
   institutionName: z.string().min(3, 'Nama lembaga minimal 3 karakter'), // Nama Lembaga
   institutionAddress: z.string().min(10, 'Alamat lembaga minimal 10 karakter'), // Alamat Lembaga
-  korwil: z.string().min(3, 'Korwil minimal 3 karakter'), // Korwil
+  korwil: z.string().min(1, 'Korwil minimal 3 karakter'), // Korwil
   province: z.string().min(1, 'Provinsi harus dipilih'),
   city: z.string().min(1, 'Kota/Kabupaten harus dipilih'),
   district: z.string().min(1, 'Kecamatan harus dipilih'),
@@ -98,22 +118,23 @@ const formSchema = z.object({
   parentPhone: z
     .string()
     .min(10, 'Nomor telepon minimal 10 digit')
-    .max(15, 'Nomor telepon maksimal 15 digit'), // Nomor Telepon Orang Tua
+    .max(15, 'Nomor telepon maksimal 15 digit')
+    .refine((val) => /^08\d{8,13}$/.test(val), {
+      message: "Nomor telepon harus diawali dengan '08' dan hanya berisi angka"
+    }),
   kk: z
     .instanceof(File)
-    .refine((file) => file?.size <= 5 * 1024 * 1024, 'File maksimum 5MB')
+    .refine((file) => file?.size <= 2 * 1024 * 1024, 'File maksimum 2MB')
     .refine(
-      (file) =>
-        ['image/jpeg', 'image/png', 'application/pdf'].includes(file?.type),
-      'File harus berupa JPG, PNG, atau PDF'
+      (file) => ['image/jpeg', 'image/png'].includes(file?.type),
+      'File harus berupa JPG atau PNG'
     ),
   ijazah: z
     .instanceof(File)
-    .refine((file) => file?.size <= 5 * 1024 * 1024, 'File maksimum 5MB')
+    .refine((file) => file?.size <= 2 * 1024 * 1024, 'File maksimum 2MB')
     .refine(
-      (file) =>
-        ['image/jpeg', 'image/png', 'application/pdf'].includes(file?.type),
-      'File harus berupa JPG, PNG, atau PDF'
+      (file) => ['image/jpeg', 'image/png'].includes(file?.type),
+      'File harus berupa JPG atau PNG'
     ),
   photo: z
     .instanceof(File)
@@ -168,7 +189,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className='mx-auto max-w-4xl rounded-lg bg-white p-8 shadow-lg'>
+    <Card className='mx-auto max-w-4xl p-8'>
       <h2 className='text-center text-3xl font-bold text-gray-800'>
         Formulir Pendaftaran
       </h2>
@@ -209,11 +230,7 @@ const RegistrationForm = () => {
                     Nama Lengkap
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='Masukkan nama lengkap'
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input {...field} placeholder='Masukkan nama lengkap' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -228,11 +245,7 @@ const RegistrationForm = () => {
                     NIK
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='Masukkan 16 digit NIK'
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input {...field} placeholder='Masukkan 16 digit NIK' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -247,11 +260,7 @@ const RegistrationForm = () => {
                     Tempat Lahir
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='Masukkan tempat lahir'
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input {...field} placeholder='Masukkan tempat lahir' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -266,11 +275,7 @@ const RegistrationForm = () => {
                     Tanggal Lahir
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type='date'
-                      {...field}
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input type='date' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -289,7 +294,7 @@ const RegistrationForm = () => {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih jenis kelamin' />
                       </SelectTrigger>
                     </FormControl>
@@ -319,7 +324,7 @@ const RegistrationForm = () => {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih kategori' />
                       </SelectTrigger>
                     </FormControl>
@@ -346,7 +351,7 @@ const RegistrationForm = () => {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih JENJANG' />
                       </SelectTrigger>
                     </FormControl>
@@ -373,11 +378,7 @@ const RegistrationForm = () => {
                     Nama Lembaga
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='Masukkan nama lembaga'
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input {...field} placeholder='Masukkan nama lembaga' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -397,7 +398,7 @@ const RegistrationForm = () => {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                        <SelectTrigger>
                           <SelectValue placeholder='Pilih Nama Korwil' />
                         </SelectTrigger>
                       </FormControl>
@@ -424,7 +425,6 @@ const RegistrationForm = () => {
                     <Textarea
                       {...field}
                       placeholder='Masukkan alamat lengkap lembaga'
-                      className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   <FormMessage />
@@ -453,7 +453,7 @@ const RegistrationForm = () => {
                     }}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih provinsi' />
                       </SelectTrigger>
                     </FormControl>
@@ -487,7 +487,7 @@ const RegistrationForm = () => {
                     disabled={!selectedProvince}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih kota/kabupaten' />
                       </SelectTrigger>
                     </FormControl>
@@ -521,7 +521,7 @@ const RegistrationForm = () => {
                     disabled={!selectedCity}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih kecamatan' />
                       </SelectTrigger>
                     </FormControl>
@@ -551,7 +551,7 @@ const RegistrationForm = () => {
                     disabled={!selectedDistrict}
                   >
                     <FormControl>
-                      <SelectTrigger className='border-gray-300 focus:border-blue-500'>
+                      <SelectTrigger>
                         <SelectValue placeholder='Pilih desa/kelurahan' />
                       </SelectTrigger>
                     </FormControl>
@@ -580,7 +580,6 @@ const RegistrationForm = () => {
                     <Input
                       {...field}
                       placeholder='Masukkan kode pos (5 digit)'
-                      className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   <FormMessage />
@@ -599,7 +598,6 @@ const RegistrationForm = () => {
                     <Textarea
                       {...field}
                       placeholder='Masukkan alamat lengkap (jalan, nomor rumah, RT/RW, dll)'
-                      className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   <FormMessage />
@@ -619,11 +617,7 @@ const RegistrationForm = () => {
                     Nama Ayah
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='Masukkan nama ayah'
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input {...field} placeholder='Masukkan nama ayah' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -638,11 +632,7 @@ const RegistrationForm = () => {
                     Nama Ibu
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder='Masukkan nama ibu'
-                      className='border-gray-300 focus:border-blue-500'
-                    />
+                    <Input {...field} placeholder='Masukkan nama ibu' />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -660,7 +650,6 @@ const RegistrationForm = () => {
                     <Input
                       {...field}
                       placeholder='Masukkan nomor telepon (contoh: 08123456789)'
-                      className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   <FormMessage />
@@ -692,7 +681,7 @@ const RegistrationForm = () => {
                           setKkPreview(null); // Reset preview jika bukan gambar
                         }
                       }}
-                      className='border-gray-300 focus:border-blue-500'
+                      //   className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   {kkPreview && (
@@ -705,7 +694,7 @@ const RegistrationForm = () => {
                     </div>
                   )}
                   <FormDescription>
-                    File maksimum 5MB (JPG, PNG, atau PDF).
+                    File maksimum 2MB (JPG, PNG).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -732,7 +721,7 @@ const RegistrationForm = () => {
                           setIjazahPreview(null); // Reset preview jika bukan gambar
                         }
                       }}
-                      className='border-gray-300 focus:border-blue-500'
+                      //   className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   {ijazahPreview && (
@@ -745,7 +734,7 @@ const RegistrationForm = () => {
                     </div>
                   )}
                   <FormDescription>
-                    File maksimum 5MB (JPG, PNG, atau PDF).
+                    File maksimum 2MB (JPG, PNG).
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -772,7 +761,7 @@ const RegistrationForm = () => {
                           setPhotoPreview(null); // Reset preview jika tidak ada file
                         }
                       }}
-                      className='border-gray-300 focus:border-blue-500'
+                      //   className='border-gray-300 focus:border-blue-500'
                     />
                   </FormControl>
                   {photoPreview && (
@@ -799,7 +788,7 @@ const RegistrationForm = () => {
           </div>
         </form>
       </Form>
-    </div>
+    </Card>
   );
 };
 
