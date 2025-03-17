@@ -159,7 +159,8 @@ jobs:
           ssh azkal@165.22.106.176 "pm2 logs mqkan --lines 10 --nostream"
 
   notify:
-    needs: deploy
+    needs: [build, deploy]
+    if: always()
     runs-on: ubuntu-latest
     env:
       PROJECT_NAME: ${{ needs.build.outputs.project_name }}
