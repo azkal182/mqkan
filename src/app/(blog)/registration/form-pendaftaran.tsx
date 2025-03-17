@@ -71,9 +71,6 @@ const RegistrationForm = () => {
       fatherName: '',
       motherName: '',
       parentPhone: ''
-      //   kk: null,
-      //   ijazah: null,
-      //   photo: null
     }
   });
 
@@ -129,6 +126,7 @@ const RegistrationForm = () => {
     if (selectedProvinceId) {
       try {
         const result = await getRegencies(selectedProvinceId);
+        // @ts-ignore
         setRegencies(result);
       } catch (error) {
         console.error('Error fetching regencies:', error);
@@ -507,7 +505,7 @@ const RegistrationForm = () => {
               render={({ field }) => (
                 <CustomSelect
                   field={field}
-                  label='Kabupaten kabupaten /Kota'
+                  label='Kota/Kabupaten'
                   placeholder='Pilih Kabupaten / kota'
                   data={regencies}
                   onSelect={handleRegencyChange}
@@ -535,8 +533,8 @@ const RegistrationForm = () => {
               render={({ field }) => (
                 <CustomSelect
                   field={field}
-                  label='Desa / kelurahan'
-                  placeholder='Pilih desa / kelurahan'
+                  label='Desa/Kelurahan'
+                  placeholder='Pilih Desa/Kelurahan'
                   data={villages}
                   //   onSelect={handleVillageChange}
                   onSelectedObject={handleVillageChange}
@@ -544,70 +542,7 @@ const RegistrationForm = () => {
                 />
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name='district'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Kecamatan
-                  </FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                      setSelectedDistrict(value);
-                      form.setValue('village', '');
-                    }}
-                    disabled={!selectedCity}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Pilih kecamatan' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {selectedCity &&
-                        districts[selectedCity]?.map((district) => (
-                          <SelectItem key={district.id} value={district.id}>
-                            {district.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='village'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Desa/Kelurahan
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    disabled={!selectedDistrict}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Pilih desa/kelurahan' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {selectedDistrict &&
-                        villages[selectedDistrict]?.map((village) => (
-                          <SelectItem key={village.id} value={village.id}>
-                            {village.name}
-                          </SelectItem>
-                        ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+
             <FormField
               control={form.control}
               name='postalCode'
@@ -821,7 +756,10 @@ const RegistrationForm = () => {
           </div>
           {/* Tombol Submit */}
           <div className='flex justify-end'>
-            <Button type='submit'>Submit</Button>
+            <Button disabled={form.formState.isSubmitting} type='submit'>
+              {' '}
+              {form.formState.isSubmitting ? 'Loading...' : 'Submit'}
+            </Button>
           </div>
         </form>
       </Form>

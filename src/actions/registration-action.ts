@@ -7,6 +7,62 @@ import {
 } from '@/schemas/registration-schema';
 import { DateTime } from 'luxon';
 import { handleError } from '@/lib/error-handler';
+import sharp from 'sharp';
+import { supabase } from '@/lib/supabase';
+import { revalidatePath } from 'next/cache';
+
+const uploadNota = async (file: File): Promise<string> => {
+  try {
+    // Ambil ekstensi file dari nama asli
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (!ext || !['jpg', 'jpeg', 'png'].includes(ext)) {
+      throw new Error('Format file tidak didukung');
+    }
+
+    // Tentukan format dan contentType sesuai dengan ekstensi
+    const format = ext === 'png' ? 'png' : 'jpeg';
+    const contentType = ext === 'png' ? 'image/png' : 'image/jpeg';
+    const fileName = `mqkan-${Date.now()}.${ext}`;
+
+    // Konversi file ke buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+
+    // Proses gambar dengan Sharp
+    let compressedBuffer;
+    if (format === 'png') {
+      compressedBuffer = await sharp(buffer)
+        .resize({ width: 1024 }) // Resize jika lebih besar dari 1024px
+        .png({ quality: 80 }) // Kompres PNG
+        .toBuffer();
+    } else {
+      compressedBuffer = await sharp(buffer)
+        .resize({ width: 1024 }) // Resize jika lebih besar dari 1024px
+        .jpeg({ quality: 70 }) // Kompres JPG
+        .toBuffer();
+    }
+
+    // Upload ke Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('mqkan')
+      .upload(fileName, compressedBuffer, { contentType });
+
+    if (error) {
+      console.error('Error meng-upload file:', error);
+      throw new Error('Gagal meng-upload file ke Supabase');
+    }
+
+    // Ambil URL publik file
+    const publicUrl = supabase.storage.from('mqkan').getPublicUrl(data.path)
+      .data.publicUrl;
+    console.log('Public URL:', publicUrl);
+
+    return publicUrl;
+  } catch (error) {
+    console.error('Error meng-upload file:', error);
+    throw new Error('Gagal meng-upload file');
+  }
+};
 
 // Fungsi untuk generate nomor registrasi
 function generateRegistrationNumber(
@@ -56,6 +112,7 @@ export const createRegistration = async (data: RegistrationInput) => {
   if (!validated.success) {
     return handleError('invalid fields', 'createParticipant');
   }
+
   const count = await prisma.participant.count({
     where: {
       gender: data.gender,
@@ -69,6 +126,9 @@ export const createRegistration = async (data: RegistrationInput) => {
   const noRegistration = generateRegistrationNumber(validated.data, count + 1);
 
   let password: string | undefined;
+  let kkPath: string | undefined;
+  let ijazahPath: string | undefined;
+  let photoPath: string | undefined;
   if (data.categoryId === 2) {
     const [year, month, day] = data.birthDate.split('-');
     password = `${day}${month}${year}${noRegistration.slice(-4)}`;
@@ -84,6 +144,18 @@ export const createRegistration = async (data: RegistrationInput) => {
   if (!categorySubcategory) {
     return handleError('error', 'createParticipant');
     // throw new Error(`Category dan Subcategory tidak cocok! ${validated.data.categoryId} - ${validated.data.subCategoryId}`);
+  }
+
+  if (validated.data.kk) {
+    kkPath = await uploadNota(validated.data.kk);
+  }
+
+  if (validated.data.ijazah) {
+    ijazahPath = await uploadNota(validated.data.ijazah);
+  }
+
+  if (validated.data.photo) {
+    photoPath = await uploadNota(validated.data.photo);
   }
 
   try {
@@ -130,13 +202,14 @@ export const createRegistration = async (data: RegistrationInput) => {
         fatherName: validated.data.fatherName,
         motherName: validated.data.motherName,
         parentPhone: validated.data.parentPhone,
-        kkUrl: '',
-        ijazahUrl: '',
-        photoUrl: '',
+        kkUrl: kkPath ?? '',
+        ijazahUrl: ijazahPath ?? '',
+        photoUrl: photoPath ?? '',
         ...(password && { password })
       },
       select: { id: true }
     });
+    revalidatePath('/dashboard/participants');
     return { success: true, message: 'Pendaftaran berhasil', id: data.id };
   } catch (error) {
     return handleError(error, 'createParticipant');

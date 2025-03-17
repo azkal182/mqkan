@@ -5,12 +5,16 @@ import { prisma } from '@/lib/prisma';
 export async function getRegencies(provinceId: number) {
   console.log(provinceId);
 
-  return await prisma.regency.findMany({
+  const regencies = await prisma.regency.findMany({
     where: { provinceId },
     select: {
       id: true,
-      name: true
+      label: true
     },
     orderBy: { name: 'asc' }
   });
+  return regencies.map((regencie) => ({
+    id: regencie.id,
+    name: regencie.label
+  }));
 }
