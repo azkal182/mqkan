@@ -7,9 +7,7 @@ export async function getDistricts(regencyId: number) {
     where: { regencyId },
     select: {
       id: true,
-      name: true,
-      code: true,
-      fullCode: true
+      name: true
     },
     orderBy: { name: 'asc' }
   });

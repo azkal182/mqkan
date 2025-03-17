@@ -1,5 +1,5 @@
 import { z } from 'zod';
-
+import { Gender } from '@prisma/client';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MIN_DIMENSIONS = { width: 200, height: 200 };
 const MAX_DIMENSIONS = { width: 4096, height: 4096 };
@@ -20,21 +20,21 @@ const formatBytes = (bytes: number, decimals = 2) => {
 };
 
 export const RegistrationSchemas = z.object({
-  noPendaftaran: z.string().min(1),
-  name: z.string().min(3, 'Nama minimal 3 karakter'),
+  noRegistration: z.string().min(1),
+  fullName: z.string().min(3, 'Nama minimal 3 karakter'),
   nik: z.string().min(16, 'NIK harus 16 digit').max(16, 'NIK harus 16 digit'),
   birthPlace: z.string().min(3, 'Tempat lahir minimal 3 karakter'),
   birthDate: z.string().min(1, 'Tanggal lahir harus diisi'),
-  gender: z.string().min(1, 'Jenis kelamin harus dipilih'),
-  category: z.string().min(1, 'Kategori harus dipilih'),
-  classLevel: z.string().min(1, 'Kelas harus dipilih'),
+  gender: z.nativeEnum(Gender, { message: 'Jenis Kelamin belum diisi' }),
+  categoryId: z.coerce.number().min(1, 'Kategori harus dipilih'),
+  subCategoryId: z.coerce.number().min(1, 'Kategori harus dipilih'),
   institutionName: z.string().min(3, 'Nama lembaga minimal 3 karakter'), // Nama Lembaga
   institutionAddress: z.string().min(10, 'Alamat lembaga minimal 10 karakter'), // Alamat Lembaga
-  korwil: z.string().min(1, 'Korwil minimal 3 karakter'), // Korwil
-  province: z.string().min(1, 'Provinsi harus dipilih'),
-  city: z.string().min(1, 'Kota/Kabupaten harus dipilih'),
-  district: z.string().min(1, 'Kecamatan harus dipilih'),
-  village: z.string().min(1, 'Desa/Kelurahan harus dipilih'),
+  regionId: z.string().min(1, 'Korwil harus dipilih'), // Korwil
+  provinceId: z.coerce.number().min(1, 'Provinsi harus dipilih'),
+  regencyId: z.coerce.number().min(1, 'Kota/Kabupaten harus dipilih'),
+  districtId: z.coerce.number().min(1, 'Kecamatan harus dipilih'),
+  villageId: z.coerce.number().min(1, 'Desa/Kelurahan harus dipilih'),
   postalCode: z
     .string()
     .min(5, 'Kode pos harus 5 digit')
@@ -50,7 +50,7 @@ export const RegistrationSchemas = z.object({
       message: "Nomor telepon harus diawali dengan '08' dan hanya berisi angka"
     }),
   kk: z
-    .instanceof(File)
+    .instanceof(File, { message: 'harus menyertakan kk' })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
       message: `Gambar terlalu besar. Harap pilih gambar yang lebih kecil dari ${formatBytes(MAX_FILE_SIZE)}.`
     })
@@ -58,7 +58,7 @@ export const RegistrationSchemas = z.object({
       message: 'Harap unggah berkas gambar yang valid (JPEG, PNG, atau WebP).'
     }),
   ijazah: z
-    .instanceof(File)
+    .instanceof(File, { message: 'harus menyertakan ijazah' })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
       message: `Gambar terlalu besar. Harap pilih gambar yang lebih kecil dari ${formatBytes(MAX_FILE_SIZE)}.`
     })
@@ -66,7 +66,7 @@ export const RegistrationSchemas = z.object({
       message: 'Harap unggah berkas gambar yang valid (JPEG, PNG, atau WebP).'
     }),
   photo: z
-    .instanceof(File)
+    .instanceof(File, { message: 'harus menyertakan photo 3x4' })
     .refine((file) => file.size <= MAX_FILE_SIZE, {
       message: `Gambar terlalu besar. Harap pilih gambar yang lebih kecil dari ${formatBytes(MAX_FILE_SIZE)}.`
     })
@@ -74,3 +74,5 @@ export const RegistrationSchemas = z.object({
       message: 'Harap unggah berkas gambar yang valid (JPEG, PNG, atau WebP).'
     })
 });
+
+export type RegistrationInput = z.infer<typeof RegistrationSchemas>;

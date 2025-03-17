@@ -23,6 +23,14 @@ export const sideMenu: SideMenu[] = [
         isActive: false,
         shortcut: ['d', 'd'],
         items: [] // Empty array as there are no child items for Dashboard
+      },
+      {
+        title: 'Peserta',
+        url: '/dashboard/participants',
+        icon: 'user2',
+        isActive: false,
+        shortcut: ['d', 'p'],
+        items: [] // Empty array as there are no child items for Dashboard
       }
     ]
   },

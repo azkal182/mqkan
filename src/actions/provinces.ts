@@ -6,8 +6,7 @@ export async function getProvinces() {
   return await prisma.province.findMany({
     select: {
       id: true,
-      name: true,
-      code: true
+      name: true
     },
     orderBy: { name: 'asc' }
   });

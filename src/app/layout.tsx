@@ -8,7 +8,7 @@ import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'MQK Amtsilati Nasional',
+  title: 'MQK Amtsilati Nusantara',
   description: 'Basic dashboard with Next.js and Shadcn'
 };
 

@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 
 test('should submit registration form successfully', async ({ page }) => {
   // Check page title
-  await expect(page).toHaveTitle(/MQK Amtsilati Nasional/);
+  await expect(page).toHaveTitle(/MQK Amtsilati Nusantara/);
 
   // Verify auto-generated registration number
   const regNumber = page.getByLabel('Nomor Pendaftaran');

@@ -366,6 +366,70 @@ async function main() {
   }
 
   console.log('Users have been seeded successfully');
+
+  // Ambil contoh data wilayah pertama untuk participant
+  const province = await prisma.province.findFirstOrThrow();
+  const regency = await prisma.regency.findFirstOrThrow();
+  const district = await prisma.district.findFirstOrThrow();
+  const village = await prisma.village.findFirstOrThrow();
+
+  // Buat kategori utama
+
+  const mqk = await prisma.category.create({ data: { name: 'MQK' } });
+  const olimpiade = await prisma.category.create({
+    data: { name: 'Olimpiade' }
+  });
+  const dakwah = await prisma.category.create({ data: { name: 'Dakwah' } });
+
+  const ula = await prisma.category.create({ data: { name: 'Ula' } });
+  const wustho = await prisma.category.create({ data: { name: 'Wustho' } });
+  const ulya = await prisma.category.create({ data: { name: 'Ulya' } });
+
+  // Buat relasi subkategori dengan benar
+  await prisma.categoryToSubcategory.createMany({
+    data: [
+      { categoryId: mqk.id, subcategoryId: wustho.id }, // MQK -> Wustho
+      { categoryId: mqk.id, subcategoryId: ulya.id }, // MQK -> Ulya
+      { categoryId: olimpiade.id, subcategoryId: wustho.id }, // Olimpiade -> Wustho
+      { categoryId: olimpiade.id, subcategoryId: ulya.id }, //y Olimpiade -> Ulya
+      { categoryId: dakwah.id, subcategoryId: ula.id }, // Dakwah -> Ula
+      { categoryId: dakwah.id, subcategoryId: wustho.id } // Dakwah -> Wustho
+    ]
+  });
+
+  // Ali mengikuti MQK dengan subkategori Ulya
+  await prisma.participant.create({
+    data: {
+      noRegistration: 'REG12345',
+      fullName: 'Ali',
+      nik: '1212121212121212',
+      password: hashSync('ali_password'),
+      birthPlace: 'Semarang',
+      birthDate: new Date('2005-06-15'),
+      gender: 'PUTRA',
+      fatherName: 'Ahmad',
+      motherName: 'Aisyah',
+      parentPhone: '08123456789',
+      provinceId: province.id,
+      regencyId: regency.id,
+      districtId: district.id, // Perbaikan typo disini
+      villageId: village.id,
+      kkUrl: 'https://example.com/kk.jpg',
+      ijazahUrl: 'https://example.com/ijazah.jpg',
+      photoUrl: 'https://example.com/photo.jpg',
+      institutionName: 'Pesantren XYZ',
+      institutionAddress: 'Jl. Pesantren No. 1',
+      regionId: regions[0].id,
+      subcategoryId: ulya.id // Pakai ID subkategori yang benar
+    }
+  });
+
+  // Budi mengikuti Olimpiade dengan subkategori Wustho
+  // const budi = await prisma.participant.create({
+  //     data: { fullName: 'Budi', subcategoryId: subcategories[2].id }, // Olimpiade → Wustho
+  // });
+
+  console.log('category done!');
 }
 
 main()

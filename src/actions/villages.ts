@@ -8,8 +8,6 @@ export async function getVillages(districtId: number) {
     select: {
       id: true,
       name: true,
-      code: true,
-      fullCode: true,
       postalCode: true
     },
     orderBy: { name: 'asc' }

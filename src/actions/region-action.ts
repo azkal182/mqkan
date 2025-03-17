@@ -33,5 +33,10 @@ export const createRegion = async (data: Region) => {
 };
 
 export const getRegions = async () => {
-  return await prisma.region.findMany();
+  return await prisma.region.findMany({
+    select: {
+      id: true,
+      name: true
+    }
+  });
 };

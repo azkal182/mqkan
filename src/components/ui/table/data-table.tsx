@@ -93,14 +93,14 @@ export function DataTable<TData, TValue>({
   return (
     <div className='flex flex-1 flex-col space-y-4'>
       <div className='relative flex flex-1'>
-        <div className='absolute bottom-0 left-0 right-0 top-0 flex overflow-scroll rounded-md border md:overflow-auto'>
+        <div className='absolute top-0 right-0 bottom-0 left-0 flex overflow-scroll rounded-md border md:overflow-auto'>
           <ScrollArea className='flex-1'>
             <Table className='relative'>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
+                      <TableHead key={header.id} className='font-semibold'>
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -148,7 +148,7 @@ export function DataTable<TData, TValue>({
 
       <div className='flex flex-col items-center justify-end gap-2 space-x-2 py-2 sm:flex-row'>
         <div className='flex w-full items-center justify-between'>
-          <div className='flex-1 text-sm text-muted-foreground'>
+          <div className='text-muted-foreground flex-1 text-sm'>
             {totalItems > 0 ? (
               <>
                 Showing{' '}
@@ -165,7 +165,7 @@ export function DataTable<TData, TValue>({
           </div>
           <div className='flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8'>
             <div className='flex items-center space-x-2'>
-              <p className='whitespace-nowrap text-sm font-medium'>
+              <p className='text-sm font-medium whitespace-nowrap'>
                 Rows per page
               </p>
               <Select
