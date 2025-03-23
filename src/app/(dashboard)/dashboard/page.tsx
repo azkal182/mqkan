@@ -31,7 +31,7 @@ const Page = async () => {
                 className='relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl'
               >
                 <CardHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] p-4 text-white'>
-                  <CardTitle className='text-lg font-semibold'>
+                  <CardTitle className='text-lg leading-2 font-semibold'>
                     {item.kelas}
                   </CardTitle>
                   <p className='text-sm'>{item.subKelas}</p>
