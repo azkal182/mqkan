@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import UserAuthForm from './user-auth-form';
 import amtsilatiPic from '../../../../public/images/amtsilati.jpg';
+import logoPic from '../../../../public/images/logo.png';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
@@ -37,20 +38,16 @@ export default function SignInViewPage({ stars }: { stars: number }) {
           <div className='absolute inset-0 bg-black/60' />{' '}
           {/* 50% opacity black overlay */}
         </div>
-        <div className='relative z-20 flex items-center text-lg font-medium'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            className='mr-2 h-6 w-6'
-          >
-            <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
-          </svg>
-          Logo
+        <div className='relative z-20 flex text-lg font-medium'>
+          <div>
+            <Image
+              src={logoPic}
+              alt='amtsilati picture'
+              objectFit='contain'
+              height={50}
+              width={150}
+            />
+          </div>
         </div>
         <div className='relative z-20 mt-auto'>
           <blockquote className='space-y-2'>

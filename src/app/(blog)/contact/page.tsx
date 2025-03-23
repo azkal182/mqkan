@@ -89,9 +89,9 @@ const ContactPage = () => {
       >
         <div className='container mx-auto px-4'>
           <nav className='flex h-20 items-center justify-between'>
-            <div className='flex items-center gap-3'>
+            <Link href={'/'} className='flex items-center gap-3'>
               <Image src={logoPic} alt='Picture of the logo' height={42} />
-            </div>
+            </Link>
             <div className='hidden items-center gap-8 lg:flex'>
               {listMenu.map((item) => (
                 <motion.a
