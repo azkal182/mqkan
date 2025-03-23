@@ -426,7 +426,7 @@ async function main() {
     data: {
       name: 'Admin User',
       username: 'admin',
-      password: hashSync('admin'), // Make sure to hash this password in real-world scenarios
+      password: hashSync('Azkal182'), // Make sure to hash this password in real-world scenarios
       roles: {
         create: {
           roleId: adminRole.id

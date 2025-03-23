@@ -111,16 +111,16 @@ const CompetitionSection = ({ even }: { even: boolean }) => {
                 {branch.branches.map((item, idx) => (
                   <motion.li
                     key={idx}
-                    className='flex items-start gap-2 text-gray-700'
+                    className='flex items-center gap-2 leading-tight text-gray-700'
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.1 }}
                   >
-                    <span className='mt-1 text-[#0C713D]'>•</span>
+                    <span className='text-lg font-bold text-[#0C713D]'>•</span>
                     <div>
-                      <span className='font-medium'>{item.marhalah}:</span>{' '}
-                      <span className='text-gray-600'>{item.details}</span>
+                      <span className='font-medium'>{item.marhalah}:</span>
+                      <span className='text-gray-600'> {item.details}</span>
                     </div>
                   </motion.li>
                 ))}
