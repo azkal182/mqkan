@@ -63,7 +63,9 @@ export function RegionCombobox({
       try {
         await createRegion({
           id: tempId,
-          name: inputValue
+          name: inputValue,
+          phone: '',
+          coordinator: ''
         });
 
         setInputValue('');

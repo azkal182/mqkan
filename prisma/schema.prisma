@@ -5,202 +5,241 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
-  id        String       @id @default(uuid())
-  name      String
-  username  String       @unique
-  password  String
-  roles     UserRole[]
-  regions   UserRegion[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+    id        String       @id @default(uuid())
+    name      String
+    username  String       @unique
+    password  String
+    roles     UserRole[]
+    regions   UserRegion[]
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
 }
 
 model Role {
-  id          String           @id @default(uuid())
-  name        String
-  permissions RolePermission[]
-  users       UserRole[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+    id          String           @id @default(uuid())
+    name        String
+    permissions RolePermission[]
+    users       UserRole[]
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
 }
 
 model Permission {
-  id          String           @id @default(uuid())
-  name        String
-  label       String
-  description String?
-  roles       RolePermission[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+    id          String           @id @default(uuid())
+    name        String
+    label       String
+    description String?
+    roles       RolePermission[]
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
 }
 
 model RolePermission {
-  roleId       String
-  permissionId String
+    roleId       String
+    permissionId String
 
-  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+    role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
-  @@id([roleId, permissionId])
-  @@index([roleId])
-  @@index([permissionId])
+    @@id([roleId, permissionId])
+    @@index([roleId])
+    @@index([permissionId])
 }
 
 model UserRole {
-  userId String
-  roleId String
+    userId String
+    roleId String
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
-  @@id([roleId, userId])
-  @@index([userId])
-  @@index([roleId])
+    @@id([roleId, userId])
+    @@index([userId])
+    @@index([roleId])
 }
 
 model Region {
-  id           String        @id @default(uuid())
-  name         String
-  coverage     String[]
-  users        UserRegion[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  participants Participant[]
+    id           String        @id @default(uuid())
+    name         String
+    coordinator  String
+    phone        String
+    coverage     String[]
+    users        UserRegion[]
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+    participants Participant[]
 }
 
 model UserRegion {
-  userId   String
-  regionId String
+    userId   String
+    regionId String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    region Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
 
-  @@id([regionId, userId])
-  @@index([userId])
-  @@index([regionId])
+    @@id([regionId, userId])
+    @@index([userId])
+    @@index([regionId])
 }
 
 model Province {
-  id   Int    @id @default(autoincrement())
-  name String
-  code String
+    id   Int    @id @default(autoincrement())
+    name String
+    code String
 
-  regencies    Regency[]
-  participants Participant[]
+    regencies    Regency[]
+    participants Participant[]
 }
 
 model Regency {
-  id        Int        @id @default(autoincrement())
-  name      String
-  label     String?
-  type      String?
-  code      String
-  fullCode  String
-  districts District[]
+    id        Int        @id @default(autoincrement())
+    name      String
+    label     String?
+    type      String?
+    code      String
+    fullCode  String
+    districts District[]
 
-  provinceId   Int
-  province     Province      @relation(fields: [provinceId], references: [id])
-  participants Participant[]
+    provinceId   Int
+    province     Province      @relation(fields: [provinceId], references: [id])
+    participants Participant[]
 
-  @@index([provinceId])
+    @@index([provinceId])
 }
 
 model District {
-  id       Int       @id @default(autoincrement())
-  name     String
-  code     String
-  fullCode String
-  villages Village[]
+    id       Int       @id @default(autoincrement())
+    name     String
+    code     String
+    fullCode String
+    villages Village[]
 
-  regencyId    Int
-  regency      Regency       @relation(fields: [regencyId], references: [id])
-  participants Participant[]
+    regencyId    Int
+    regency      Regency       @relation(fields: [regencyId], references: [id])
+    participants Participant[]
 
-  @@index([regencyId])
+    @@index([regencyId])
 }
 
 model Village {
-  id         Int    @id @default(autoincrement())
-  name       String
-  code       String
-  fullCode   String
-  postalCode String
+    id         Int    @id @default(autoincrement())
+    name       String
+    code       String
+    fullCode   String
+    postalCode String
 
-  districtId   Int
-  district     District      @relation(fields: [districtId], references: [id])
-  participants Participant[]
+    districtId   Int
+    district     District      @relation(fields: [districtId], references: [id])
+    participants Participant[]
 
-  @@index([districtId])
+    @@index([districtId])
 }
 
 model Participant {
-  id             String   @id @default(uuid())
-  noRegistration String   @map("no_registration")
-  fullName       String   @map("full_name")
-  password       String?
-  nik            String   @unique
-  birthPlace     String   @map("birth_place")
-  birthDate      DateTime @map("birt_date")
-  gender         Gender
-  fatherName     String   @map("father_name")
-  motherName     String   @map("mother_name")
-  parentPhone    String   @map("parrent_phone")
-  provinceId     Int
-  province       Province @relation(fields: [provinceId], references: [id], onDelete: Cascade)
-  regencyId      Int
-  regency        Regency  @relation(fields: [regencyId], references: [id], onDelete: Cascade)
-  districtId     Int
-  district       District @relation(fields: [districtId], references: [id], onDelete: Cascade)
-  villageId      Int
-  village        Village  @relation(fields: [villageId], references: [id], onDelete: Cascade)
-  postalCode     String?
-  address        String?
-  kkUrl          String
-  ijazahUrl      String
-  photoUrl       String
+    id             String   @id @default(uuid())
+    noRegistration String   @map("no_registration")
+    fullName       String   @map("full_name")
+    password       String?
+    nik            String   @unique
+    birthPlace     String   @map("birth_place")
+    birthDate      DateTime @map("birt_date")
+    gender         Gender
+    fatherName     String   @map("father_name")
+    motherName     String   @map("mother_name")
+    parentPhone    String   @map("parrent_phone")
+    provinceId     Int
+    province       Province @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+    regencyId      Int
+    regency        Regency  @relation(fields: [regencyId], references: [id], onDelete: Cascade)
+    districtId     Int
+    district       District @relation(fields: [districtId], references: [id], onDelete: Cascade)
+    villageId      Int
+    village        Village  @relation(fields: [villageId], references: [id], onDelete: Cascade)
+    postalCode     String?
+    address        String?
+    kkUrl          String
+    ijazahUrl      String
+    photoUrl       String
 
-  institutionName    String @map("institution_name")
-  institutionAddress String @map("institution_address")
-  regionId           String
-  region             Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+    institutionName    String @map("institution_name")
+    institutionAddress String @map("institution_address")
+    regionId           String
+    region             Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
 
-  subcategoryId Int
-  subcategory   CategoryToSubcategory @relation(fields: [subcategoryId], references: [id])
+    // subcategoryId Int
+    // subcategory   CategoryToSubcategory @relation(fields: [subcategoryId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+    subKelasId String?
+    subKelas   SubKelas? @relation(fields: [subKelasId], references: [id], onDelete: SetNull)
+
+    createdAt               DateTime               @default(now())
+    updatedAt               DateTime?              @updatedAt
+    Penilaian               Penilaian[]
+    CategoryToSubcategory   CategoryToSubcategory? @relation(fields: [categoryToSubcategoryId], references: [id])
+    categoryToSubcategoryId Int?
 }
 
 enum Gender {
-  PUTRA
-  PUTRI
+    PUTRA
+    PUTRI
 }
 
 model Category {
-  id               Int                     @id @default(autoincrement())
-  name             String                  @unique
-  subcategories    CategoryToSubcategory[] @relation("CategoryToSub")
-  parentCategories CategoryToSubcategory[] @relation("SubcategoryToCategory")
+    id               Int                     @id @default(autoincrement())
+    name             String                  @unique
+    subcategories    CategoryToSubcategory[] @relation("CategoryToSub")
+    parentCategories CategoryToSubcategory[] @relation("SubcategoryToCategory")
 }
 
 model CategoryToSubcategory {
-  id            Int      @id @default(autoincrement())
-  categoryId    Int
-  subcategoryId Int
-  category      Category @relation("CategoryToSub", fields: [categoryId], references: [id])
-  subcategory   Category @relation("SubcategoryToCategory", fields: [subcategoryId], references: [id])
+    id            Int      @id @default(autoincrement())
+    categoryId    Int
+    subcategoryId Int
+    category      Category @relation("CategoryToSub", fields: [categoryId], references: [id])
+    subcategory   Category @relation("SubcategoryToCategory", fields: [subcategoryId], references: [id])
 
-  participants Participant[]
+    participants Participant[]
 
-  @@unique([categoryId, subcategoryId])
+    @@unique([categoryId, subcategoryId])
+}
+
+model Kelas {
+    id        String     @id @default(uuid())
+    name      String     @unique
+    subKelas  SubKelas[]
+    createdAt DateTime   @default(now())
+}
+
+model SubKelas {
+    id      String @id @default(uuid())
+    name    String
+    kelasId String
+    kelas   Kelas  @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+
+    createdAt   DateTime      @default(now())
+    participant Participant[]
+}
+
+model Penilaian {
+    id            String        @id @default(uuid())
+    participantId String
+    participant   Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+    nilai         Float
+    tipe          PenilaianTipe // ENUM untuk tipe penilaian
+    createdAt     DateTime      @default(now())
+}
+
+enum PenilaianTipe {
+    PENYISIHAN
+    FINAL
 }

@@ -59,11 +59,11 @@ const competitionBranches = [
   }
 ];
 
-const CompetitionSection = () => {
+const CompetitionSection = ({ even }: { even: boolean }) => {
   return (
     <motion.section
       id='competition-branches'
-      className='flex min-h-[calc(100dvh-52px)] items-center bg-[#f8f6f1] py-20'
+      className={`flex min-h-[calc(100dvh-52px)] items-center ${even ? 'bg-white' : 'bg-[#f8f6f1]'} py-20`}
       initial='hidden'
       whileInView='visible'
       viewport={{ once: true, amount: 0.2 }}
@@ -87,7 +87,7 @@ const CompetitionSection = () => {
           {competitionBranches.map((branch, index) => (
             <motion.div
               key={index}
-              className='group relative overflow-hidden rounded-xl bg-white p-8 shadow-md transition-shadow duration-300 hover:shadow-xl'
+              className={`group relative overflow-hidden rounded-xl ${even ? 'bg-[#f8f6f1]' : 'bg-white'} p-8 shadow-md transition-shadow duration-300 hover:shadow-xl`}
               variants={itemVariants}
               initial='hidden'
               whileInView='visible'

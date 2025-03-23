@@ -26,8 +26,8 @@ export const RegistrationSchemas = z.object({
   birthPlace: z.string().min(3, 'Tempat lahir minimal 3 karakter'),
   birthDate: z.string().min(1, 'Tanggal lahir harus diisi'),
   gender: z.nativeEnum(Gender, { message: 'Jenis Kelamin belum diisi' }),
-  categoryId: z.coerce.number().min(1, 'Kategori harus dipilih'),
-  subCategoryId: z.coerce.number().min(1, 'Kategori harus dipilih'),
+  kelasId: z.string().min(1, 'Kategori harus dipilih'),
+  subKelasId: z.string().min(1, 'Kategori harus dipilih'),
   institutionName: z.string().min(3, 'Nama lembaga minimal 3 karakter'), // Nama Lembaga
   institutionAddress: z.string().min(10, 'Alamat lembaga minimal 10 karakter'), // Alamat Lembaga
   regionId: z.string().min(1, 'Korwil harus dipilih'), // Korwil

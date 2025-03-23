@@ -10,8 +10,9 @@ export const createRegion = async (data: Region) => {
     if (!validated.data) {
       return { error: 'invalid region field' };
     }
+    const validatedData = validated.data as Region;
 
-    const { id, name } = validated.data;
+    const { id, name, phone, coordinator } = validatedData;
     if (id) {
       const existing = await prisma.region.findUnique({ where: { id } });
       if (existing) {
@@ -22,7 +23,9 @@ export const createRegion = async (data: Region) => {
     await prisma.region.create({
       data: {
         ...(id && { id: id }),
-        name: name
+        name: name,
+        coordinator,
+        phone
       }
     });
     revalidateTag('/region');
@@ -36,7 +39,10 @@ export const getRegions = async () => {
   return await prisma.region.findMany({
     select: {
       id: true,
-      name: true
+      name: true,
+      coverage: true,
+      coordinator: true,
+      phone: true
     }
   });
 };

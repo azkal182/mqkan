@@ -29,9 +29,9 @@ import {
   RegistrationSchemas
 } from '@/schemas/registration-schema';
 import {
-  CategoryResponse,
-  getCategories,
-  Subcategories
+  getKelas,
+  getSubKelasByKelasId,
+  KelasResponse
 } from '@/actions/category';
 import { CustomSelect } from '@/components/custom-select';
 import { getProvinces } from '@/actions/provinces';
@@ -57,8 +57,8 @@ const RegistrationForm = () => {
       nik: '',
       birthPlace: '',
       birthDate: '',
-      categoryId: undefined,
-      subCategoryId: undefined,
+      kelasId: '',
+      subKelasId: '',
       institutionName: '',
       institutionAddress: '',
       regionId: '',
@@ -74,8 +74,9 @@ const RegistrationForm = () => {
     }
   });
 
-  const [categories, setCategories] = useState<CategoryResponse[]>([]);
-  const [subCategories, setSubCategories] = useState<Subcategories[]>([]);
+  const [kelas, setKelas] = useState<KelasResponse[]>([]);
+  const [subKelas, setSubKelas] = useState<KelasResponse[]>([]);
+  const [selectedKelas, setSelectedKelas] = useState<KelasResponse | null>();
 
   const [provinces, setProvinces] = useState<{ id: number; name: string }[]>(
     []
@@ -102,9 +103,16 @@ const RegistrationForm = () => {
   const router = useRouter();
 
   const fetchCategories = async () => {
-    const data = await getCategories();
-    setCategories(data);
+    const data = await getKelas();
+    setKelas(data);
   };
+
+  const fetchSubKelas = useCallback(async () => {
+    if (selectedKelas) {
+      const data = await getSubKelasByKelasId(selectedKelas.id);
+      setSubKelas(data);
+    }
+  }, [selectedKelas]);
 
   const fetchRegions = async () => {
     const data = await getRegions();
@@ -168,22 +176,20 @@ const RegistrationForm = () => {
   }, [fetchProvinces]);
 
   useEffect(() => {
-    if (selectedProvinceId) {
-      fetchRegencies();
-    }
-  }, [selectedProvinceId, fetchRegencies]);
+    fetchRegencies();
+  }, [fetchRegencies]);
 
   useEffect(() => {
-    if (selectedRegencyId) {
-      fetchDistricts();
-    }
-  }, [selectedRegencyId, fetchDistricts]);
+    fetchDistricts();
+  }, [fetchDistricts]);
 
   useEffect(() => {
-    if (selectedDistrictId) {
-      fetchVillages();
-    }
-  }, [selectedDistrictId, fetchVillages]);
+    fetchVillages();
+  }, [fetchVillages]);
+
+  useEffect(() => {
+    fetchSubKelas();
+  }, [fetchSubKelas]);
 
   const handleProvinceChange = (provinceId: number) => {
     setSelectedProvinceId(provinceId);
@@ -354,135 +360,6 @@ const RegistrationForm = () => {
               )}
             />
           </div>
-          {/* Bagian Kategori Perlombaan */}
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-            <FormField
-              control={form.control}
-              name='categoryId'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Kategori
-                  </FormLabel>
-                  <Select
-                    onValueChange={(value) => {
-                      field.onChange(Number(value));
-                      form.setValue('subCategoryId', NaN);
-                      const selectedCategory = categories.find(
-                        (cat) => cat.id.toString() === value
-                      );
-
-                      setSubCategories(selectedCategory?.subcategories || []);
-                    }}
-                    value={field.value ? field.value.toString() : ''}
-                    disabled={categories.length === 0}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Pilih kategori' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id.toString()} // Konversi ke string
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='subCategoryId'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Jenjang
-                  </FormLabel>
-                  <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={field.value ? field.value.toString() : ''}
-                    disabled={!form.watch('categoryId')}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Pilih jenjang' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {subCategories.map((subCat) => (
-                        <SelectItem
-                          key={subCat.id}
-                          value={subCat.id.toString()}
-                        >
-                          {subCat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          {/* Bagian Informasi Lembaga */}
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-            <FormField
-              control={form.control}
-              name='institutionName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Nama Lembaga
-                  </FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder='Masukkan nama lembaga' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='regionId'
-              render={({ field }) => (
-                <CustomSelect
-                  field={field}
-                  label='dibawah naungan korwil'
-                  placeholder='Pilih korwil'
-                  data={regions}
-                  disabled={!regions.length}
-                />
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='institutionAddress'
-              render={({ field }) => (
-                <FormItem className='md:col-span-2'>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Alamat Lengkap Lembaga
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      placeholder='Masukkan alamat lengkap lembaga'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
           {/* Bagian Alamat Pribadi */}
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <FormField
@@ -631,6 +508,130 @@ const RegistrationForm = () => {
               )}
             />
           </div>
+          {/* Bagian Kategori Perlombaan */}
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <FormField
+              control={form.control}
+              name='kelasId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Kategori
+                  </FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue('subKelasId', '');
+                      const selectedKelas = kelas.find(
+                        (cat) => cat.id === value
+                      );
+                      setSubKelas([]);
+                      setSelectedKelas(selectedKelas);
+                    }}
+                    value={field.value}
+                    disabled={kelas.length === 0}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Pilih kategori' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {kelas.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='subKelasId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Jenjang
+                  </FormLabel>
+                  <Select
+                    onValueChange={(val) => field.onChange(val)}
+                    value={field.value}
+                    disabled={subKelas.length === 0}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Pilih jenjang' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {subKelas.map((subKel) => (
+                        <SelectItem key={subKel.id} value={subKel.id}>
+                          {subKel.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {/* Bagian Informasi Lembaga */}
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <FormField
+              control={form.control}
+              name='institutionName'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Nama Lembaga
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder='Masukkan nama lembaga' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='regionId'
+              render={({ field }) => (
+                <CustomSelect
+                  field={field}
+                  label='dibawah naungan korwil'
+                  placeholder='Pilih korwil'
+                  data={regions}
+                  disabled={!regions.length}
+                />
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='institutionAddress'
+              render={({ field }) => (
+                <FormItem className='md:col-span-2'>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Alamat Lengkap Lembaga
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder='Masukkan alamat lengkap lembaga'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           {/* Bagian Upload Dokumen */}
           <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
             <FormField

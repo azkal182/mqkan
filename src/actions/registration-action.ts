@@ -10,6 +10,11 @@ import { handleError } from '@/lib/error-handler';
 import sharp from 'sharp';
 import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
+import { Prisma } from '@prisma/client';
+
+export type SubKelasWithKelas = Prisma.SubKelasGetPayload<{
+  include: { kelas: true };
+}>;
 
 const uploadNota = async (file: File): Promise<string> => {
   try {
@@ -67,6 +72,7 @@ const uploadNota = async (file: File): Promise<string> => {
 // Fungsi untuk generate nomor registrasi
 function generateRegistrationNumber(
   data: RegistrationInput,
+  subKelas: SubKelasWithKelas,
   sequenceNumber: number
 ): string {
   // Ambil tanggal saat ini dengan zona waktu Asia/Jakarta
@@ -81,127 +87,121 @@ function generateRegistrationNumber(
     PUTRI: '02'
   };
 
-  // Mapping kategori
-  const categoryMap: { [key: string]: string } = {
-    '2': '01', // OLIMPIADE AMTSILATI
-    '1': '02', // MQK
-    '3': '03' // DAKWAH
-  };
+  // Tentukan kode berdasarkan nama kelas
+  let kelasCode = '00';
+  if (subKelas.kelas.name.toLowerCase().includes('mqk')) {
+    kelasCode = '02'; // MQK
+  } else if (subKelas.kelas.name.toLowerCase().includes('olimpiade')) {
+    kelasCode = '01'; // OLIMPIADE AMTSILATI
+  } else if (subKelas.kelas.name.toLowerCase().includes('dakwah')) {
+    kelasCode = '03'; // DAKWAH
+  }
 
-  // Mapping jenjang
-  const subCategoryMap: { [key: string]: string } = {
-    '4': '01', // ULA
-    '5': '02', // WUSTHO
-    '6': '03' // ULYA
-  };
+  // Tentukan kode berdasarkan nama subKelas
+  let subKelasCode = '00';
+  if (subKelas.name.toLowerCase().includes('ula')) {
+    subKelasCode = '01'; // ULA
+  } else if (subKelas.name.toLowerCase().includes('wustho')) {
+    subKelasCode = '02'; // WUSTHO
+  } else if (subKelas.name.toLowerCase().includes('ulya')) {
+    subKelasCode = '03'; // ULYA
+  }
 
   // Ambil nilai dari data
   const genderCode: string = genderMap[data.gender] || '00';
-  const categoryCode: string = categoryMap[data.categoryId] || '00';
-  const subCategoryCode: string = subCategoryMap[data.subCategoryId] || '00';
 
   // Format nomor urut menjadi 4 digit
   const sequencePart: string = sequenceNumber.toString().padStart(4, '0');
 
   // Gabungkan semua bagian
-  return `${datePart}${genderCode}${categoryCode}${subCategoryCode}${sequencePart}`;
+  return `${datePart}${genderCode}${kelasCode}${subKelasCode}${sequencePart}`;
 }
 
 export const createRegistration = async (data: RegistrationInput) => {
   const validated = RegistrationSchemas.safeParse(data);
+
   if (!validated.success) {
     return handleError('invalid fields', 'createParticipant');
   }
 
+  const validatedData = validated.data as RegistrationInput;
+
   const count = await prisma.participant.count({
     where: {
       gender: data.gender,
-      subcategory: {
-        categoryId: data.categoryId,
-        subcategoryId: data.subCategoryId
+      subKelas: {
+        id: data.subKelasId,
+        kelasId: data.kelasId
       }
     }
   });
 
-  const noRegistration = generateRegistrationNumber(validated.data, count + 1);
+  const subKelas = await prisma.subKelas.findFirst({
+    where: {
+      id: data.subKelasId
+    },
+    include: {
+      kelas: true
+    }
+  });
+
+  // Pastikan subKelas tidak null sebelum digunakan
+  if (!subKelas) {
+    return handleError('SubKelas tidak ditemukans', 'createParticipant');
+  }
+
+  const noRegistration = generateRegistrationNumber(
+    validated.data,
+    subKelas,
+    count + 1
+  );
 
   let password: string | undefined;
   let kkPath: string | undefined;
   let ijazahPath: string | undefined;
   let photoPath: string | undefined;
-  if (data.categoryId === 2) {
+
+  if (subKelas?.name.toLocaleLowerCase().includes('Olimpiade')) {
     const [year, month, day] = data.birthDate.split('-');
     password = `${day}${month}${year}${noRegistration.slice(-4)}`;
   }
 
-  const categorySubcategory = await prisma.categoryToSubcategory.findFirst({
-    where: {
-      categoryId: data.categoryId,
-      subcategoryId: data.subCategoryId
-    }
-  });
-
-  if (!categorySubcategory) {
-    return handleError('error', 'createParticipant');
-    // throw new Error(`Category dan Subcategory tidak cocok! ${validated.data.categoryId} - ${validated.data.subCategoryId}`);
-  }
-
   if (validated.data.kk) {
-    kkPath = await uploadNota(validated.data.kk);
+    kkPath = await uploadNota(validatedData.kk);
   }
 
   if (validated.data.ijazah) {
-    ijazahPath = await uploadNota(validated.data.ijazah);
+    ijazahPath = await uploadNota(validatedData.ijazah);
   }
 
   if (validated.data.photo) {
-    photoPath = await uploadNota(validated.data.photo);
+    photoPath = await uploadNota(validatedData.photo);
   }
 
   try {
     const data = await prisma.participant.create({
       data: {
         noRegistration: noRegistration,
-        fullName: validated.data.fullName,
-        nik: validated.data.nik,
-        birthPlace: validated.data.birthPlace,
+        fullName: validatedData.fullName,
+        nik: validatedData.nik,
+        birthPlace: validatedData.birthPlace,
         birthDate: DateTime.fromISO(validated.data.birthDate, {
           zone: 'Asia/Jakarta'
         }).toJSDate(),
-        gender: validated.data.gender,
-        subcategory: { connect: { id: categorySubcategory.id } },
-        institutionName: validated.data.institutionName,
-        institutionAddress: validated.data.institutionAddress,
-        region: {
-          connect: {
-            id: validated.data.regionId
-          }
-        },
-        province: {
-          connect: {
-            id: validated.data.provinceId
-          }
-        },
-        regency: {
-          connect: {
-            id: validated.data.regencyId
-          }
-        },
-        district: {
-          connect: {
-            id: validated.data.districtId
-          }
-        },
-        village: {
-          connect: {
-            id: validated.data.villageId
-          }
-        },
-        postalCode: validated.data.postalCode,
-        address: validated.data.address,
-        fatherName: validated.data.fatherName,
-        motherName: validated.data.motherName,
-        parentPhone: validated.data.parentPhone,
+        gender: validatedData.gender,
+        subKelasId: validatedData.subKelasId,
+        institutionName: validatedData.institutionName,
+        institutionAddress: validatedData.institutionAddress,
+        regionId: validatedData.regionId,
+        provinceId: validatedData.provinceId,
+        regencyId: validatedData.regencyId,
+        districtId: validatedData.districtId,
+        villageId: validatedData.villageId,
+        postalCode: validatedData.postalCode,
+        address: validatedData.address,
+        fatherName: validatedData.fatherName,
+        motherName: validatedData.motherName,
+        parentPhone: validatedData.parentPhone,
         kkUrl: kkPath ?? '',
         ijazahUrl: ijazahPath ?? '',
         photoUrl: photoPath ?? '',

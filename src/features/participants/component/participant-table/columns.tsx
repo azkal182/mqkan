@@ -29,7 +29,9 @@ export const columns: ColumnDef<ParticipantResponse>[] = [
   {
     accessorKey: 'nik',
     header: 'NIK',
-    size: 200
+    size: 200,
+    cell: ({ row }) =>
+      '*'.repeat(row.original.nik.length - 10) + row.original.nik.slice(-10)
   },
   {
     accessorKey: 'birthPlace',
@@ -45,7 +47,7 @@ export const columns: ColumnDef<ParticipantResponse>[] = [
         month: 'long',
         year: 'numeric'
       }),
-    size: 150
+    size: 300
   },
   {
     accessorKey: 'gender',
@@ -87,15 +89,15 @@ export const columns: ColumnDef<ParticipantResponse>[] = [
     size: 150
   },
   {
-    accessorKey: 'category',
+    accessorKey: 'kelas',
     header: 'Kategori',
-    cell: ({ row }) => row.original.category?.name,
+    cell: ({ row }) => row.original?.kelas,
     size: 150
   },
   {
-    accessorKey: 'subcategory',
-    header: 'Subkategori',
-    cell: ({ row }) => row.original.subcategory?.name,
+    accessorKey: 'Kelas',
+    header: 'Jenjang',
+    cell: ({ row }) => row.original.subKelas,
     size: 150
   },
   {

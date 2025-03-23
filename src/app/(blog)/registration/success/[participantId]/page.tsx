@@ -47,7 +47,11 @@ export default async function Page(props: PageProps) {
             </h2>
             <div className='grid grid-cols-2 gap-y-2'>
               <p className='font-semibold text-gray-700'>NIK</p>
-              <p className='text-gray-700'>:{data?.nik}</p>
+              <p className='text-gray-700'>
+                :
+                {'*'.repeat((data?.nik as string).length - 10) +
+                  data?.nik.slice(-10)}
+              </p>
 
               <p className='font-semibold text-gray-700'>
                 Tempat/Tanggal Lahir
@@ -64,10 +68,10 @@ export default async function Page(props: PageProps) {
           {/* Kategori & Jenjang */}
           <div className='mb-4 rounded-md bg-blue-100 p-4'>
             <h2 className='text-lg font-semibold text-blue-700'>
-              Kategori & Jenjang
+              Kategori & Kelas
             </h2>
             <p className='text-gray-700'>
-              {data?.category.name} - {data?.subcategory.name}
+              {data?.kelas} - {data?.subKelas}
             </p>
           </div>
 

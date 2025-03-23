@@ -27,8 +27,8 @@ export interface ParticipantResponse {
   district: { id: number; name: string };
   village: { id: number; name: string };
   region: { id: string; name: string };
-  category: { id: number; name: string };
-  subcategory: { id: number; name: string };
+  kelas: string;
+  subKelas: string;
 }
 
 export interface ParticipantsResponse {
@@ -93,10 +93,9 @@ export async function getParticipants({
         district: { select: { id: true, name: true } },
         village: { select: { id: true, name: true } },
         region: { select: { id: true, name: true } },
-        subcategory: {
+        subKelas: {
           include: {
-            category: { select: { id: true, name: true } },
-            subcategory: { select: { id: true, name: true } }
+            kelas: true
           }
         }
       },
@@ -121,8 +120,8 @@ export async function getParticipants({
     district: p.district,
     village: p.village,
     region: p.region,
-    category: p.subcategory.category,
-    subcategory: p.subcategory.subcategory
+    kelas: p.subKelas?.kelas.name as string,
+    subKelas: p.subKelas?.name as string
   }));
 
   return {
@@ -149,10 +148,9 @@ export const getParticipantById = async (
       district: { select: { id: true, name: true } },
       village: { select: { id: true, name: true } },
       region: { select: { id: true, name: true } },
-      subcategory: {
+      subKelas: {
         include: {
-          category: { select: { id: true, name: true } },
-          subcategory: { select: { id: true, name: true } }
+          kelas: true
         }
       }
     }
@@ -174,10 +172,14 @@ export const getParticipantById = async (
       district: participant.district,
       village: participant.village,
       region: participant.region,
-      category: participant.subcategory.category,
-      subcategory: participant.subcategory.subcategory
+      kelas: participant.subKelas?.kelas.name as string,
+      subKelas: participant.subKelas?.name as string
     };
   } else {
     return null;
   }
+};
+
+export const getParticipantCount = async () => {
+  return await prisma.participant.count();
 };

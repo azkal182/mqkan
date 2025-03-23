@@ -114,7 +114,15 @@ async function main() {
   // 1. Insert Regions
   const regionsData = [
     {
+      name: 'Pusat',
+      coordinator: 'Misbahul Cholisin',
+      phone: '6285713055532',
+      coverage: ['Semua Area']
+    },
+    {
       name: 'Jatim 1',
+      coordinator: 'Abdul Wahid Eko Prasetyo',
+      phone: '6282389471777',
       coverage: [
         'Bojonegoro',
         'Mojokerto',
@@ -126,10 +134,14 @@ async function main() {
     },
     {
       name: 'Jatim 2',
+      coordinator: 'Moh. Badrun Al Qomari',
+      phone: '6282337035972',
       coverage: ['Seluruh daerah Madura']
     },
     {
       name: 'Jatim 3',
+      coordinator: 'Acmad Kamaluddin',
+      phone: '6285334647911',
       coverage: [
         'Banyuwangi',
         'Bondowoso',
@@ -143,6 +155,8 @@ async function main() {
     },
     {
       name: 'Jatim 4',
+      coordinator: 'Umarudin',
+      phone: '6282301941277',
       coverage: [
         'Madiun',
         'Ponorogo',
@@ -155,10 +169,14 @@ async function main() {
     },
     {
       name: 'Jatim 5',
+      coordinator: 'Mas Agus Azro Chalim',
+      phone: '967735660708',
       coverage: ['Tuban', 'Lamongan', 'Gresik', 'Sidoarjo', 'Surabaya']
     },
     {
       name: 'Jateng 1',
+      coordinator: 'Kholilur Rahman',
+      phone: '6285232195757',
       coverage: [
         'Rembang',
         'Blora',
@@ -173,6 +191,8 @@ async function main() {
     },
     {
       name: 'Jateng 2',
+      coordinator: 'M. Hamam Rozin',
+      phone: '6285640163313',
       coverage: [
         'Magelang',
         'Temanggung',
@@ -184,6 +204,8 @@ async function main() {
     },
     {
       name: 'Jateng 3',
+      coordinator: 'M. Imam Muhajir',
+      phone: '6285726977515',
       coverage: [
         'Batang',
         'Pekalongan',
@@ -197,6 +219,8 @@ async function main() {
     },
     {
       name: 'Jateng 4',
+      coordinator: 'Ahmad Mifttahul Choir',
+      phone: '6281225955228',
       coverage: [
         'Karanganyar',
         'Wonogiri',
@@ -208,6 +232,8 @@ async function main() {
     },
     {
       name: 'Jabar 1',
+      coordinator: 'Fatih Ar Ridhwan',
+      phone: '6282321282005',
       coverage: [
         'Subang',
         'Sukabumi',
@@ -221,6 +247,8 @@ async function main() {
     },
     {
       name: 'Jabar 2',
+      coordinator: 'Fahmi Zakaria Al-Ansor',
+      phone: '6282329966400',
       coverage: [
         'Indramayu',
         'Cirebon',
@@ -235,6 +263,8 @@ async function main() {
     },
     {
       name: 'Jabar 3',
+      coordinator: 'Fauzi Azimansyah',
+      phone: '6289647989945',
       coverage: [
         'Kab. Bekasi',
         'Kota Bekasi',
@@ -246,10 +276,14 @@ async function main() {
     },
     {
       name: 'DKI Jakarta',
+      coordinator: 'hmad Musthofa Warka',
+      phone: '6285774970727',
       coverage: ['Kota Tanggerang', 'Tanggerang Selatan', 'Prov. Jakarta']
     },
     {
       name: 'Banten',
+      coordinator: 'Rahmat Maulana Wibowo',
+      phone: '6287887568373',
       coverage: [
         'Kota Banten',
         'Kab. Cilegon',
@@ -260,54 +294,92 @@ async function main() {
     },
     {
       name: 'Yogyakarta',
+      coordinator: 'Muqronul Faiz',
+      phone: '628978764624',
       coverage: ['Yogyakarta']
     },
     {
       name: 'Kalsel',
+      coordinator: 'Ahmad Rido’i, S.Pd',
+      phone: '6282358141645',
       coverage: ['Kalimantan Selatan']
     },
     {
-      name: 'Kaltim',
+      name: 'Kalbar',
+      coordinator: 'Suhedi',
+      phone: '6285849772221',
       coverage: ['Seluruh Daerah Kalimantan Barat']
     },
     {
+      name: 'Kaltim',
+      coordinator: 'Imron Ghozali',
+      phone: '6282220947247',
+      coverage: ['Seluruh Daerah Kalimantan Timur']
+    },
+    {
       name: 'Bali',
+      coordinator: 'Abdul Malik Rai',
+      phone: '628983182204',
       coverage: ['Bali']
     },
     {
       name: 'Lombok',
+      coordinator: 'Marzuki',
+      phone: '6285338688696',
       coverage: ['NTB']
     },
     {
       name: 'Lampung',
+      coordinator: 'Muhammad Husni Mubarok',
+      phone: '6282313620077',
       coverage: ['Lampung']
     },
     {
       name: 'Riau',
+      coordinator: 'Fatchur Rohman',
+      phone: '6281325706008',
       coverage: ['Riau']
     },
     {
       name: 'Jambi',
+      coordinator: 'Zainurridla',
+      phone: '6282268886779',
       coverage: ['Jambi']
     },
     {
       name: 'Sumbar',
+      coordinator: 'Akmal Aziz',
+      phone: '6281390890900',
       coverage: ['Sumatra Barat']
     },
     {
       name: 'Batam',
+      coordinator: 'Andi Khoirul Hadi',
+      phone: '6285272749298 ',
       coverage: ['Batam']
     },
     {
       name: 'Sumsel',
+      coordinator: 'M. Khavid Wafi Abdullah',
+      phone: '6285806852713',
       coverage: ['Sumatra Selatan']
     },
     {
+      name: 'Bangka Belitung',
+      coordinator: 'Burhan Choirul Adib',
+      phone: '6281254150002',
+      coverage: ['Bangka Belitung']
+    },
+    {
       name: 'D.I Jepara',
+      coordinator: 'Ahmad Robik Atqo',
+      phone: '6285799886446',
       coverage: ['Jepara']
     },
     {
       name: 'Sulawesi',
+      coordinator: 'Ahmad Fahmi Nur Fuad, S.E',
+      phone: '6285796909735',
       coverage: ['Sulawesi']
     }
   ];
@@ -375,26 +447,70 @@ async function main() {
 
   // Buat kategori utama
 
-  const mqk = await prisma.category.create({ data: { name: 'MQK' } });
-  const olimpiade = await prisma.category.create({
-    data: { name: 'Olimpiade' }
-  });
-  const dakwah = await prisma.category.create({ data: { name: 'Dakwah' } });
+  //   const mqk = await prisma.category.create({ data: { name: 'MQK' } });
+  //   const olimpiade = await prisma.category.create({
+  //     data: { name: 'Olimpiade' }
+  //   });
+  //   const dakwah = await prisma.category.create({ data: { name: 'Dakwah' } });
 
-  const ula = await prisma.category.create({ data: { name: 'Ula' } });
-  const wustho = await prisma.category.create({ data: { name: 'Wustho' } });
-  const ulya = await prisma.category.create({ data: { name: 'Ulya' } });
+  //   const ula = await prisma.category.create({ data: { name: 'Ula' } });
+  //   const wustho = await prisma.category.create({ data: { name: 'Wustho' } });
+  //   const ulya = await prisma.category.create({ data: { name: 'Ulya' } });
 
   // Buat relasi subkategori dengan benar
-  await prisma.categoryToSubcategory.createMany({
-    data: [
-      { categoryId: mqk.id, subcategoryId: wustho.id }, // MQK -> Wustho
-      { categoryId: mqk.id, subcategoryId: ulya.id }, // MQK -> Ulya
-      { categoryId: olimpiade.id, subcategoryId: wustho.id }, // Olimpiade -> Wustho
-      { categoryId: olimpiade.id, subcategoryId: ulya.id }, //y Olimpiade -> Ulya
-      { categoryId: dakwah.id, subcategoryId: ula.id }, // Dakwah -> Ula
-      { categoryId: dakwah.id, subcategoryId: wustho.id } // Dakwah -> Wustho
-    ]
+  //   await prisma.categoryToSubcategory.createMany({
+  //     data: [
+  //       { categoryId: mqk.id, subcategoryId: wustho.id }, // MQK -> Wustho
+  //       { categoryId: mqk.id, subcategoryId: ulya.id }, // MQK -> Ulya
+  //       { categoryId: olimpiade.id, subcategoryId: wustho.id }, // Olimpiade -> Wustho
+  //       { categoryId: olimpiade.id, subcategoryId: ulya.id }, //y Olimpiade -> Ulya
+  //       { categoryId: dakwah.id, subcategoryId: ula.id }, // Dakwah -> Ula
+  //       { categoryId: dakwah.id, subcategoryId: wustho.id } // Dakwah -> Wustho
+  //     ]
+  //   });
+
+  // 🏫 Tambahkan Kelas
+  const dakwah = await prisma.kelas.create({
+    data: { name: 'Dakwah Kontemporer' }
+  });
+
+  const mqk = await prisma.kelas.create({
+    data: { name: 'MQK' }
+  });
+
+  const olimpiade = await prisma.kelas.create({
+    data: { name: 'Olimpiade Amtsilati' }
+  });
+
+  // 📚 Tambahkan Sub-Kelas
+  // MQK -> Wustho
+  const MQKWustho = await prisma.subKelas.create({
+    data: { name: 'Wustho', kelasId: mqk.id }
+  });
+
+  // MQK -> Ulya
+  const MQKUlya = await prisma.subKelas.create({
+    data: { name: 'Ulya', kelasId: mqk.id }
+  });
+
+  //Olimpiade -> Wustho
+  const OlimpiadeWustho = await prisma.subKelas.create({
+    data: { name: 'Wustho', kelasId: olimpiade.id }
+  });
+
+  //Olimpiade -> Ulya
+  const OlimpiadeUlya = await prisma.subKelas.create({
+    data: { name: 'Ulya', kelasId: olimpiade.id }
+  });
+
+  // Dakwah -> Ula
+  const DakwahUla = await prisma.subKelas.create({
+    data: { name: 'Ula', kelasId: dakwah.id }
+  });
+
+  // Dakwah -> Wustho
+  const DakwahWustho = await prisma.subKelas.create({
+    data: { name: 'Wustho', kelasId: dakwah.id }
   });
 
   // Ali mengikuti MQK dengan subkategori Ulya
@@ -420,14 +536,9 @@ async function main() {
       institutionName: 'Pesantren XYZ',
       institutionAddress: 'Jl. Pesantren No. 1',
       regionId: regions[0].id,
-      subcategoryId: ulya.id // Pakai ID subkategori yang benar
+      subKelasId: DakwahWustho.id
     }
   });
-
-  // Budi mengikuti Olimpiade dengan subkategori Wustho
-  // const budi = await prisma.participant.create({
-  //     data: { fullName: 'Budi', subcategoryId: subcategories[2].id }, // Olimpiade → Wustho
-  // });
 
   console.log('category done!');
 }
