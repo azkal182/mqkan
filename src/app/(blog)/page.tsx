@@ -118,7 +118,7 @@ const Page = () => {
             </div>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className='text-[#0C713D] lg:hidden'
+              className='text-[#d7bd9c] lg:hidden'
             >
               <Menu />
             </button>

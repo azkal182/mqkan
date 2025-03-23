@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Dashboard MQKAN',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  description: 'MQK Amtsilati Nusantara'
 };
 
 export default async function DashboardLayout({

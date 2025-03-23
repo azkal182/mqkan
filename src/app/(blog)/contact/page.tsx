@@ -9,6 +9,7 @@ import { getRegions } from '@/actions/region-action';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
 const listMenu = [
   { title: 'Home', link: '/#home' },
@@ -17,6 +18,16 @@ const listMenu = [
   { title: 'Pendaftaran', link: '/registration' },
   { title: 'Kontak', link: '/contact' }
 ];
+
+const formatInternationalNumber = (number: any) => {
+  const numStr = number.toString();
+  if (numStr.startsWith('62')) {
+    return `+62 ${numStr.slice(2, 5)} ${numStr.slice(5, 9)} ${numStr.slice(9)}`;
+  } else if (numStr.startsWith('96')) {
+    return `+96 ${numStr.slice(2, 5)} ${numStr.slice(5, 9)} ${numStr.slice(9)}`;
+  }
+  return numStr;
+};
 
 const ContactPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -96,7 +107,7 @@ const ContactPage = () => {
             </div>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className='text-[#0C713D] lg:hidden'
+              className='text-[#d7bd9c] lg:hidden'
             >
               <Menu />
             </button>
@@ -180,9 +191,13 @@ const ContactPage = () => {
                   </div>
 
                   <div className='font-semibold'>No Telp</div>
-                  <div className='col-span-2 text-gray-800'>
-                    : {region.phone}
-                  </div>
+                  <Link
+                    href={`https://wa.me/${region.phone}`}
+                    target='_blank'
+                    className='col-span-2 text-gray-800'
+                  >
+                    : {formatInternationalNumber(region.phone)}
+                  </Link>
 
                   <div className='font-semibold'>Area</div>
                   <div className='col-span-2 break-words text-gray-600'>

@@ -9,7 +9,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'MQK Amtsilati Nusantara',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  description: 'MQK Amtsilati Nusantara'
 };
 
 const lato = Lato({
