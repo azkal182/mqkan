@@ -1,6 +1,7 @@
 'use client';
 import { ParticipantResponse } from '@/actions/participant-action';
 import { ColumnDef } from '@tanstack/react-table';
+import { CellAction } from './cell-action';
 
 const calculateAge = (birthDate: string | Date): number => {
   const today = new Date();
@@ -119,10 +120,9 @@ export const columns: ColumnDef<ParticipantResponse>[] = [
       const dateB = new Date(rowB.original.birthDate).getTime();
       return dateA - dateB;
     }
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <CellAction />
   }
-  // Tambahkan kolom action jika diperlukan
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => <ActionMenu data={row.original} />,
-  // },
 ];

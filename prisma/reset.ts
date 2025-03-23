@@ -17,6 +17,32 @@ type village = {
 };
 
 async function main() {
+  try {
+    console.log('🔄 Resetting database...');
+
+    await prisma.participant.deleteMany({});
+    await prisma.subKelas.deleteMany({});
+    await prisma.kelas.deleteMany({});
+    await prisma.categoryToSubcategory.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.penilaian.deleteMany({});
+    await prisma.userRegion.deleteMany({});
+    await prisma.region.deleteMany({});
+    await prisma.userRole.deleteMany({});
+    await prisma.rolePermission.deleteMany({});
+    await prisma.permission.deleteMany({});
+    await prisma.role.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.village.deleteMany({});
+    await prisma.district.deleteMany({});
+    await prisma.regency.deleteMany({});
+    await prisma.province.deleteMany({});
+
+    console.log('✅ Database has been reset.');
+  } catch (error) {
+    console.error('❌ Error resetting database:', error);
+  }
+
   const formattedProvinces = Provinces.map((item) => ({
     id: item.id,
     name: item.name,
@@ -456,37 +482,14 @@ async function main() {
   const district = await prisma.district.findFirstOrThrow();
   const village = await prisma.village.findFirstOrThrow();
 
-  // Buat kategori utama
-
-  //   const mqk = await prisma.category.create({ data: { name: 'MQK' } });
-  //   const olimpiade = await prisma.category.create({
-  //     data: { name: 'Olimpiade' }
-  //   });
-  //   const dakwah = await prisma.category.create({ data: { name: 'Dakwah' } });
-
-  //   const ula = await prisma.category.create({ data: { name: 'Ula' } });
-  //   const wustho = await prisma.category.create({ data: { name: 'Wustho' } });
-  //   const ulya = await prisma.category.create({ data: { name: 'Ulya' } });
-
-  // Buat relasi subkategori dengan benar
-  //   await prisma.categoryToSubcategory.createMany({
-  //     data: [
-  //       { categoryId: mqk.id, subcategoryId: wustho.id }, // MQK -> Wustho
-  //       { categoryId: mqk.id, subcategoryId: ulya.id }, // MQK -> Ulya
-  //       { categoryId: olimpiade.id, subcategoryId: wustho.id }, // Olimpiade -> Wustho
-  //       { categoryId: olimpiade.id, subcategoryId: ulya.id }, //y Olimpiade -> Ulya
-  //       { categoryId: dakwah.id, subcategoryId: ula.id }, // Dakwah -> Ula
-  //       { categoryId: dakwah.id, subcategoryId: wustho.id } // Dakwah -> Wustho
-  //     ]
-  //   });
-
   // 🏫 Tambahkan Kelas
-  const dakwah = await prisma.kelas.create({
-    data: { name: 'Dakwah Kontemporer' }
-  });
 
   const mqk = await prisma.kelas.create({
     data: { name: 'MQK' }
+  });
+
+  const dakwah = await prisma.kelas.create({
+    data: { name: 'Dakwah Kontemporer' }
   });
 
   const olimpiade = await prisma.kelas.create({
@@ -522,33 +525,6 @@ async function main() {
   // Dakwah -> Wustho
   const DakwahWustho = await prisma.subKelas.create({
     data: { name: 'Wustho', kelasId: dakwah.id }
-  });
-
-  // Ali mengikuti MQK dengan subkategori Ulya
-  await prisma.participant.create({
-    data: {
-      noRegistration: 'REG12345',
-      fullName: 'Ali',
-      nik: '1212121212121212',
-      password: hashSync('ali_password'),
-      birthPlace: 'Semarang',
-      birthDate: new Date('2005-06-15'),
-      gender: 'PUTRA',
-      fatherName: 'Ahmad',
-      motherName: 'Aisyah',
-      parentPhone: '08123456789',
-      provinceId: province.id,
-      regencyId: regency.id,
-      districtId: district.id, // Perbaikan typo disini
-      villageId: village.id,
-      kkUrl: 'https://example.com/kk.jpg',
-      ijazahUrl: 'https://example.com/ijazah.jpg',
-      photoUrl: 'https://example.com/photo.jpg',
-      institutionName: 'Pesantren XYZ',
-      institutionAddress: 'Jl. Pesantren No. 1',
-      regionId: regions[0].id,
-      subKelasId: DakwahWustho.id
-    }
   });
 
   console.log('category done!');

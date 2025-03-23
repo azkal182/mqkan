@@ -1,17 +1,6 @@
 'use server';
 import { prisma } from '@/lib/prisma';
 
-interface GetParticipantsParams {
-  page?: number;
-  limit?: number;
-  filters?: {
-    regionId?: number;
-    categoryId?: number; // Filter by main category (MQK/Olimpiade/Dakwah)
-    subCategoryId?: number; // Filter by subcategory (Ula/Wustho/Ulya)
-    search?: string;
-  };
-}
-
 export interface ParticipantResponse {
   id: string;
   noRegistration: string;
@@ -41,50 +30,48 @@ export interface ParticipantsResponse {
   };
 }
 
-export async function getParticipants({
-  page = 1,
-  limit = 10,
-  filters
-}: GetParticipantsParams): Promise<ParticipantsResponse> {
-  const skip = (page - 1) * limit;
+export async function getParticipants(filters: {
+  kelasId?: string;
+  subKelasId?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}): Promise<ParticipantsResponse> {
+  const { kelasId, subKelasId, search, page = 1, limit = 10 } = filters;
+
+  const kelasIds = kelasId ? kelasId.split('.') : [];
+  const subKelasIds = subKelasId ? subKelasId.split('.') : [];
 
   const whereCondition: any = {};
 
-  if (filters) {
-    // Filter by region
-    if (filters.regionId) {
-      whereCondition.regionId = filters.regionId;
-    }
-
-    // Filter by main category (through subcategory relation)
-    if (filters.categoryId) {
-      whereCondition.subcategory = {
-        ...whereCondition.subcategory,
-        categoryId: filters.categoryId
-      };
-    }
-
-    // Filter by subcategory (through subcategory relation)
-    if (filters.subCategoryId) {
-      whereCondition.subcategory = {
-        ...whereCondition.subcategory,
-        subcategoryId: filters.subCategoryId
-      };
-    }
-
-    // Search filter
-    if (filters.search) {
-      whereCondition.OR = [
-        { fullName: { contains: filters.search, mode: 'insensitive' } },
-        { noRegistration: { contains: filters.search, mode: 'insensitive' } },
-        { institutionName: { contains: filters.search, mode: 'insensitive' } }
-      ];
-    }
+  // Filter berdasarkan kelas
+  if (kelasId && kelasId.length > 0) {
+    whereCondition.subKelas = {
+      kelasId: { in: kelasIds }
+    };
   }
 
+  // Filter berdasarkan subKelas
+  if (subKelasId && subKelasId.length > 0) {
+    whereCondition.subKelas = {
+      ...whereCondition.subKelas,
+      id: { in: subKelasIds }
+    };
+  }
+
+  // Filter pencarian
+  if (search) {
+    whereCondition.OR = [
+      { fullName: { contains: search, mode: 'insensitive' } },
+      { noRegistration: { contains: search, mode: 'insensitive' } },
+      { institutionName: { contains: search, mode: 'insensitive' } }
+    ];
+  }
+
+  // Ambil data peserta dan total count
   const [participants, total] = await Promise.all([
     prisma.participant.findMany({
-      skip,
+      skip: (page - 1) * limit,
       take: limit,
       where: whereCondition,
       include: {
@@ -182,4 +169,26 @@ export const getParticipantById = async (
 
 export const getParticipantCount = async () => {
   return await prisma.participant.count();
+};
+
+export const getAllParticipantsCount = async () => {
+  // Ambil semua kelas beserta subkelas dan jumlah peserta
+  const subKelasData = await prisma.subKelas.findMany({
+    select: {
+      name: true, // Nama subKelas
+      kelas: {
+        select: { name: true } // Nama kelas
+      },
+      _count: {
+        select: { participant: true } // Jumlah peserta dalam subKelas
+      }
+    }
+  });
+
+  // Format hasil dalam bentuk array object
+  return subKelasData.map((sub) => ({
+    kelas: sub.kelas.name, // Nama kelas
+    subKelas: sub.name, // Nama subKelas
+    count: sub._count.participant // Jumlah peserta
+  }));
 };

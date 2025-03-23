@@ -14,13 +14,15 @@ export default async function ParticipantListingPage({}: ParticipantsListingPage
   const page = searchParamsCache.get('page');
   const search = searchParamsCache.get('q');
   const pageLimit = searchParamsCache.get('limit');
-  const roleId = searchParamsCache.get('roleId');
+  const kelasId = searchParamsCache.get('kelas');
+  const subKelasId = searchParamsCache.get('subKelas');
 
   const filters = {
     page,
     limit: pageLimit,
     ...(search && { search }),
-    ...(roleId && { roleId: roleId })
+    ...(kelasId && { kelasId: kelasId }),
+    ...(subKelasId && { subKelasId: subKelasId })
   };
 
   const data = await getParticipants(filters);

@@ -228,3 +228,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Meningkatkan pengalaman scroll di iOS */
+}

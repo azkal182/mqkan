@@ -46,3 +46,36 @@ export const getRegions = async () => {
     }
   });
 };
+
+export const getRegionsWithoutPusat = async () => {
+  return await prisma.region.findMany({
+    where: {
+      NOT: { name: 'Pusat' }
+    },
+    select: {
+      id: true,
+      name: true,
+      coverage: true,
+      coordinator: true,
+      phone: true
+    }
+  });
+};
+
+export const getAllRegionsWithCount = async () => {
+  const regions = await prisma.region.findMany({
+    where: {
+      NOT: { name: 'Pusat' }
+    },
+    select: {
+      id: true,
+      name: true,
+      _count: {
+        select: { participants: true }
+      }
+    }
+  });
+
+  // Urutkan berdasarkan jumlah peserta terbanyak
+  return regions.sort((a, b) => b._count.participants - a._count.participants);
+};

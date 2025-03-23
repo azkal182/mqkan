@@ -17,7 +17,9 @@
         "format": "prettier --write .",
         "format:check": "prettier -c -w .",
         "prepare": "husky",
-        "test": "playwright test"
+        "test": "playwright test",
+        "prisma:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
+        "prisma:reset": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/reset.ts"
     },
     "prisma": {
         "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

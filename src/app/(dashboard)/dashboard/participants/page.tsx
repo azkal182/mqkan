@@ -12,6 +12,7 @@ import { DataTableSkeleton } from '@/components/ui/table/data-table-skeleton';
 import UserTableAction from '@/features/users/components/user-tables/user-table-action';
 import UserListingPage from '@/features/users/components/user-listing';
 import ParticipantListingPage from '@/features/participants/component/participant-listing-page';
+import ParticipantTableAction from '@/features/participants/component/participant-table/participant-table-action';
 
 export const metadata = {
   title: 'Dashboard : Peserta'
@@ -41,7 +42,7 @@ const ParticipantsPage = async (props: pageProps) => {
           </Link>
         </div>
         <Separator />
-        <UserTableAction />
+        <ParticipantTableAction />
         <Suspense
           key={key}
           fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}

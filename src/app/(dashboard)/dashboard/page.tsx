@@ -1,20 +1,89 @@
-'use client';
+import { getAllParticipantsCount } from '@/actions/participant-action';
+import { getAllRegionsWithCount } from '@/actions/region-action';
 import PageContainer from '@/components/layout/page-container';
-import { useAuth } from '@/context/auth-context';
-import { useHasPermission } from '@/hooks/use-has-permission';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table';
 import React from 'react';
 
-// export const metadata = {
-//   title: 'Dashboard : MQKAN'
-// };
-const Page = () => {
-  const { session } = useAuth();
+const Page = async () => {
+  const count = await getAllParticipantsCount();
+  const regions = await getAllRegionsWithCount();
 
   return (
     <PageContainer>
-      <div>
-        <pre>{JSON.stringify(session, null, 2)}</pre>
-        {useHasPermission('user:edit') && <p>You have admin access</p>}
+      <div className='flex flex-1 flex-col space-y-6'>
+        <div>
+          <h2 className='mb-4 text-2xl font-bold text-gray-800'>
+            📊 Total Peserta per SubKelas
+          </h2>
+
+          <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+            {count.map((item, index) => (
+              <Card
+                key={index}
+                className='relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl'
+              >
+                <CardHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] p-4 text-white'>
+                  <CardTitle className='text-lg font-semibold'>
+                    {item.kelas}
+                  </CardTitle>
+                  <p className='text-sm'>{item.subKelas}</p>
+                </CardHeader>
+
+                <CardContent className='flex flex-col items-center p-6'>
+                  <p className='text-4xl font-bold text-[#065D5A]'>
+                    {item.count}
+                  </p>
+                  <p className='text-md text-gray-600'>Peserta</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className='flex flex-1 flex-col space-y-6'>
+          <h2 className='mb-4 text-2xl font-bold text-gray-800'>
+            🌍 Daftar Korwil
+          </h2>
+
+          <div className='overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-lg'>
+            <Table className='min-w-full'>
+              <TableHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] text-white'>
+                <TableRow>
+                  <TableHead className='px-4 py-2 text-white'>#</TableHead>
+                  <TableHead className='px-4 py-2 text-white'>
+                    Nama Korwil
+                  </TableHead>
+                  <TableHead className='px-4 py-2 text-white'>
+                    Jumlah Peserta
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {regions.map((region, index) => (
+                  <TableRow key={region.id} className='hover:bg-gray-100'>
+                    <TableCell className='px-4 py-2 text-center'>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className='px-4 py-2 font-semibold'>
+                      {region.name}
+                    </TableCell>
+                    <TableCell className='px-4 py-2 text-center font-bold text-[#065D5A]'>
+                      {region._count.participants}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
     </PageContainer>
   );

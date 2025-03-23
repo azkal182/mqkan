@@ -210,6 +210,7 @@ export const createRegistration = async (data: RegistrationInput) => {
       select: { id: true }
     });
     revalidatePath('/dashboard/participants');
+    revalidatePath('/dashboard');
     return { success: true, message: 'Pendaftaran berhasil', id: data.id };
   } catch (error) {
     return handleError(error, 'createParticipant');

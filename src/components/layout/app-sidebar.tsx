@@ -26,7 +26,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarRail
+  SidebarRail,
+  useSidebar
   //   useSidebar
 } from '@/components/ui/sidebar';
 import { sideMenu } from '@/constants/data';
@@ -50,6 +51,7 @@ export const company = {
 export default function AppSidebar() {
   const { session: sessionUser } = useAuth();
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
 
   return (
     <Sidebar collapsible='icon'>
@@ -106,7 +108,10 @@ export default function AppSidebar() {
                                     asChild
                                     isActive={pathname === subItem.url}
                                   >
-                                    <Link href={subItem.url}>
+                                    <Link
+                                      href={subItem.url}
+                                      onClick={() => setOpenMobile(false)}
+                                    >
                                       <span>{subItem.title}</span>
                                     </Link>
                                   </SidebarMenuSubButton>
@@ -123,7 +128,10 @@ export default function AppSidebar() {
                           tooltip={item.title}
                           isActive={pathname === item.url}
                         >
-                          <Link href={item.url}>
+                          <Link
+                            href={item.url}
+                            onClick={() => setOpenMobile(false)}
+                          >
                             <Icon />
                             <span>{item.title}</span>
                           </Link>

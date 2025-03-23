@@ -39,7 +39,7 @@ import { getRegencies } from '@/actions/regencies';
 import { getDistricts } from '@/actions/districts';
 import { getVillages } from '@/actions/villages';
 import { createRegistration } from '@/actions/registration-action';
-import { getRegions } from '@/actions/region-action';
+import { getRegionsWithoutPusat } from '@/actions/region-action';
 import { useRouter } from 'next/navigation';
 
 export function generateRandomNumber(length: number = 8): string {
@@ -115,7 +115,7 @@ const RegistrationForm = () => {
   }, [selectedKelas]);
 
   const fetchRegions = async () => {
-    const data = await getRegions();
+    const data = await getRegionsWithoutPusat();
     setRegions(data);
   };
 
@@ -297,7 +297,11 @@ const RegistrationForm = () => {
                     NIK
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Masukkan 16 digit NIK' />
+                    <Input
+                      {...field}
+                      placeholder='Masukkan 16 digit NIK'
+                      inputMode='numeric'
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

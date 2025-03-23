@@ -91,7 +91,7 @@ const Page = () => {
   };
 
   return (
-    <ScrollArea className='h-dvh'>
+    <div>
       {/* Header */}
       <motion.header
         className='bg-primary fixed z-50 w-full shadow-sm'
@@ -327,7 +327,7 @@ const Page = () => {
           </motion.div>
         </div>
       </motion.footer>
-    </ScrollArea>
+    </div>
   );
 };
 
