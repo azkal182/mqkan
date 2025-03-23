@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Star, Calendar } from 'lucide-react';
 
 // Variants for section animations
 const sectionVariants = {
@@ -39,7 +40,6 @@ const ScheduleSection = ({ even }: { even: boolean }) => {
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
             <h3 className='mb-6 text-xl font-semibold'>Kategori</h3>
-
             <div className='space-y-4'>
               {[
                 { title: 'MQK', desc: 'Wustho-Ulya' },
@@ -54,8 +54,8 @@ const ScheduleSection = ({ even }: { even: boolean }) => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <i className='fa-solid fa-star text-[#0C713D]' />
-                  <div>
+                  <Star className='flex-shrink-0 text-[#0C713D]' size={24} />
+                  <div className='flex-grow'>
                     <h4 className='font-semibold'>{cat.title}</h4>
                     <p className='text-sm text-gray-600'>{cat.desc}</p>
                   </div>
@@ -85,8 +85,11 @@ const ScheduleSection = ({ even }: { even: boolean }) => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <i className='fa-regular fa-calendar text-[#0C713D]' />
-                  <div>
+                  <Calendar
+                    className='flex-shrink-0 text-[#0C713D]'
+                    size={24}
+                  />
+                  <div className='flex-grow'>
                     <h4 className='font-semibold'>{event.title}</h4>
                     <p className='text-sm text-gray-600'>{event.date}</p>
                   </div>

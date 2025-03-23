@@ -25,6 +25,7 @@ import ScheduleSection from './schedule-section';
 import LatarBelakangSection from './latar-belakang-section';
 import AboutSection from './about-section';
 import Link from 'next/link';
+import RequirementsSection from './requirement-section';
 
 const listMenu = [
   { title: 'Home', link: '#home' },
@@ -40,6 +41,7 @@ const sections = [
   { Component: ScheduleSection },
   { Component: CompetitionSection },
   { Component: PrizeSection },
+  { Component: RequirementsSection },
   { Component: ContactSection }
 ];
 

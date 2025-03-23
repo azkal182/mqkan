@@ -152,17 +152,6 @@ const PrizeSection = ({ even }: { even: boolean }) => {
             </div>
           </div>
         ))}
-
-        <div className='mt-16 flex items-center justify-center'>
-          <motion.a
-            href='/registration'
-            className='bg-primary text-primary-foreground rounded-lg px-16 py-4 text-center font-semibold hover:bg-[#0C713D]/90'
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: 'spring', stiffness: 300 }}
-          >
-            Daftar Sekarang
-          </motion.a>
-        </div>
       </div>
     </motion.section>
   );
