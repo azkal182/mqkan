@@ -32,7 +32,7 @@ const prizeCategories = [
         color: '#FFD700',
         title: 'Juara 1',
         prize: 'UMRAH',
-        benefits: ['Mendali', 'Sertifikat'],
+        benefits: ['Medali', 'Sertifikat'],
         order: 'md:order-2',
         size: 'w-full md:w-[35%] md:scale-110',
         highlight: true
@@ -49,7 +49,7 @@ const prizeCategories = [
         color: '#CD7F32',
         title: 'Juara 3',
         prize: 'Rp 5.000.000',
-        benefits: ['Mendali', 'Sertifikat'],
+        benefits: ['Medali', 'Sertifikat'],
         order: 'md:order-3',
         size: 'w-full md:w-[30%]'
       }
@@ -62,7 +62,7 @@ const prizeCategories = [
         color: '#FFD700',
         title: 'Juara 1',
         prize: 'Rp 15.000.000',
-        benefits: ['Mendali', 'Sertifikat'],
+        benefits: ['Medali', 'Sertifikat'],
         order: 'md:order-2',
         size: 'w-full md:w-[35%] md:scale-110',
         highlight: true
