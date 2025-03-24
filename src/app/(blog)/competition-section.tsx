@@ -37,7 +37,7 @@ const competitionBranches = [
       {
         marhalah: 'Marhalah Ulya',
         details:
-          'Fathul Ajib min Fathul Qorib Al Mujib (Muamalah - Munakahat - Jinayat)'
+          'Fathul Qorib Al Mujib dengan metode Amtsilati (Muamalah - Munakahat - Jinayat)'
       }
     ]
   },
