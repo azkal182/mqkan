@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Head from 'next/head';
 
 export const metadata: Metadata = {
-  title: 'MQK Amtsilati Nusantara',
-  description: 'MQK Amtsilati Nusantara'
+  title: 'MQK Amtsilati se Nusantara',
+  description: 'MQK Amtsilati se Nusantara'
 };
 
 export default async function BlogLayout({

@@ -187,12 +187,14 @@ const Page = () => {
             transition={{ delay: 0.2, duration: 0.8, ease: 'easeOut' }}
           >
             <h1 className='mb-6 text-3xl font-bold md:text-5xl'>
-              Menghidupkan Kembali Tradisi Keilmuan Islam Melalui Qira&apos;atul
-              Kutub
+              Menjaga Tradisi Keilmuan Islam Melalui Musabaqah Qira’atil Kutub
+              Amtsilati se Nusantara
             </h1>
             <p className='mb-8 text-xl text-gray-200'>
-              Bergabunglah bersama kami dalam merayakan dan melestarikan tradisi
-              yang kaya dari kompetisi membaca Kitab Kuning.
+              Mari ikut serta bersama kami dalam merayakan dan melestarikan
+              tradisi kitab kuning dalam ajang Musabaqah Qira’atil Kutub dengan
+              menggunakan metode Amtsilati yang diikuti oleh seluruh pengguna
+              Metode Amtsilati se Nusantara.
             </p>
             <div className='flex flex-col gap-4 md:flex-row'>
               <motion.a
@@ -240,8 +242,10 @@ const Page = () => {
                 <Image src={logoPic} alt={'logo'} height={36} />
               </div>
               <p className='text-gray-200'>
-                Bergabunglah bersama kami dalam merayakan dan melestarikan
-                tradisi yang kaya dari kompetisi membaca Kitab Kuning.
+                Mari ikut serta bersama kami dalam merayakan dan melestarikan
+                tradisi kitab kuning dalam ajang Musabaqah Qira’atil Kutub
+                dengan menggunakan metode Amtsilati yang diikuti oleh seluruh
+                pengguna Metode Amtsilati se Nusantara.
               </p>
             </motion.div>
             <motion.div

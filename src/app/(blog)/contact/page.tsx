@@ -185,7 +185,7 @@ const ContactPage = () => {
                     : {region.name}
                   </div>
 
-                  <div className='font-semibold'>Nama:</div>
+                  <div className='font-semibold'>Nama</div>
                   <div className='col-span-2 text-gray-800'>
                     : {region.coordinator}
                   </div>

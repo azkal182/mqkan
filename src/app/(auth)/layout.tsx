@@ -6,8 +6,8 @@ import Head from 'next/head';
 import OverflowHiddenFix from '../overflow-hidden-fix';
 
 export const metadata: Metadata = {
-  title: 'MQK Amtsilati Nusantara',
-  description: 'MQK Amtsilati Nusantara'
+  title: 'MQK Amtsilati se Nusantara',
+  description: 'MQK Amtsilati se Nusantara'
 };
 
 const lato = Lato({

@@ -62,7 +62,7 @@ const ContactSection = ({ even }: { even: boolean }) => {
                     icon: (
                       <NavigationIcon className={'h-6 w-6 flex-shrink-0'} />
                     ),
-                    text: 'Dk, Gg. Kenanga II, RT.03/RW.12, Krsak, Sidorejo, Kec. Bangsri, Kabupaten Jepara, Jawa Tengah 59453'
+                    text: 'PP. Darul Falah Amtsilati. Jl. Kenanga II Dk. Sidorejo RT. 03 RW. 12 Bangsri - Jepara 59453 Jawa Tengah'
                   },
                   {
                     icon: (

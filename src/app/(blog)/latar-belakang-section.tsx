@@ -61,7 +61,7 @@ const LatarBelakangSection = ({ even }: { even: boolean }) => {
             mengadopsinya, menunjukkan bahwa pendekatan ini relevan dengan
             kebutuhan pendidikan modern. Dalam rangka memperingati hari
             kelahiran KH Taufiqul Hakim pada 7 Juni 2025 serta menghargai
-            kontribusinya, diusulkan penyelenggaraan MQK Amtsilati Nusantara.
+            kontribusinya, diusulkan penyelenggaraan MQK Amtsilati se Nusantara.
             Acara ini bertujuan sebagai ajang silaturahmi dan penguatan komitmen
             dalam melestarikan serta mengembangkan metode Amtsilati di
             pesantren-pesantren di Indonesia.

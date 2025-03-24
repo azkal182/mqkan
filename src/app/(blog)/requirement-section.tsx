@@ -51,7 +51,7 @@ const RequirementsSection = ({ even }: { even: boolean }) => {
                     [
                       'Santri aktif di pesantren pengguna metode Amtsilati',
                       'Usia sesuai dengan kategori marhalah',
-                      'Telah mukim di pesantren minimal 12 bulan'
+                      'Telah mukim di pesantren minimal 6 bulan'
                     ].map((req, idx) => (
                       <motion.div
                         key={idx}
@@ -66,9 +66,18 @@ const RequirementsSection = ({ even }: { even: boolean }) => {
                     ))}
                   {index === 1 &&
                     [
-                      { title: 'Marhalah Ula', age: 'Di bawah 15 tahun' },
-                      { title: 'Marhalah Wustho', age: 'Di bawah 18 tahun' },
-                      { title: 'Marhalah Ulya', age: 'Di bawah 21 tahun' }
+                      {
+                        title: 'Marhalah Ula',
+                        age: 'Di bawah 15 tahun per 20 Mei 2025'
+                      },
+                      {
+                        title: 'Marhalah Wustho',
+                        age: 'Di bawah 18 tahun per 20 Mei 2025'
+                      },
+                      {
+                        title: 'Marhalah Ulya',
+                        age: 'Di bawah 21 tahun per 20 Mei 2025'
+                      }
                     ].map((marhalah, idx) => (
                       <motion.div
                         key={idx}
@@ -93,8 +102,10 @@ const RequirementsSection = ({ even }: { even: boolean }) => {
                         desc: 'Dari pimpinan pesantren'
                       },
                       {
-                        title: 'Akta Kelahiran/KTP/KK/Ijazah',
-                        desc: 'Dokumen sah yang mencantumkan tanggal lahir'
+                        title: 'KK'
+                      },
+                      {
+                        title: 'Ijazah Terakhir'
                       },
                       {
                         title: 'Pas Foto',
@@ -111,7 +122,9 @@ const RequirementsSection = ({ even }: { even: boolean }) => {
                         />
                         <div className='flex-grow'>
                           <h4 className='font-semibold'>{doc.title}</h4>
-                          <p className='text-sm text-gray-600'>{doc.desc}</p>
+                          <p className='text-sm text-gray-600'>
+                            {doc?.desc ? doc?.desc : ''}
+                          </p>
                         </div>
                       </motion.div>
                     ))}

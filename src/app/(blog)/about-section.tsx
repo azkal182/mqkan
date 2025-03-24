@@ -97,15 +97,37 @@ const AboutSection = ({ even }: { even: boolean }) => {
       variants={sectionVariants}
     >
       <div className='container mx-auto px-4'>
-        <motion.div className='mb-16 text-center' variants={sectionVariants}>
-          <h2 className='mb-4 text-3xl font-bold text-gray-800'>
+        <motion.div className='mb-20 text-center' variants={sectionVariants}>
+          <h2 className='mb-4 text-4xl font-bold text-gray-800'>
             Tentang Event Musabaqah Qira&apos;atul Kutub
           </h2>
-          <p className='mx-auto max-w-2xl text-gray-600'>
-            Musabaqah Qira&apos;atul Kutub adalah kompetisi bergengsi yang
-            merayakan penguasaan teks-teks Islam klasik, membina beasiswa dan
-            melestarikan warisan intelektual kita yang kaya.
-          </p>
+          <div className='space-y-1'>
+            <p className='mx-auto max-w-5xl text-gray-600'>
+              Musabaqah Qira’atil Kutub Amtsilati se Nusantara (MQKAN) - Ajang
+              Prestasi dan Keilmuan Islam.
+            </p>
+            <p className='mx-auto max-w-5xl text-gray-600'>
+              Musabaqah Qira’atil Kutub Amtsilati se Nusantara (MQKAN), sebuah
+              event bergengsi yang pertama kali diselenggarakan secara nasional
+              di Pondok Pesantren Darul Falah Amtsilati, yang terletak di
+              Bangsri, Kabupaten Jepara, Jawa Tengah.
+            </p>
+            <p className='mx-auto max-w-5xl text-gray-600'>
+              MQKAN hadir dengan tujuan mulia untuk membuktikan bahwa metode
+              Amtsilati tidak hanya melestarikan, tetapi juga menjaga khazanah
+              keilmuan Islam yang telah diwariskan oleh para ulama. Melalui
+              event ini, kami mengajak seluruh umat Muslim untuk merayakan
+              tradisi keilmuan yang telah bertahan lama, sambil mendorong
+              semangat para santri dan pelajar untuk berprestasi dalam bidang
+              keilmuan Islam.
+            </p>
+            <p className='mx-auto max-w-5xl text-gray-600'>
+              Mari Bergabung dan Ikuti Keseruan Event Nasional ini! Jadilah
+              bagian dari sejarah pertama Musabaqah Qira’atil Kutub Amtsilati
+              Nusantara dan buktikan kemampuan serta dedikasi Anda dalam menjaga
+              dan mengembangkan keilmuan Islam di era modern..
+            </p>
+          </div>
         </motion.div>
         <div className='mb-16 grid gap-8 md:grid-cols-3'>
           {[

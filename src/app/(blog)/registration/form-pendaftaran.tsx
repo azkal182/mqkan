@@ -246,7 +246,7 @@ const RegistrationForm = () => {
         Formulir Pendaftaran
       </h2>
       <h2 className='mb-8 text-center text-3xl font-bold text-gray-800'>
-        MQK Amtsilati Nusantara
+        MQK Amtsilati se Nusantara
       </h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>

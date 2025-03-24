@@ -37,7 +37,7 @@ const competitionBranches = [
       {
         marhalah: 'Marhalah Ulya',
         details:
-          'Fathul Ajib min Fathul Qorib Al Mujib (Muqodimah, Thoharoh, dan Ubudiyah)'
+          'Fathul Ajib min Fathul Qorib Al Mujib (Muamalah - Munakahat - Jinayat)'
       }
     ]
   },
@@ -53,8 +53,8 @@ const competitionBranches = [
     category: 'Dakwah',
     icon: <Mic className='h-8 w-8' />,
     branches: [
-      { marhalah: 'Marhalah Wustho', details: 'Amtsilati' },
-      { marhalah: 'Marhalah Ulya', details: "Amtsilati & Mausu'ati" }
+      { marhalah: 'Marhalah Wustho', details: 'Al-Aham' },
+      { marhalah: 'Marhalah Ulya', details: 'Baity Jannaty' }
     ]
   }
 ];
