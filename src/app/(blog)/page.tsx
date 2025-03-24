@@ -26,6 +26,7 @@ import LatarBelakangSection from './latar-belakang-section';
 import AboutSection from './about-section';
 import Link from 'next/link';
 import RequirementsSection from './requirement-section';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const listMenu = [
   { title: 'Home', link: '#home' },
@@ -333,6 +334,7 @@ const Page = () => {
           </motion.div>
         </div>
       </motion.footer>
+      <GoogleAnalytics gaId='G-MDC4BXS5P1' />
     </div>
   );
 };
