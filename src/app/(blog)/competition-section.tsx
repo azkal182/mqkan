@@ -32,7 +32,7 @@ const competitionBranches = [
       {
         marhalah: 'Marhalah Wustho',
         details:
-          'Fathul Qorib Al Mujib dengan metode Amtsilati (Muqodimah dan Thoharoh)'
+          'Fathul Qorib Al Mujib dengan metode Amtsilati (Muqoddimah - thoharoh - ubudiyyah)'
       },
       {
         marhalah: 'Marhalah Ulya',
