@@ -167,9 +167,12 @@ model Participant {
     village        Village  @relation(fields: [villageId], references: [id], onDelete: Cascade)
     postalCode     String?
     address        String?
+    skUrl          String?
     kkUrl          String
     ijazahUrl      String
     photoUrl       String
+    statusRegion   Boolean  @default(false)
+    statusCenter   Boolean  @default(false)
 
     institutionName    String @map("institution_name")
     institutionAddress String @map("institution_address")

@@ -94,6 +94,7 @@ const RegistrationForm = () => {
   const [selectedRegencyId, setSelectedRegencyId] = useState<number>(NaN);
   const [selectedDistrictId, setSelectedDistrictId] = useState<number>(NaN);
 
+  const [skPreview, setSkPreview] = useState<string | null>(null);
   const [kkPreview, setKkPreview] = useState<string | null>(null);
   const [ijazahPreview, setIjazahPreview] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -637,7 +638,47 @@ const RegistrationForm = () => {
           </div>
 
           {/* Bagian Upload Dokumen */}
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+            <FormField
+              control={form.control}
+              name='sk'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                    Upload SK
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type='file'
+                      accept='.jpg,.jpeg,.png'
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        field.onChange(file);
+                        if (file && file.type.startsWith('image/')) {
+                          setSkPreview(URL.createObjectURL(file));
+                        } else {
+                          setSkPreview(null); // Reset preview jika bukan gambar
+                        }
+                      }}
+                      //   className='border-gray-300 focus:border-blue-500'
+                    />
+                  </FormControl>
+                  {skPreview && (
+                    <div className='mt-2'>
+                      <img
+                        src={skPreview}
+                        alt='Preview Ijazah'
+                        className='h-32 w-auto rounded-md object-cover'
+                      />
+                    </div>
+                  )}
+                  <FormDescription>
+                    File maksimum 2MB (JPG, PNG).
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name='kk'

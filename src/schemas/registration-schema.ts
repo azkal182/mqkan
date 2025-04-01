@@ -57,6 +57,14 @@ export const RegistrationSchemas = z.object({
     .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
       message: 'Harap unggah berkas gambar yang valid (JPEG, PNG, atau WebP).'
     }),
+  sk: z
+    .instanceof(File, { message: 'harus menyertakan kk' })
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
+      message: `Gambar terlalu besar. Harap pilih gambar yang lebih kecil dari ${formatBytes(MAX_FILE_SIZE)}.`
+    })
+    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+      message: 'Harap unggah berkas gambar yang valid (JPEG, PNG, atau WebP).'
+    }),
   ijazah: z
     .instanceof(File, { message: 'harus menyertakan ijazah' })
     .refine((file) => file.size <= MAX_FILE_SIZE, {

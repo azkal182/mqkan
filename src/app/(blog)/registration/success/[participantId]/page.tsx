@@ -77,17 +77,10 @@ export default async function Page(props: PageProps) {
 
           {/* Instruksi Pembayaran */}
           <div className='mb-4 rounded-md bg-yellow-100 p-4'>
-            <h2 className='text-lg font-semibold text-yellow-700'>
-              Instruksi Pembayaran
-            </h2>
+            <h2 className='text-lg font-semibold text-yellow-700'>Instruksi</h2>
             <p className='text-gray-700'>
-              Silakan segera melakukan pembayaran ke rekening pondok berikut:
-            </p>
-            <p className='text-lg font-bold text-gray-900'>
-              BRI: 8789 7986 7834 5345
-            </p>
-            <p className='text-sm text-gray-600'>
-              Harap mencantumkan nomor registrasi saat melakukan transfer.
+              pembayaran dilakukan saat registrasi di pondok pesantren darul
+              falah Amtsilati sebesar Rp. 50.000
             </p>
           </div>
 

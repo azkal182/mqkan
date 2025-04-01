@@ -160,6 +160,7 @@ export const createRegistration = async (data: RegistrationInput) => {
   let kkPath: string | undefined;
   let ijazahPath: string | undefined;
   let photoPath: string | undefined;
+  let skPath: string | undefined;
 
   if (subKelas?.name.toLocaleLowerCase().includes('Olimpiade')) {
     const [year, month, day] = data.birthDate.split('-');
@@ -168,6 +169,10 @@ export const createRegistration = async (data: RegistrationInput) => {
 
   if (validated.data.kk) {
     kkPath = await uploadNota(validatedData.kk);
+  }
+
+  if (validated.data.sk) {
+    skPath = await uploadNota(validatedData.kk);
   }
 
   if (validated.data.ijazah) {
@@ -202,6 +207,7 @@ export const createRegistration = async (data: RegistrationInput) => {
         fatherName: validatedData.fatherName,
         motherName: validatedData.motherName,
         parentPhone: validatedData.parentPhone,
+        skUrl: skPath ?? '',
         kkUrl: kkPath ?? '',
         ijazahUrl: ijazahPath ?? '',
         photoUrl: photoPath ?? '',
