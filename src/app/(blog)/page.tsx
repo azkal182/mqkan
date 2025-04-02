@@ -30,8 +30,11 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 
 const listMenu = [
   { title: 'Home', link: '#home' },
-  { title: 'About', link: '#about' },
-  { title: 'Jadwal Pelaksanaan', link: '#schedule' },
+  { title: 'Tentang', link: '#about' },
+  { title: 'Latar Belakang', link: '#latar-belakang' },
+  { title: 'Cabang Lomba', link: '#competition-section' },
+  { title: 'Jadwal', link: '#schedule' },
+  { title: 'Persyaratan', link: '#requirement-section' },
   { title: 'Pendaftaran', link: '/registration' },
   { title: 'Kontak', link: '/contact' }
 ];

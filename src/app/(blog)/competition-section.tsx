@@ -62,7 +62,7 @@ const competitionBranches = [
 const CompetitionSection = ({ even }: { even: boolean }) => {
   return (
     <motion.section
-      id='competition-branches'
+      id='competition-section'
       className={`flex min-h-[calc(100dvh-52px)] items-center ${even ? 'bg-white' : 'bg-[#f8f6f1]'} py-20`}
       initial='hidden'
       whileInView='visible'

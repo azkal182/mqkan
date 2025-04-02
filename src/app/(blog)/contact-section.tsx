@@ -33,7 +33,7 @@ const itemVariants = {
 const ContactSection = ({ even }: { even: boolean }) => {
   return (
     <motion.section
-      id='contact'
+      id='competition-section'
       className={`${even ? 'bg-white' : 'bg-[#f8f6f1]'} py-20`}
       initial='hidden'
       whileInView='visible'
