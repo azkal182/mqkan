@@ -83,6 +83,8 @@ jobs:
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           AUTH_TRUST_HOST: ${{ secrets.AUTH_TRUST_HOST }}
           NEXTAUTH_URL: ${{ secrets.AUTH_TRUST_HOST }}
+          SUPABASE_PROJECT_URL: ${{ secrets.SUPABASE_PROJECT_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: pnpm build
 
       - name: Check .next directory
@@ -144,6 +146,8 @@ jobs:
             echo "NEXTAUTH_URL=${{ secrets.AUTH_TRUST_HOST }}" >> .env
             echo "AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}" >> .env
             echo "AUTH_SECRET=${{ secrets.AUTH_SECRET }}" >> .env
+            echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+            echo "SUPABASE_PROJECT_URL=${{ secrets.SUPABASE_PROJECT_URL }}" >> .env
 
             # Restart aplikasi dengan PM2
             if pm2 describe mqkan > /dev/null; then
