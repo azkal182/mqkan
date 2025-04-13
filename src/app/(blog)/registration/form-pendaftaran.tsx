@@ -41,12 +41,23 @@ import { getVillages } from '@/actions/villages';
 import { createRegistration } from '@/actions/registration-action';
 import { getRegionsWithoutPusat } from '@/actions/region-action';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export function generateRandomNumber(length: number = 8): string {
   const timestamp = Date.now().toString().slice(-5);
   const randomDigits = Math.floor(10000 + Math.random() * 90000).toString();
   return `${timestamp}${randomDigits}`.slice(0, length);
 }
+
+const formatInternationalNumber = (number: any) => {
+  const numStr = number.toString();
+  if (numStr.startsWith('62')) {
+    return `+62 ${numStr.slice(2, 5)} ${numStr.slice(5, 9)} ${numStr.slice(9)}`;
+  } else if (numStr.startsWith('96')) {
+    return `+96 ${numStr.slice(2, 5)} ${numStr.slice(5, 9)} ${numStr.slice(9)}`;
+  }
+  return numStr;
+};
 
 const RegistrationForm = () => {
   const form = useForm<RegistrationInput>({
@@ -87,6 +98,8 @@ const RegistrationForm = () => {
   const [districts, setDistricts] = useState<{ id: number; name: string }[]>(
     []
   );
+
+  const [regionSelected, setRegionSelected] = useState<any>(null);
   const [villages, setVillages] = useState<
     { id: number; name: string; postalCode: string }[]
   >([]);
@@ -603,19 +616,51 @@ const RegistrationForm = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name='regionId'
-              render={({ field }) => (
-                <CustomSelect
-                  field={field}
-                  label='dibawah naungan korwil'
-                  placeholder='Pilih korwil'
-                  data={regions}
-                  disabled={!regions.length}
-                />
+            <div>
+              <FormField
+                control={form.control}
+                name='regionId'
+                render={({ field }) => (
+                  <CustomSelect
+                    field={field}
+                    label='dibawah naungan korwil'
+                    placeholder='Pilih korwil'
+                    data={regions}
+                    disabled={!regions.length}
+                    onSelectedObject={(value) => {
+                      setRegionSelected(value);
+                    }}
+                  />
+                )}
+              />
+              {regionSelected && (
+                <Card className='mt-2 p-4'>
+                  <div className='grid grid-cols-3 gap-x-2'>
+                    <div className=''>Korwil</div>
+                    <div className='col-span-2'>: {regionSelected.name}</div>
+
+                    <div className=''>Nama</div>
+                    <div className='col-span-2'>
+                      : {regionSelected.coordinator}
+                    </div>
+
+                    <div className=''>No Telp</div>
+                    <Link
+                      href={`https://wa.me/${regionSelected.phone}`}
+                      target='_blank'
+                      className='col-span-2'
+                    >
+                      : {formatInternationalNumber(regionSelected.phone)}
+                    </Link>
+
+                    <div className=''>Area</div>
+                    <div className='col-span-2 break-words'>
+                      : {regionSelected?.coverage.join(', ') || '-'}
+                    </div>
+                  </div>
+                </Card>
               )}
-            />
+            </div>
 
             <FormField
               control={form.control}
