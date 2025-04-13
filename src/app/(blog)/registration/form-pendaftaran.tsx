@@ -645,7 +645,7 @@ const RegistrationForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Upload SK
+                    Upload SK Menetap dipondok
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -725,7 +725,7 @@ const RegistrationForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-semibold text-gray-700'>
-                    Upload Ijazah
+                    Upload Ijazah Terakhir
                   </FormLabel>
                   <FormControl>
                     <Input
