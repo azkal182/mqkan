@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { notFound } from 'next/navigation';
 
 export const metadata = {
   title: 'Dashboard : Pendaftaran Sukses'
