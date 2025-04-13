@@ -19,6 +19,10 @@ export default async function Page(props: PageProps) {
   const params = await props.params;
   const data = await getParticipantById(params.participantId);
 
+  if (!data) {
+    notFound();
+  }
+
   // Format tanggal lahir menggunakan Luxon
   const formattedBirthDate = data?.birthDate
     ? DateTime.fromJSDate(new Date(data.birthDate)).toFormat('dd-MM-yyyy')
@@ -82,6 +86,13 @@ export default async function Page(props: PageProps) {
               pembayaran dilakukan saat registrasi di pondok pesantren darul
               falah Amtsilati sebesar Rp. 50.000
             </p>
+          </div>
+
+          <div className='mb-4 rounded-md bg-green-100 p-4'>
+            <h2 className='text-lg font-semibold text-green-700'>
+              Informasi Admin
+            </h2>
+            <p className='text-gray-700'>0822-9142-4341</p>
           </div>
 
           <Alert variant='destructive' className={'mb-4'}>
