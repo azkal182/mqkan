@@ -109,7 +109,7 @@ const RequirementsSection = ({ even }: { even: boolean }) => {
                       },
                       {
                         title: 'Pas Foto',
-                        desc: 'Latar merah, Kopiyah hitam (laki-laki), Jilbab putih (perempuan)'
+                        desc: 'Latar merah, Kopiyah hitam (laki-laki), Jilbab Hitam (perempuan)'
                       }
                     ].map((doc, idx) => (
                       <motion.div
