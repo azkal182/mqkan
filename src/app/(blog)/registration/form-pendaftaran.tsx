@@ -245,7 +245,7 @@ const RegistrationForm = () => {
     const formData = new FormData();
 
     // Append semua field teks
-    formData.append('noRegistration', data.noRegistration);
+    // formData.append('noRegistration', data.noRegistration);
     formData.append('fullName', data.fullName);
     formData.append('nik', data.nik);
     formData.append('birthPlace', data.birthPlace);
@@ -321,6 +321,7 @@ const RegistrationForm = () => {
                     Nomor Pendaftaran
                   </FormLabel>
                   <FormControl>
+                    {/* @ts-ignore */}
                     <Input
                       {...field}
                       disabled
