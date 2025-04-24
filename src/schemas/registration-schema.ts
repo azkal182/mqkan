@@ -20,7 +20,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
 };
 
 export const RegistrationSchemas = z.object({
-  noRegistration: z.string().min(1),
+  noRegistration: z.string().optional().nullable(),
   fullName: z.string().min(3, 'Nama minimal 3 karakter'),
   nik: z.string().min(16, 'NIK harus 16 digit').max(16, 'NIK harus 16 digit'),
   birthPlace: z.string().min(3, 'Tempat lahir minimal 3 karakter'),

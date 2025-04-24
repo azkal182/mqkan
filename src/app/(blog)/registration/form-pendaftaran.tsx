@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import axios from 'axios';
 import {
   Form,
   FormControl,
@@ -238,19 +239,64 @@ const RegistrationForm = () => {
     // Tidak perlu reset apa pun karena ini level terakhir
   };
 
+  const createFormDataFromRegistrationInput = (
+    data: RegistrationInput
+  ): FormData => {
+    const formData = new FormData();
+
+    // Append semua field teks
+    formData.append('noRegistration', data.noRegistration);
+    formData.append('fullName', data.fullName);
+    formData.append('nik', data.nik);
+    formData.append('birthPlace', data.birthPlace);
+    formData.append('birthDate', data.birthDate);
+    formData.append('gender', data.gender); // pastikan ini string
+    formData.append('kelasId', data.kelasId);
+    formData.append('subKelasId', data.subKelasId);
+    formData.append('institutionName', data.institutionName);
+    formData.append('institutionAddress', data.institutionAddress);
+    formData.append('regionId', data.regionId);
+    formData.append('provinceId', String(data.provinceId));
+    formData.append('regencyId', String(data.regencyId));
+    formData.append('districtId', String(data.districtId));
+    formData.append('villageId', String(data.villageId));
+    formData.append('postalCode', data.postalCode);
+    formData.append('address', data.address);
+    formData.append('fatherName', data.fatherName);
+    formData.append('motherName', data.motherName);
+    formData.append('parentPhone', data.parentPhone);
+
+    // Append file fields (File harus sudah instance of File)
+    if (data.kk) formData.append('kk', data.kk);
+    if (data.sk) formData.append('sk', data.sk);
+    if (data.ijazah) formData.append('ijazah', data.ijazah);
+    if (data.photo) formData.append('photo', data.photo);
+
+    return formData;
+  };
+
   const onSubmit = async (data: RegistrationInput) => {
     try {
-      const result = await createRegistration(data);
-      if (result.success) {
-        toast.success(result.message);
+      const formData = createFormDataFromRegistrationInput(data);
+
+      const result: any = await axios.post('/api/registration', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      //   const result = await createRegistration(data);
+      if (result?.data?.success) {
+        // toast.success(result.message);
         // @ts-ignore
-        router.push(`/registration/success/${result.id}`);
+        router.push(`/registration/success/${result?.data?.id}`);
       } else {
         // @ts-ignore
-        toast.error(result.error.message);
+        toast.error(result?.data?.error.message);
       }
     } catch (error) {
-      toast.error(JSON.stringify(error));
+      console.log(error);
+      // @ts-ignore
+      toast.error(JSON.stringify(error?.response?.data?.error.message));
     }
   };
 
