@@ -25,8 +25,13 @@ export default async function Page(props: PageProps) {
   }
 
   // Format tanggal lahir menggunakan Luxon
+  //   const formattedBirthDate = data?.birthDate
+  //     ? DateTime.fromJSDate(new Date(data.birthDate)).toFormat('dd-MM-yyyy')
+  //     : 'Tanggal tidak tersedia';
   const formattedBirthDate = data?.birthDate
-    ? DateTime.fromJSDate(new Date(data.birthDate)).toFormat('dd-MM-yyyy')
+    ? DateTime.fromJSDate(new Date(data.birthDate))
+        .setZone('Asia/Jakarta')
+        .toFormat('dd-MM-yyyy')
     : 'Tanggal tidak tersedia';
 
   return (
