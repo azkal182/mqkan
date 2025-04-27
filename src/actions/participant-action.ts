@@ -170,25 +170,70 @@ export const getParticipantById = async (
 export const getParticipantCount = async () => {
   return await prisma.participant.count();
 };
-
-export const getAllParticipantsCount = async () => {
-  // Ambil semua kelas beserta subkelas dan jumlah peserta
-  const subKelasData = await prisma.subKelas.findMany({
+export const getTotalParticipantsCount = async () => {
+  const participants = await prisma.participant.findMany({
     select: {
-      name: true, // Nama subKelas
-      kelas: {
-        select: { name: true } // Nama kelas
-      },
-      _count: {
-        select: { participant: true } // Jumlah peserta dalam subKelas
-      }
+      gender: true
     }
   });
 
+  const putraCount = participants.filter((p) => p.gender === 'PUTRA').length;
+  const putriCount = participants.filter((p) => p.gender === 'PUTRI').length;
+
+  return {
+    total: putraCount + putriCount,
+    putra: putraCount,
+    putri: putriCount
+  };
+};
+
+export const getAllParticipantsCount = async () => {
+  // Ambil semua kelas beserta subkelas dan jumlah peserta
+  // const subKelasData = await prisma.subKelas.findMany({
+  //     select: {
+  //         name: true, // Nama subKelas
+  //         kelas: {
+  //             select: { name: true } // Nama kelas
+  //         },
+  //         _count: {
+  //             select: { participant: true } // Jumlah peserta dalam subKelas
+  //         }
+  //     }
+  // });
+
   // Format hasil dalam bentuk array object
-  return subKelasData.map((sub) => ({
-    kelas: sub.kelas.name, // Nama kelas
-    subKelas: sub.name, // Nama subKelas
-    count: sub._count.participant // Jumlah peserta
-  }));
+  //   return subKelasData.map((sub) => ({
+  //     kelas: sub.kelas.name, // Nama kelas
+  //     subKelas: sub.name, // Nama subKelas
+  //     count: sub._count.participant // Jumlah peserta
+  //   }));
+  const subKelasData = await prisma.subKelas.findMany({
+    select: {
+      name: true,
+      kelas: {
+        select: { name: true }
+      },
+      participant: {
+        select: {
+          gender: true
+        }
+      }
+    }
+  });
+  return subKelasData.map((sub) => {
+    const putraCount = sub.participant.filter(
+      (p) => p.gender === 'PUTRA'
+    ).length;
+    const putriCount = sub.participant.filter(
+      (p) => p.gender === 'PUTRI'
+    ).length;
+
+    return {
+      kelas: sub.kelas.name,
+      subKelas: sub.name,
+      count: putraCount + putriCount,
+      putra: putraCount,
+      putri: putriCount
+    };
+  });
 };

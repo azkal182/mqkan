@@ -70,12 +70,31 @@ export const getAllRegionsWithCount = async () => {
     select: {
       id: true,
       name: true,
-      _count: {
-        select: { participants: true }
+      participants: {
+        select: {
+          gender: true
+        }
       }
     }
   });
 
-  // Urutkan berdasarkan jumlah peserta terbanyak
-  return regions.sort((a, b) => b._count.participants - a._count.participants);
+  const formattedRegions = regions.map((region) => {
+    const putraCount = region.participants.filter(
+      (p) => p.gender === 'PUTRA'
+    ).length;
+    const putriCount = region.participants.filter(
+      (p) => p.gender === 'PUTRI'
+    ).length;
+
+    return {
+      id: region.id,
+      name: region.name,
+      total: putraCount + putriCount,
+      putra: putraCount,
+      putri: putriCount
+    };
+  });
+
+  // Urutkan berdasarkan total peserta terbanyak
+  return formattedRegions.sort((a, b) => b.total - a.total);
 };
