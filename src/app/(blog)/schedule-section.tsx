@@ -74,7 +74,7 @@ const ScheduleSection = ({ even }: { even: boolean }) => {
             <div className='space-y-4'>
               {[
                 { title: 'Pembukaan Pendaftaran', date: '1 April, 2025' },
-                { title: 'Penutupan Pendaftaran', date: '30 April, 2025' },
+                { title: 'Penutupan Pendaftaran', date: '10 Mei, 2025' },
                 { title: 'Pelaksanaan', date: '19-22 Mei, 2025' }
               ].map((event, index) => (
                 <motion.div

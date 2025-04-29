@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 const openingDate = new Date('2025-04-01T00:00:00+07:00');
-const closingDate = new Date('2025-04-30T23:59:59+07:00');
+const closingDate = new Date('2025-05-10T23:59:59+07:00');
 
 type TimeLeft =
   | {
