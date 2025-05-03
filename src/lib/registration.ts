@@ -115,20 +115,42 @@ function generateRegistrationNumber(
   return `${datePart}${genderCode}${kelasCode}${subKelasCode}${sequencePart}`;
 }
 
+const sendToTelegram = async (message: string) => {
+  const botToken =
+    process.env.TELEGRAM_BOT_TOKEN ||
+    '8195628050:AAH6_EbVGC2dXHoa3-lAbRvXOLX9y5sut6A';
+  const chatId = process.env.TELEGRAM_CHAT_ID || '404000198';
+
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'Markdown'
+      })
+    });
+  } catch (err) {
+    console.error('Gagal kirim pesan Telegram:', err);
+  }
+};
+
 export const createRegistration = async (data: RegistrationInput) => {
   console.log(data);
 
   const validated = RegistrationSchemas.safeParse(data);
 
   if (!validated.success) {
+    await sendToTelegram(
+      `❌ *Pendaftaran Gagal (Validasi)*\nData: \`\`\`\n${JSON.stringify(data, null, 2)}\n\`\`\``
+    );
     return handleError('invalid fields', 'createParticipant');
   }
 
   const validatedData = validated.data as RegistrationInput;
-  // const userExists = await prisma.participant.findUnique({ where: { nik: validatedData.nik } });
-  // if (userExists) {
-  //     return Response.json({ success: false, error: { message: 'NIK sudah terdaftar' } });
-  // }
 
   const count = await prisma.participant.count({
     where: {
@@ -151,6 +173,9 @@ export const createRegistration = async (data: RegistrationInput) => {
 
   // Pastikan subKelas tidak null sebelum digunakan
   if (!subKelas) {
+    await sendToTelegram(
+      `❌ *Pendaftaran Gagal (SubKelas tidak ditemukan)*\nData: \`\`\`\n${JSON.stringify(data, null, 2)}\n\`\`\``
+    );
     return handleError('SubKelas tidak ditemukans', 'createParticipant');
   }
 
@@ -188,7 +213,7 @@ export const createRegistration = async (data: RegistrationInput) => {
   }
 
   try {
-    const data = await prisma.participant.create({
+    const created = await prisma.participant.create({
       data: {
         noRegistration: noRegistration,
         fullName: validatedData.fullName,
@@ -219,10 +244,18 @@ export const createRegistration = async (data: RegistrationInput) => {
       },
       select: { id: true }
     });
+
+    await sendToTelegram(
+      `✅ *Pendaftaran Berhasil*\nID: ${created.id}\nNo. Registrasi: ${noRegistration}\nData:\n\`\`\`\n${JSON.stringify({ ...data, kk: kkPath, sk: skPath, ijazah: ijazahPath, photo: photoPath }, null, 2)}\n\`\`\``
+    );
+
     revalidatePath('/dashboard/participants');
     revalidatePath('/dashboard');
-    return { success: true, message: 'Pendaftaran berhasil', id: data.id };
+    return { success: true, message: 'Pendaftaran berhasil', id: created.id };
   } catch (error) {
+    await sendToTelegram(
+      `❌ *Pendaftaran Gagal (Database Error)*\nError: ${error instanceof Error ? error.message : String(error)}\nData:\n\`\`\`\n${JSON.stringify({ ...data, kk: kkPath, sk: skPath, ijazah: ijazahPath, photo: photoPath }, null, 2)}\n\`\`\``
+    );
     return handleError(error, 'createParticipant');
   }
 };
