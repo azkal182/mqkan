@@ -53,7 +53,8 @@ export async function POST(req: Request) {
 
     return Response.json(result);
   } catch (error) {
-    // console.error(error);
+    // eslint-disable-next-line no-console
+    console.error(error);
     return Response.json(handleError(error, 'createParticipant'), {
       status: 400
     });
