@@ -115,24 +115,55 @@ function generateRegistrationNumber(
   return `${datePart}${genderCode}${kelasCode}${subKelasCode}${sequencePart}`;
 }
 
+// const sendToTelegram = async (message: string) => {
+//   const botToken =
+//     process.env.TELEGRAM_BOT_TOKEN ||
+//     '8195628050:AAH6_EbVGC2dXHoa3-lAbRvXOLX9y5sut6A';
+//   const chatId = process.env.TELEGRAM_CHAT_ID || '404000198';
+
+//   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+//   try {
+//     await fetch(url, {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({
+//         chat_id: chatId,
+//         text: message,
+//         parse_mode: 'Markdown'
+//       })
+//     });
+//   } catch (err) {
+//     console.error('Gagal kirim pesan Telegram:', err);
+//   }
+// };
+
 const sendToTelegram = async (message: string) => {
   const botToken =
     process.env.TELEGRAM_BOT_TOKEN ||
     '8195628050:AAH6_EbVGC2dXHoa3-lAbRvXOLX9y5sut6A';
-  const chatId = process.env.TELEGRAM_CHAT_ID || '404000198';
+
+  const chatIds = [
+    process.env.TELEGRAM_CHAT_ID || '404000198',
+    process.env.TELEGRAM_CHAT_ID_2 || '873500057'
+  ];
 
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
   try {
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'Markdown'
-      })
-    });
+    await Promise.all(
+      chatIds.map((chatId) =>
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'Markdown'
+          })
+        })
+      )
+    );
   } catch (err) {
     console.error('Gagal kirim pesan Telegram:', err);
   }
