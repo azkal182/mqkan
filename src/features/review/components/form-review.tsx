@@ -1088,7 +1088,7 @@ const ReviewForm = ({ data }: ReviewFormProps) => {
                       className='msx-w-full cursor-pointer border p-2 transition hover:opacity-80'
                       onClick={() => handleOpen(img)}
                     >
-                      <Image
+                      <img
                         src={img.src}
                         alt={img.alt}
                         width={500}
@@ -1132,7 +1132,7 @@ const ReviewForm = ({ data }: ReviewFormProps) => {
                         }}
                       >
                         {selectedImage?.src && (
-                          <Image
+                          <img
                             src={selectedImage.src}
                             alt={selectedImage.alt}
                             fill
