@@ -30,13 +30,16 @@ export interface ParticipantsResponse {
   };
 }
 
-export async function getParticipants(filters: {
-  kelasId?: string;
-  subKelasId?: string;
-  search?: string;
-  page?: number;
-  limit?: number;
-}): Promise<ParticipantsResponse> {
+export async function getParticipants(
+  filters: {
+    kelasId?: string;
+    subKelasId?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  },
+  regionIds?: string[]
+): Promise<ParticipantsResponse> {
   const { kelasId, subKelasId, search, page = 1, limit = 10 } = filters;
 
   const kelasIds = kelasId ? kelasId.split('.') : [];
@@ -57,6 +60,10 @@ export async function getParticipants(filters: {
       ...whereCondition.subKelas,
       id: { in: subKelasIds }
     };
+  }
+
+  if (regionIds && regionIds.length > 0) {
+    whereCondition.regionId = { in: regionIds };
   }
 
   // Filter pencarian

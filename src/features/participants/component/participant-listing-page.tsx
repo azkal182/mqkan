@@ -6,6 +6,7 @@ import {
   ParticipantResponse
 } from '@/actions/participant-action';
 import { columns } from './participant-table/columns';
+import { auth } from '@/lib/auth';
 
 type ParticipantsListingPage = {};
 
@@ -16,6 +17,8 @@ export default async function ParticipantListingPage({}: ParticipantsListingPage
   const pageLimit = searchParamsCache.get('limit');
   const kelasId = searchParamsCache.get('kelas');
   const subKelasId = searchParamsCache.get('subKelas');
+  const session = await auth();
+  const regions = session?.user.regions;
 
   const filters = {
     page,
@@ -25,7 +28,7 @@ export default async function ParticipantListingPage({}: ParticipantsListingPage
     ...(subKelasId && { subKelasId: subKelasId })
   };
 
-  const data = await getParticipants(filters);
+  const data = await getParticipants(filters, regions);
   const totalUsers = data.meta.total;
   const participants: ParticipantResponse[] = data.data;
 

@@ -19,7 +19,8 @@ const nextConfig = {
       }
     ]
   },
-  transpilePackages: ['geist']
+  transpilePackages: ['geist'],
+  serverExternalPackages: ['pdfkit']
 };
 
 module.exports = nextConfig;

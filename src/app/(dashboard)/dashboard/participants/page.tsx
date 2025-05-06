@@ -3,7 +3,7 @@ import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { SearchParams } from 'nuqs/server';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
@@ -34,12 +34,15 @@ const ParticipantsPage = async (props: pageProps) => {
       <div className='flex flex-1 flex-col space-y-4'>
         <div className='flex items-start justify-between'>
           <Heading title='Peserta' description='Daftar Peserta' />
-          <Link
-            href='/dashboard/participants/new'
-            className={cn(buttonVariants(), 'text-xs md:text-sm')}
-          >
-            <Plus className='mr-2 h-4 w-4' /> Add New
-          </Link>
+          <div className='flex items-center space-x-2'>
+            <Button>Export Pdf</Button>
+            <Link
+              href='/dashboard/participants/new'
+              className={cn(buttonVariants(), 'text-xs md:text-sm')}
+            >
+              <Plus className='mr-2 h-4 w-4' /> Add New
+            </Link>
+          </div>
         </div>
         <Separator />
         <ParticipantTableAction />
