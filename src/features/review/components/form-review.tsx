@@ -1102,7 +1102,6 @@ const ReviewForm = ({ data }: ReviewFormProps) => {
                     <DialogClose asChild>
                       <Button
                         className='0 absolute top-4 right-4 z-50'
-                        // aria-label='Close'
                         size={'icon'}
                         variant={'secondary'}
                       >
@@ -1110,7 +1109,6 @@ const ReviewForm = ({ data }: ReviewFormProps) => {
                       </Button>
                     </DialogClose>
 
-                    {/* Scrollable area for zoom */}
                     <div
                       className={`h-full w-full ${
                         zoomed
@@ -1118,7 +1116,6 @@ const ReviewForm = ({ data }: ReviewFormProps) => {
                           : 'flex items-center justify-center'
                       }`}
                     >
-                      {/* Relative wrapper required for `fill` */}
                       <div
                         className={`relative ${
                           zoomed
@@ -1135,8 +1132,7 @@ const ReviewForm = ({ data }: ReviewFormProps) => {
                           <img
                             src={selectedImage.src}
                             alt={selectedImage.alt}
-                            fill
-                            className='object-contain'
+                            className='absolute inset-0 h-full w-full object-contain'
                           />
                         )}
                       </div>
