@@ -4,7 +4,7 @@ import { Heading } from '@/components/ui/heading';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Newspaper } from 'lucide-react';
 import { SearchParams } from 'nuqs/server';
 import { searchParamsCache, serialize } from '@/lib/searchparams';
 import { Separator } from '@/components/ui/separator';
@@ -13,6 +13,7 @@ import UserTableAction from '@/features/users/components/user-tables/user-table-
 import UserListingPage from '@/features/users/components/user-listing';
 import ParticipantListingPage from '@/features/participants/component/participant-listing-page';
 import ParticipantTableAction from '@/features/participants/component/participant-table/participant-table-action';
+import { auth } from '@/lib/auth';
 
 export const metadata = {
   title: 'Dashboard : Peserta'
@@ -28,6 +29,9 @@ const ParticipantsPage = async (props: pageProps) => {
 
   // This key is used for invoke suspense if any of the search params changed (used for filters).
   const key = serialize({ ...searchParams });
+  const session = await auth();
+  console.log(session);
+  const region = session?.user.regions;
 
   return (
     <PageContainer scrollable={false}>
@@ -35,7 +39,15 @@ const ParticipantsPage = async (props: pageProps) => {
         <div className='flex items-start justify-between'>
           <Heading title='Peserta' description='Daftar Peserta' />
           <div className='flex items-center space-x-2'>
-            <Button>Export Pdf</Button>
+            {region && region?.length > 0 && (
+              <Link
+                href={`http://localhost:3000/api/region-pdf?regionId=${region[0]}`}
+                className={cn(buttonVariants(), 'text-xs md:text-sm')}
+              >
+                <Newspaper className='mr-2 h-4 w-4' /> Export Pdf
+              </Link>
+            )}
+
             <Link
               href='/dashboard/participants/new'
               className={cn(buttonVariants(), 'text-xs md:text-sm')}

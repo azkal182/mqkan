@@ -52,7 +52,8 @@ export const sideMenu: SideMenu[] = [
         icon: 'key',
         isActive: false,
         items: [],
-        shortcut: ['d', 'r']
+        shortcut: ['d', 'r'],
+        permission: 'role:view'
       }
     ]
   }
