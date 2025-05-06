@@ -9,18 +9,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'utfs.io',
-        port: ''
-      },
-      {
-        protocol: 'https',
-        hostname: 'api.slingacademy.com',
-        port: ''
-      },
-      {
-        protocol: 'https',
-        hostname: 'tizoiyihjofpuxdnsnrb.supabase.co',
-        pathname: '/storage/v1/object/public/**'
+        hostname: '**'
       }
     ]
   },
