@@ -76,6 +76,9 @@ jobs:
             sleep 5
           done
 
+      - name: Clean build cache
+        run: rm -rf .next
+
       - name: Build Next.js application
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
