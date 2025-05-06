@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { DateTime } from 'luxon';
+import { RegistrationUpdateSchema } from '@/schemas/registration-schema';
+import { handleError } from '@/lib/error-handler';
+import { updateRegistration } from '@/actions/registration-action';
 
 export async function GET(req: NextRequest) {
   try {
@@ -58,7 +61,6 @@ export async function GET(req: NextRequest) {
       gender: participant.gender,
       fatherName: participant.fatherName,
       motherName: participant.motherName,
-
       province: participant.province.name,
       regency: participant.regency.label,
       district: participant.district.name,
@@ -74,7 +76,8 @@ export async function GET(req: NextRequest) {
       photoUrl: participant.photoUrl,
       skUrl: participant.skUrl,
       kkUrl: participant.kkUrl,
-      ijazahUrl: participant.ijazahUrl
+      ijazahUrl: participant.ijazahUrl,
+      statusCenter: participant.statusCenter
     }));
 
     return NextResponse.json({ data }, { status: 200 });
@@ -84,5 +87,48 @@ export async function GET(req: NextRequest) {
       { error: 'Internal Server Error' },
       { status: 500 }
     );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const formData = await req.formData();
+
+    // Ambil dan konversi nilai
+    const rawData = {
+      id: formData.get('id') as string,
+      fullName: formData.get('fullName') as string,
+      nik: formData.get('nik') as string,
+      birthPlace: formData.get('birthPlace') as string,
+      birthDate: formData.get('birthDate') as string,
+      gender: formData.get('gender') as string,
+      kelasId: formData.get('kelasId') as string,
+      subKelasId: formData.get('subKelasId') as string,
+      institutionName: formData.get('institutionName') as string,
+      institutionAddress: formData.get('institutionAddress') as string,
+      regionId: formData.get('regionId') as string,
+      provinceId: Number(formData.get('provinceId')),
+      regencyId: Number(formData.get('regencyId')),
+      districtId: Number(formData.get('districtId')),
+      villageId: Number(formData.get('villageId')),
+      postalCode: formData.get('postalCode') as string,
+      address: formData.get('address') as string,
+      fatherName: formData.get('fatherName') as string,
+      motherName: formData.get('motherName') as string,
+      parentPhone: formData.get('parentPhone') as string,
+      kk: formData.get('kk') as File | null,
+      sk: formData.get('sk') as File | null,
+      ijazah: formData.get('ijazah') as File | null,
+      photo: formData.get('photo') as File | null
+    };
+
+    // Validasi data input
+    const parsed = RegistrationUpdateSchema.parse(rawData);
+    const result = await updateRegistration(parsed);
+    return NextResponse.json({ success: true, result });
+  } catch (error) {
+    return Response.json(handleError(error, 'updateParticipant'), {
+      status: 400
+    });
   }
 }

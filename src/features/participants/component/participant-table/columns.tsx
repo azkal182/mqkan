@@ -123,6 +123,9 @@ export const columns: ColumnDef<ParticipantResponse>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction />
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return <CellAction participantId={id} />;
+    }
   }
 ];

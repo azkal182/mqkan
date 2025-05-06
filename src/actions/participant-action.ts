@@ -18,6 +18,8 @@ export interface ParticipantResponse {
   region: { id: string; name: string };
   kelas: string;
   subKelas: string;
+  statusCenter: boolean;
+  statusRegion: boolean;
 }
 
 export interface ParticipantsResponse {
@@ -115,7 +117,9 @@ export async function getParticipants(
     village: p.village,
     region: p.region,
     kelas: p.subKelas?.kelas.name as string,
-    subKelas: p.subKelas?.name as string
+    subKelas: p.subKelas?.name as string,
+    statusCenter: p.statusCenter,
+    statusRegion: p.statusRegion
   }));
 
   return {
@@ -167,7 +171,9 @@ export const getParticipantById = async (
       village: participant.village,
       region: participant.region,
       kelas: participant.subKelas?.kelas.name as string,
-      subKelas: participant.subKelas?.name as string
+      subKelas: participant.subKelas?.name as string,
+      statusCenter: participant.statusCenter,
+      statusRegion: participant.statusRegion
     };
   } else {
     return null;
@@ -243,4 +249,34 @@ export const getAllParticipantsCount = async () => {
       putri: putriCount
     };
   });
+};
+
+export const getReviewById = async (id: string) => {
+  const data = await prisma.participant.findUnique({
+    where: {
+      id
+    },
+    include: {
+      subKelas: {
+        select: {
+          kelas: {
+            select: {
+              id: true
+            }
+          }
+        }
+      }
+    }
+  });
+  // Transformasi data
+  const transformedData = {
+    ...data,
+    kelasId: data?.subKelas?.kelas.id,
+    subKelas: undefined
+  };
+
+  // Hapus properti subKelas dari objek (opsional, jika sudah di-set undefined)
+  delete transformedData.subKelas;
+  // console.log(JSON.stringify(transformedData, null,2))
+  return transformedData;
 };

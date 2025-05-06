@@ -20,7 +20,7 @@ export function DataTableSkeleton({
     <div className='flex flex-1 flex-col space-y-3 overflow-auto'>
       {searchableColumnCount > 0 || filterableColumnCount > 0 ? (
         <div className='flex w-full items-center justify-between space-x-2 overflow-auto p-1'>
-          <div className='flex flex-1 items-center space-x-2 space-y-4'>
+          <div className='flex flex-1 items-center space-y-4 space-x-2'>
             {searchableColumnCount > 0
               ? Array.from({ length: searchableColumnCount }).map((_, i) => (
                   <Skeleton key={i} className='h-10 w-[150px] lg:w-[250px]' />
@@ -39,7 +39,7 @@ export function DataTableSkeleton({
       ) : null}
 
       <div className='relative flex flex-1 rounded-md border'>
-        <div className='absolute bottom-0 left-0 right-0 top-0 flex'>
+        <div className='absolute top-0 right-0 bottom-0 left-0 flex'>
           <ScrollArea className='flex flex-1'>
             <Table>
               <TableHeader>

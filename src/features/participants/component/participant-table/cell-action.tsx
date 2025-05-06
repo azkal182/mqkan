@@ -8,11 +8,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useCurrentSession } from '@/hooks/use-current-user';
 import { useHasPermission } from '@/hooks/use-has-permission';
 import { Edit, MoreHorizontal, TicketCheck, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export const CellAction = () => {
+export const CellAction = ({ participantId }: { participantId: string }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const canAccCorwil = useHasPermission('participant:acc-corwil');
   const canAccPusat = useHasPermission('participant:acc-pusat');
@@ -35,7 +36,11 @@ export const CellAction = () => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           {canAccCorwil && (
             <DropdownMenuItem
-            //   onClick={() => router.push(`/dashboard/users/${user.id}`)}
+              onClick={() =>
+                router.push(
+                  `/dashboard/participants/review-korwil?participantId=${participantId}`
+                )
+              }
             >
               <TicketCheck className='mr-2 h-4 w-4' /> Review Korwil
             </DropdownMenuItem>

@@ -14,11 +14,14 @@ import {
   TableRow
 } from '@/components/ui/table';
 import React from 'react';
+import RegionsTable from './regions-table';
 
 const Page = async () => {
   const count = await getAllParticipantsCount();
   const regions = await getAllRegionsWithCount();
   const totalParticipantsCount = await getTotalParticipantsCount();
+
+  // console.log(JSON.stringify(regions, null, 2));
 
   return (
     <PageContainer>
@@ -87,7 +90,7 @@ const Page = async () => {
             🌍 Daftar Korwil
           </h2>
 
-          <div className='overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-lg'>
+          {/* <div className='overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-lg'>
             <Table className='min-w-full'>
               <TableHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] text-white'>
                 <TableRow>
@@ -103,6 +106,9 @@ const Page = async () => {
                   </TableHead>
                   <TableHead className='w-8 px-4 py-2 text-center text-white'>
                     Putri
+                  </TableHead>
+                  <TableHead className=' px-4 py-2 text-center text-white'>
+                  Kelas & SubKelas
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -124,11 +130,26 @@ const Page = async () => {
                     <TableCell className='px-4 py-2 text-center font-bold text-[#065D5A]'>
                       {region.putri}
                     </TableCell>
+                    <TableCell>
+                    {Object.entries(region.kelas).map(([kelasName, kelasData]) => (
+                  <div key={kelasName} className="mb-2">
+                    <strong>{kelasName}</strong>: Total {kelasData.total} (Putra: {kelasData.putra}, Putri: {kelasData.putri})
+                    <ul className="ml-4">
+                      {Object.entries(kelasData.subKelas).map(([subKelasName, subKelasData]) => (
+                        <li key={subKelasName}>
+                          {subKelasName}: Total {subKelasData.total} (Putra: {subKelasData.putra}, Putri: {subKelasData.putri})
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </div>
+          </div> */}
+          <RegionsTable regions={regions} />
         </div>
       </div>
     </PageContainer>

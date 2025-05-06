@@ -3,7 +3,9 @@
 import { prisma } from '@/lib/prisma';
 import {
   RegistrationInput,
-  RegistrationSchemas
+  RegistrationSchemas,
+  RegistrationUpdateSchema,
+  RegistrationUpdateSchemaInput
 } from '@/schemas/registration-schema';
 import { DateTime } from 'luxon';
 import { handleError } from '@/lib/error-handler';
@@ -218,6 +220,77 @@ export const createRegistration = async (data: RegistrationInput) => {
     revalidatePath('/dashboard/participants');
     revalidatePath('/dashboard');
     return { success: true, message: 'Pendaftaran berhasil', id: data.id };
+  } catch (error) {
+    return handleError(error, 'createParticipant');
+  }
+};
+
+export const updateRegistration = async (
+  data: RegistrationUpdateSchemaInput
+) => {
+  const validated = RegistrationUpdateSchema.safeParse(data);
+  if (!validated.success) {
+    return handleError('invalid fields', 'createParticipant');
+  }
+  const validatedData = validated.data as RegistrationUpdateSchemaInput;
+
+  let kkPath: string | undefined;
+  let ijazahPath: string | undefined;
+  let photoPath: string | undefined;
+  let skPath: string | undefined;
+
+  if (validatedData.kk) {
+    kkPath = await uploadNota(validatedData.kk);
+  }
+
+  if (validatedData.sk) {
+    skPath = await uploadNota(validatedData.sk);
+  }
+
+  if (validatedData.ijazah) {
+    ijazahPath = await uploadNota(validatedData.ijazah);
+  }
+
+  if (validatedData.photo) {
+    photoPath = await uploadNota(validatedData.photo);
+  }
+
+  try {
+    const data = await prisma.participant.update({
+      where: {
+        id: validatedData.id
+      },
+      data: {
+        fullName: validatedData.fullName,
+        nik: validatedData.nik,
+        birthPlace: validatedData.birthPlace,
+        birthDate: DateTime.fromISO(validated.data.birthDate, {
+          zone: 'Asia/Jakarta'
+        }).toJSDate(),
+        gender: validatedData.gender,
+        subKelasId: validatedData.subKelasId,
+        institutionName: validatedData.institutionName,
+        institutionAddress: validatedData.institutionAddress,
+        regionId: validatedData.regionId,
+        provinceId: validatedData.provinceId,
+        regencyId: validatedData.regencyId,
+        districtId: validatedData.districtId,
+        villageId: validatedData.villageId,
+        postalCode: validatedData.postalCode,
+        address: validatedData.address,
+        fatherName: validatedData.fatherName,
+        motherName: validatedData.motherName,
+        parentPhone: validatedData.parentPhone,
+        ...(skPath ? { skUrl: skPath } : {}),
+        ...(kkPath ? { kkUrl: kkPath } : {}),
+        ...(ijazahPath ? { ijazahUrl: ijazahPath } : {}),
+        ...(photoPath ? { photoUrl: photoPath } : {})
+      },
+      select: { id: true }
+    });
+    revalidatePath('/dashboard/participants');
+    revalidatePath('/dashboard');
+    return { success: true, message: 'Update berhasil', id: data.id };
   } catch (error) {
     return handleError(error, 'createParticipant');
   }

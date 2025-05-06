@@ -80,6 +80,7 @@ export default function UserAuthForm() {
                   <Input
                     placeholder='Enter your password...'
                     disabled={isLoading}
+                    type='password'
                     {...field}
                   />
                 </FormControl>

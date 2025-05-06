@@ -72,13 +72,79 @@ export const getAllRegionsWithCount = async () => {
       name: true,
       participants: {
         select: {
-          gender: true
+          gender: true,
+          subKelas: {
+            select: {
+              name: true,
+              kelas: {
+                select: {
+                  name: true
+                }
+              }
+            }
+          }
         }
       }
     }
   });
 
+  // const formattedRegions = regions.map((region) => {
+  //   const putraCount = region.participants.filter(
+  //     (p) => p.gender === 'PUTRA'
+  //   ).length;
+  //   const putriCount = region.participants.filter(
+  //     (p) => p.gender === 'PUTRI'
+  //   ).length;
+
+  //   return {
+  //     id: region.id,
+  //     name: region.name,
+  //     total: putraCount + putriCount,
+  //     putra: putraCount,
+  //     putri: putriCount
+  //   };
+  // });
   const formattedRegions = regions.map((region) => {
+    // Inisialisasi objek untuk menyimpan jumlah per kelas dan subKelas
+    const kelasBreakdown: any = {};
+
+    // Hitung jumlah peserta berdasarkan gender, kelas, dan subKelas
+    region.participants.forEach((participant: any) => {
+      const kelasName = participant.subKelas.kelas.name;
+      const subKelasName = participant.subKelas.name;
+      const gender = participant.gender;
+
+      // Inisialisasi struktur jika belum ada
+      if (!kelasBreakdown[kelasName]) {
+        kelasBreakdown[kelasName] = {
+          total: 0,
+          putra: 0,
+          putri: 0,
+          subKelas: {}
+        };
+      }
+      if (!kelasBreakdown[kelasName].subKelas[subKelasName]) {
+        kelasBreakdown[kelasName].subKelas[subKelasName] = {
+          total: 0,
+          putra: 0,
+          putri: 0
+        };
+      }
+
+      // Tambahkan jumlah peserta
+      kelasBreakdown[kelasName].total += 1;
+      kelasBreakdown[kelasName].subKelas[subKelasName].total += 1;
+
+      if (gender === 'PUTRA') {
+        kelasBreakdown[kelasName].putra += 1;
+        kelasBreakdown[kelasName].subKelas[subKelasName].putra += 1;
+      } else if (gender === 'PUTRI') {
+        kelasBreakdown[kelasName].putri += 1;
+        kelasBreakdown[kelasName].subKelas[subKelasName].putri += 1;
+      }
+    });
+
+    // Hitung total putra dan putri untuk region
     const putraCount = region.participants.filter(
       (p) => p.gender === 'PUTRA'
     ).length;
@@ -91,9 +157,11 @@ export const getAllRegionsWithCount = async () => {
       name: region.name,
       total: putraCount + putriCount,
       putra: putraCount,
-      putri: putriCount
+      putri: putriCount,
+      kelas: kelasBreakdown
     };
   });
+  // console.log(JSON.stringify(formattedRegions, null, 2));
 
   // Urutkan berdasarkan total peserta terbanyak
   return formattedRegions.sort((a, b) => b.total - a.total);

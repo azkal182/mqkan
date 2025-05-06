@@ -30,7 +30,7 @@ const ParticipantsPage = async (props: pageProps) => {
   // This key is used for invoke suspense if any of the search params changed (used for filters).
   const key = serialize({ ...searchParams });
   const session = await auth();
-  console.log(session);
+  // console.log(session);
   const region = session?.user.regions;
 
   return (
@@ -48,12 +48,12 @@ const ParticipantsPage = async (props: pageProps) => {
               </Link>
             )}
 
-            <Link
+            {/* <Link
               href='/dashboard/participants/new'
               className={cn(buttonVariants(), 'text-xs md:text-sm')}
             >
               <Plus className='mr-2 h-4 w-4' /> Add New
-            </Link>
+            </Link> */}
           </div>
         </div>
         <Separator />
