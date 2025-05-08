@@ -13,6 +13,9 @@ export async function GET(req: NextRequest) {
     }
 
     const participants = await prisma.participant.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      },
       include: {
         subKelas: {
           include: {
