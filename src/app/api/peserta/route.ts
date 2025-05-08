@@ -5,6 +5,11 @@ import { RegistrationUpdateSchema } from '@/schemas/registration-schema';
 import { handleError } from '@/lib/error-handler';
 import { updateRegistration } from '@/actions/registration-action';
 
+function formatToLocalDatetime(date: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const key = await req.headers.get('x-api-key');
@@ -82,7 +87,7 @@ export async function GET(req: NextRequest) {
       ijazahUrl: participant.ijazahUrl,
       statusCenter: participant.statusCenter,
       statusRegion: participant.statusRegion,
-      dataCreated: participant.createdAt
+      dataCreated: formatToLocalDatetime(participant.createdAt)
     }));
 
     return NextResponse.json({ data }, { status: 200 });
