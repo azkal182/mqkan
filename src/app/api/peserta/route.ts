@@ -82,7 +82,7 @@ export async function GET(req: NextRequest) {
       ijazahUrl: participant.ijazahUrl,
       statusCenter: participant.statusCenter,
       statusRegion: participant.statusRegion,
-      createdAt: participant.createdAt
+      created: participant.createdAt
     }));
 
     return NextResponse.json({ data }, { status: 200 });
