@@ -221,7 +221,7 @@ const OfficialTable = ({ data, regions }: OfficialTableProps) => {
 
             {userRegions.length === 0 && (
               <div>
-                <Label htmlFor='regionId'>Wilayah</Label>
+                <Label htmlFor='regionId'>Korwil</Label>
                 <select
                   id='regionId'
                   {...register('regionId')}
@@ -252,7 +252,10 @@ const OfficialTable = ({ data, regions }: OfficialTableProps) => {
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
-                  <Label htmlFor='aggree'>Setuju dengan syarat</Label>
+                  <Label htmlFor='aggree' className='leading-4'>
+                    Sanggup bertanggung jawab sepenuhnya terkait peserta yang
+                    dikirimkan oleh delegasinya
+                  </Label>
                 </div>
               )}
             />
