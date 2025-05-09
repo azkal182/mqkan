@@ -78,6 +78,7 @@ model Region {
     createdAt    DateTime      @default(now())
     updatedAt    DateTime      @updatedAt
     participants Participant[]
+    officials    Official[]
 }
 
 model UserRegion {
@@ -245,4 +246,15 @@ model Penilaian {
 enum PenilaianTipe {
     PENYISIHAN
     FINAL
+}
+
+model Official {
+    id       String  @id @default(uuid())
+    fullName String
+    address  String
+    phone    String
+    aggree   Boolean @default(false)
+
+    region   Region? @relation(fields: [regionId], references: [id])
+    regionId String?
 }
