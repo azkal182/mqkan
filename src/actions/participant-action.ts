@@ -252,6 +252,9 @@ export const getAllParticipantsCount = async () => {
         select: { name: true }
       },
       participant: {
+        where: {
+          statusRegion: true
+        },
         select: {
           gender: true
         }
@@ -265,6 +268,8 @@ export const getAllParticipantsCount = async () => {
     const putriCount = sub.participant.filter(
       (p) => p.gender === 'PUTRI'
     ).length;
+
+    console.log();
 
     return {
       kelas: sub.kelas.name,
