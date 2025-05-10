@@ -239,6 +239,13 @@ export const getAllParticipantsCount = async () => {
   //     count: sub._count.participant // Jumlah peserta
   //   }));
   const subKelasData = await prisma.subKelas.findMany({
+    where: {
+      participant: {
+        some: {
+          statusRegion: true
+        }
+      }
+    },
     select: {
       name: true,
       kelas: {
