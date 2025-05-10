@@ -95,7 +95,12 @@ export async function getParticipants(
           }
         }
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: [
+        {
+          statusRegion: 'asc'
+        },
+        { createdAt: 'desc' }
+      ]
     }),
     prisma.participant.count({ where: whereCondition })
   ]);
