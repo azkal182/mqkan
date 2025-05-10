@@ -84,6 +84,7 @@
     "nextjs-toploader": "^3.7.15",
     "nuqs": "^2.2.3",
     "pdfkit": "^0.17.0",
+    "pdfkit-table": "^0.1.99",
     "postcss": "8.4.49",
     "react": "19.0.0",
     "react-day-picker": "^9.4.3",
