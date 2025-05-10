@@ -52,7 +52,7 @@ const PageClient = ({ data, regions }: OfficialTableProps) => {
         {/* Tombol edit */}
         {/* <Button onClick={() => { setEditData(item); setOpen(true); }}>Edit</Button> */}
 
-        <DialogContent>
+        <DialogContent className='max-h-[80vh] overflow-y-auto'>
           <DialogHeader>
             <DialogTitle>
               {editData ? 'Edit Official' : 'Tambah Official'}
@@ -96,11 +96,10 @@ const PageClient = ({ data, regions }: OfficialTableProps) => {
                 <TableCell>{item.phone}</TableCell>
                 <TableCell>
                   {item.photo ? (
-                    <Image
+                    <img
                       src={item.photo}
                       alt='photo'
-                      width={40}
-                      height={50}
+                      className='mx-auto h-auto max-w-14 rounded-md'
                     />
                   ) : (
                     <span className='text-gray-300'>No Pic</span>
