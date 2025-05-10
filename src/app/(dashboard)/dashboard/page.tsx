@@ -62,6 +62,10 @@ const Page = async () => {
                   {totalParticipantsCount.validationCount}
                 </p>
                 <p className='text-md text-gray-600'>Peserta</p>
+                <div className='flex w-full items-center justify-evenly'>
+                  <div>{totalParticipantsCount.putraValidation} putra</div>
+                  <div>{totalParticipantsCount.putriValidation} putri</div>
+                </div>
               </CardContent>
             </Card>
             <Card className='relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl'>
@@ -76,6 +80,10 @@ const Page = async () => {
                   {totalParticipantsCount.invalidationCount}
                 </p>
                 <p className='text-md text-gray-600'>Peserta</p>
+                <div className='flex w-full items-center justify-evenly'>
+                  <div>{totalParticipantsCount.putraInvalidation} putra</div>
+                  <div>{totalParticipantsCount.putriInvalidation} putri</div>
+                </div>
               </CardContent>
             </Card>
           </div>

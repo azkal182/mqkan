@@ -189,6 +189,35 @@ export const getParticipantCount = async () => {
   return await prisma.participant.count();
 };
 
+// export const getTotalParticipantsCount = async () => {
+//   const participants = await prisma.participant.findMany({
+//     select: {
+//       gender: true,
+//       statusRegion: true
+//     }
+//   });
+
+//   let putra = 0;
+//   let putri = 0;
+//   let validation = 0;
+//   let invalidation = 0;
+
+//   for (const p of participants) {
+//     if (p.gender === 'PUTRA') putra++;
+//     if (p.gender === 'PUTRI') putri++;
+//     if (p.statusRegion === true) validation++;
+//     if (p.statusRegion === false) invalidation++;
+//   }
+
+//   return {
+//     total: putra + putri,
+//     putra,
+//     putri,
+//     validationCount: validation,
+//     invalidationCount: invalidation
+//   };
+// };
+
 export const getTotalParticipantsCount = async () => {
   const participants = await prisma.participant.findMany({
     select: {
@@ -197,25 +226,38 @@ export const getTotalParticipantsCount = async () => {
     }
   });
 
-  let putra = 0;
-  let putri = 0;
-  let validation = 0;
-  let invalidation = 0;
+  let count = {
+    total: 0,
+    putra: 0,
+    putri: 0,
+    validationCount: 0,
+    invalidationCount: 0,
+    putraValidation: 0,
+    putraInvalidation: 0,
+    putriValidation: 0,
+    putriInvalidation: 0
+  };
 
   for (const p of participants) {
-    if (p.gender === 'PUTRA') putra++;
-    if (p.gender === 'PUTRI') putri++;
-    if (p.statusRegion === true) validation++;
-    if (p.statusRegion === false) invalidation++;
+    count.total++;
+
+    if (p.gender === 'PUTRA') {
+      count.putra++;
+      if (p.statusRegion === true) count.putraValidation++;
+      if (p.statusRegion === false) count.putraInvalidation++;
+    }
+
+    if (p.gender === 'PUTRI') {
+      count.putri++;
+      if (p.statusRegion === true) count.putriValidation++;
+      if (p.statusRegion === false) count.putriInvalidation++;
+    }
+
+    if (p.statusRegion === true) count.validationCount++;
+    if (p.statusRegion === false) count.invalidationCount++;
   }
 
-  return {
-    total: putra + putri,
-    putra,
-    putri,
-    validationCount: validation,
-    invalidationCount: invalidation
-  };
+  return count;
 };
 
 export const getAllParticipantsCount = async () => {
