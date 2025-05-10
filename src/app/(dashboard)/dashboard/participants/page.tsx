@@ -39,12 +39,21 @@ const ParticipantsPage = async (props: pageProps) => {
         <div className='flex items-start justify-between'>
           <Heading title='Peserta' description='Daftar Peserta' />
           <div className='flex items-center space-x-2'>
-            {region && region?.length > 0 && (
+            {region && region?.length > 0 ? (
               <Link
-                href={`http://localhost:3000/api/region-pdf?regionId=${region[0]}`}
+                target='_blank'
+                href={`http://localhost:3000/api/region-pdf/${region[0]}`}
                 className={cn(buttonVariants(), 'text-xs md:text-sm')}
               >
                 <Newspaper className='mr-2 h-4 w-4' /> Export Pdf
+              </Link>
+            ) : (
+              <Link
+                target='_blank'
+                href={`http://localhost:3000/api/region-pdf`}
+                className={cn(buttonVariants(), 'text-xs md:text-sm')}
+              >
+                <Newspaper className='mr-2 h-4 w-4' /> Export all
               </Link>
             )}
 
