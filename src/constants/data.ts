@@ -31,15 +31,15 @@ export const sideMenu: SideMenu[] = [
         isActive: false,
         shortcut: ['d', 'p'],
         items: [] // Empty array as there are no child items for Dashboard
-      },
-      {
-        title: 'Officials',
-        url: '/dashboard/officials',
-        icon: 'user2',
-        isActive: false,
-        shortcut: ['d', 'o'],
-        items: [] // Empty array as there are no child items for Dashboard
       }
+      // {
+      //   title: 'Officials',
+      //   url: '/dashboard/officials',
+      //   icon: 'user2',
+      //   isActive: false,
+      //   shortcut: ['d', 'o'],
+      //   items: []
+      // }
     ]
   },
   {
