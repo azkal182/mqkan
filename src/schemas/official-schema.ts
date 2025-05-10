@@ -57,7 +57,13 @@ const formatBytes = (bytes: number, decimals = 2) => {
 export const officialSchemaBase = {
   fullName: z.string().min(2, 'Nama harus minimal 2 karakter'),
   address: z.string().min(5, 'Alamat harus minimal 5 karakter'),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Nomor telepon tidak valid'),
+  phone: z
+    .string()
+    .min(10, 'Nomor telepon minimal 10 digit')
+    .max(15, 'Nomor telepon maksimal 15 digit')
+    .refine((val) => /^08\d{8,13}$/.test(val), {
+      message: "Nomor telepon harus diawali dengan '08' dan hanya berisi angka"
+    }),
   aggree: z.boolean(),
   regionId: z.string().min(2, 'Region harus diisi'),
   photo: z
@@ -75,7 +81,13 @@ export const officialSchemaEdit = z.object({
   id: z.string().uuid(),
   fullName: z.string().min(2, 'Nama harus minimal 2 karakter'),
   address: z.string().min(5, 'Alamat harus minimal 5 karakter'),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Nomor telepon tidak valid'),
+  phone: z
+    .string()
+    .min(10, 'Nomor telepon minimal 10 digit')
+    .max(15, 'Nomor telepon maksimal 15 digit')
+    .refine((val) => /^08\d{8,13}$/.test(val), {
+      message: "Nomor telepon harus diawali dengan '08' dan hanya berisi angka"
+    }),
   aggree: z.boolean(),
   regionId: z.string().min(2, 'Region harus diisi'),
   photo: z
