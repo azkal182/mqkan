@@ -254,6 +254,7 @@ model Official {
     address  String
     phone    String
     aggree   Boolean @default(false)
+    photo    String?
 
     region   Region? @relation(fields: [regionId], references: [id])
     regionId String?

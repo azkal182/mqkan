@@ -1,7 +1,7 @@
 import { getOfficials } from '@/actions/official-action';
-import OfficialTable from './official-table';
 import { getRegions } from '@/actions/region-action';
 import { auth } from '@/lib/auth';
+import PageClient from './page.client';
 
 export default async function OfficialsPage() {
   const session = await auth();
@@ -10,7 +10,8 @@ export default async function OfficialsPage() {
 
   return (
     <div className='container mx-auto py-10'>
-      <OfficialTable data={data} regions={regions} />
+      {/* <OfficialTable data={data} regions={regions} /> */}
+      <PageClient data={data} regions={regions} />
     </div>
   );
 }

@@ -1,8 +1,16 @@
 'use server';
 
+import { handleError } from '@/lib/error-handler';
 import { prisma } from '@/lib/prisma';
-import { OfficialFormData, officialSchema } from '@/schemas/official-schema';
+import { supabase } from '@/lib/supabase';
+import {
+  OfficialFormDataCreate,
+  OfficialFormDataEdit,
+  officialSchemaCreate,
+  officialSchemaEdit
+} from '@/schemas/official-schema';
 import { revalidatePath } from 'next/cache';
+import sharp from 'sharp';
 
 // export interface Official {
 //   id: string;
@@ -19,28 +27,111 @@ export interface Region {
   name: string;
 }
 
-export async function createOfficial(data: OfficialFormData) {
+const uploadPhoto = async (file: File): Promise<string> => {
   try {
-    const validatedData = officialSchema.parse(data);
-    await prisma.official.create({
+    // Ambil ekstensi file dari nama asli
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    console.log({ file, ext });
+    if (!ext || !['jpg', 'jpeg', 'png'].includes(ext)) {
+      throw new Error('Format file tidak didukung');
+    }
+
+    // Tentukan format dan contentType sesuai dengan ekstensi
+    const format = ext === 'png' ? 'png' : 'jpeg';
+    const contentType = ext === 'png' ? 'image/png' : 'image/jpeg';
+    const fileName = `official-mqkan-${Date.now()}.${ext}`;
+
+    // Konversi file ke buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+
+    // Proses gambar dengan Sharp
+    let compressedBuffer;
+    if (format === 'png') {
+      compressedBuffer = await sharp(buffer)
+        .resize({ width: 1024 }) // Resize jika lebih besar dari 1024px
+        .png({ quality: 80 }) // Kompres PNG
+        .toBuffer();
+    } else {
+      compressedBuffer = await sharp(buffer)
+        .resize({ width: 1024 }) // Resize jika lebih besar dari 1024px
+        .jpeg({ quality: 70 }) // Kompres JPG
+        .toBuffer();
+    }
+
+    // Upload ke Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('mqkan')
+      .upload(fileName, compressedBuffer, { contentType });
+
+    if (error) {
+      console.error('Error meng-upload file:', error);
+      throw new Error('Gagal meng-upload file ke Supabase');
+    }
+
+    // Ambil URL publik file
+    const publicUrl = supabase.storage.from('mqkan').getPublicUrl(data.path)
+      .data.publicUrl;
+    console.log('Public URL:', publicUrl);
+
+    return publicUrl;
+  } catch (error) {
+    console.error('Error meng-upload file:', error);
+    throw new Error('Gagal meng-upload file');
+  }
+};
+export async function createOfficial(data: OfficialFormDataCreate) {
+  try {
+    const validatedData = officialSchemaCreate.safeParse(data);
+    if (!validatedData.success) {
+      return handleError('invalid fields', 'createOfficial');
+    }
+    let photoPath: string | undefined;
+    if (validatedData.data.photo) {
+      photoPath = await uploadPhoto(validatedData.data.photo);
+    }
+
+    console.log('final', {
+      fullName: validatedData.data.fullName,
+      address: validatedData.data.address,
+      phone: validatedData.data.phone,
+      aggree: validatedData.data.aggree,
+      regionId: validatedData.data.regionId || null,
+      photo: photoPath || ''
+    });
+    const result = await prisma.official.create({
       data: {
-        fullName: validatedData.fullName,
-        address: validatedData.address,
-        phone: validatedData.phone,
-        aggree: validatedData.aggree,
-        regionId: validatedData.regionId || null
+        fullName: validatedData.data.fullName,
+        address: validatedData.data.address,
+        phone: validatedData.data.phone,
+        aggree: validatedData.data.aggree,
+        regionId: validatedData.data.regionId || null,
+        photo: photoPath || ''
       }
     });
+
     revalidatePath('/officials');
-    return { success: true };
+    return { success: true, result };
   } catch (error: any) {
+    console.error(error);
     return { success: false, error: error.message };
   }
 }
 
-export async function updateOfficial(id: string, data: OfficialFormData) {
+export async function updateOfficial(id: string, data: OfficialFormDataEdit) {
   try {
-    const validatedData = officialSchema.parse(data);
+    const validated = officialSchemaEdit.safeParse(data);
+    if (!validated.success) {
+      return { error: 'field invalid' };
+    }
+
+    const validatedData = validated.data;
+
+    let photoPath: string | undefined;
+    if (validatedData.photo) {
+      photoPath = await uploadPhoto(validatedData.photo);
+    }
+
     await prisma.official.update({
       where: { id },
       data: {
@@ -48,7 +139,8 @@ export async function updateOfficial(id: string, data: OfficialFormData) {
         address: validatedData.address,
         phone: validatedData.phone,
         aggree: validatedData.aggree,
-        regionId: validatedData.regionId || null
+        regionId: validatedData.regionId || null,
+        ...(validatedData.photo && { photo: photoPath })
       }
     });
     revalidatePath('/officials');
@@ -77,6 +169,7 @@ export type Official = {
   address: string;
   phone: string;
   aggree: boolean;
+  photo: string | null | undefined;
 };
 
 export async function getOfficials(
