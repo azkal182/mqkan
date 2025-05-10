@@ -35,7 +35,7 @@ const Page = async () => {
             <Card className='relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl'>
               <CardHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] p-4 text-white'>
                 <CardTitle className='text-lg leading-2 font-semibold'>
-                  Jumlah
+                  Jumlah Pendaftaran
                 </CardTitle>
               </CardHeader>
 
@@ -48,6 +48,34 @@ const Page = async () => {
                   <div>{totalParticipantsCount.putra} putra</div>
                   <div>{totalParticipantsCount.putri} putri</div>
                 </div>
+              </CardContent>
+            </Card>
+            <Card className='relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl'>
+              <CardHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] p-4 text-white'>
+                <CardTitle className='text-lg leading-2 font-semibold'>
+                  Jumlah Validasi
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className='flex flex-col items-center pt-3'>
+                <p className='text-4xl font-bold text-[#065D5A]'>
+                  {totalParticipantsCount.validationCount}
+                </p>
+                <p className='text-md text-gray-600'>Peserta</p>
+              </CardContent>
+            </Card>
+            <Card className='relative overflow-hidden rounded-lg bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-xl'>
+              <CardHeader className='bg-gradient-to-r from-[#042F2E] to-[#065D5A] p-4 text-white'>
+                <CardTitle className='text-lg leading-2 font-semibold'>
+                  Jumlah Belum Validasi
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className='flex flex-col items-center pt-3'>
+                <p className='text-4xl font-bold text-[#065D5A]'>
+                  {totalParticipantsCount.invalidationCount}
+                </p>
+                <p className='text-md text-gray-600'>Peserta</p>
               </CardContent>
             </Card>
           </div>

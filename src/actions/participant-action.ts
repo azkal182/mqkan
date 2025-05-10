@@ -183,20 +183,33 @@ export const getParticipantById = async (
 export const getParticipantCount = async () => {
   return await prisma.participant.count();
 };
+
 export const getTotalParticipantsCount = async () => {
   const participants = await prisma.participant.findMany({
     select: {
-      gender: true
+      gender: true,
+      statusRegion: true
     }
   });
 
-  const putraCount = participants.filter((p) => p.gender === 'PUTRA').length;
-  const putriCount = participants.filter((p) => p.gender === 'PUTRI').length;
+  let putra = 0;
+  let putri = 0;
+  let validation = 0;
+  let invalidation = 0;
+
+  for (const p of participants) {
+    if (p.gender === 'PUTRA') putra++;
+    if (p.gender === 'PUTRI') putri++;
+    if (p.statusRegion === true) validation++;
+    if (p.statusRegion === false) invalidation++;
+  }
 
   return {
-    total: putraCount + putriCount,
-    putra: putraCount,
-    putri: putriCount
+    total: putra + putri,
+    putra,
+    putri,
+    validationCount: validation,
+    invalidationCount: invalidation
   };
 };
 
