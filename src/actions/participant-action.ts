@@ -312,8 +312,6 @@ export const getAllParticipantsCount = async () => {
       (p) => p.gender === 'PUTRI'
     ).length;
 
-    console.log();
-
     return {
       kelas: sub.kelas.name,
       subKelas: sub.name,
@@ -473,28 +471,6 @@ export const checkInParticipant = async (id: string) => {
 //   };
 // };
 
-type GenderCount = {
-  PUTRA: number;
-  PUTRI: number;
-  total: number;
-};
-
-type FinalResult = {
-  grouped: {
-    checkin: GroupedData;
-    notCheckIn: GroupedData;
-  };
-};
-
-type GroupedData = {
-  [kelasName: string]: {
-    [subKelasName: string]: {
-      count: number;
-      data: GenderCount;
-    };
-  };
-};
-
 export type TRecapResponse = {
   global: {
     totalCheckin: number;
@@ -631,8 +607,6 @@ export const getRecap = async () => {
       result.global.total++;
     }
   }
-
-  console.log(JSON.stringify(result, null, 2));
 
   return result;
 };

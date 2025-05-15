@@ -233,3 +233,23 @@ body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Meningkatkan pengalaman scroll di iOS */
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt,
+  .receipt * {
+    visibility: visible;
+  }
+
+  .receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 58mm;
+    background: white;
+    padding: 8px;
+  }
+}

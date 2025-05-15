@@ -175,10 +175,11 @@ model Participant {
     statusRegion   Boolean  @default(false)
     statusCenter   Boolean  @default(false)
 
-    institutionName    String @map("institution_name")
-    institutionAddress String @map("institution_address")
+    institutionName    String  @map("institution_name")
+    institutionAddress String  @map("institution_address")
     regionId           String
-    region             Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+    region             Region  @relation(fields: [regionId], references: [id], onDelete: Cascade)
+    checkIn            Boolean @default(false)
 
     // subcategoryId Int
     // subcategory   CategoryToSubcategory @relation(fields: [subcategoryId], references: [id])
@@ -255,6 +256,7 @@ model Official {
     phone    String
     aggree   Boolean @default(false)
     photo    String?
+    checkIn  Boolean @default(false)
 
     region   Region? @relation(fields: [regionId], references: [id])
     regionId String?

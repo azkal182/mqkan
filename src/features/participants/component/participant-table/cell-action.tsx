@@ -15,8 +15,8 @@ import { useRouter } from 'next/navigation';
 
 export const CellAction = ({ participantId }: { participantId: string }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const canAccCorwil = useHasPermission('participant:acc-corwil');
-  const canAccPusat = useHasPermission('participant:acc-pusat');
+  const canAccCorwil = useHasPermission('participant:acc-corwill');
+  const canAccPusat = useHasPermission('participant:acc-pusatt');
   const showActions = canAccCorwil || canAccPusat;
 
   const router = useRouter();

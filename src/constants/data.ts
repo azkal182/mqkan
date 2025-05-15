@@ -64,6 +64,38 @@ export const sideMenu: SideMenu[] = [
         permission: 'role:view'
       }
     ]
+  },
+  {
+    title: 'Registration Manager',
+    navItems: [
+      {
+        title: 'Rekap Kehadiran',
+        url: '/dashboard/recap',
+        icon: 'user',
+        isActive: false,
+        items: [],
+        shortcut: ['r', 'k'],
+        permission: 'registrasi:all'
+      },
+      {
+        title: 'Regitrasi Peserta',
+        url: '/dashboard/registrasi',
+        icon: 'user',
+        isActive: false,
+        items: [],
+        shortcut: ['r', 'p'],
+        permission: 'registrasi:all'
+      },
+      {
+        title: 'Registrasi Official',
+        url: '/dashboard/roles',
+        icon: 'key',
+        isActive: false,
+        items: [],
+        shortcut: ['r', 'o'],
+        permission: 'registrasi:all'
+      }
+    ]
   }
 ];
 

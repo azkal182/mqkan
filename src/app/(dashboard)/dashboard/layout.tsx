@@ -54,7 +54,7 @@ export default async function DashboardLayout({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
   return (
-    <>
+    <div className='admin-layout'>
       <OverflowHiddenFix />
       <KBar>
         <SidebarProvider defaultOpen={defaultOpen}>
@@ -67,6 +67,6 @@ export default async function DashboardLayout({
           </SidebarInset>
         </SidebarProvider>
       </KBar>
-    </>
+    </div>
   );
 }
