@@ -20,6 +20,7 @@ export interface ParticipantResponse {
   subKelas: string;
   statusCenter: boolean;
   statusRegion: boolean;
+  photo?: String;
 }
 
 export interface ParticipantsResponse {
@@ -351,4 +352,287 @@ export const getReviewById = async (id: string) => {
   delete transformedData.subKelas;
   // console.log(JSON.stringify(transformedData, null,2))
   return transformedData;
+};
+
+export type ParticipantResponseActive = ParticipantResponse & {
+  checkIn: boolean;
+  motherName: string;
+  fatherName: string;
+  parentPhone: string;
+  address: string | null;
+};
+export const getParticipantsActive = async (): Promise<
+  ParticipantResponseActive[]
+> => {
+  const participant = await prisma.participant.findMany({
+    where: {
+      statusRegion: true
+    },
+    include: {
+      province: { select: { id: true, name: true } },
+      regency: { select: { id: true, label: true } },
+      district: { select: { id: true, name: true } },
+      village: { select: { id: true, name: true } },
+      region: { select: { id: true, name: true } },
+      subKelas: {
+        include: {
+          kelas: true
+        }
+      }
+    }
+  });
+
+  const result = participant.map((p) => {
+    return {
+      id: p.id,
+      noRegistration: p.noRegistration,
+      fullName: p.fullName,
+      nik: p.nik,
+      birthPlace: p.birthPlace,
+      birthDate: p.birthDate,
+      gender: p.gender,
+      institutionName: p.institutionName,
+      institutionAddress: p.institutionAddress,
+      province: p.province,
+      regency: { id: p.regency.id, name: p.regency.label! },
+      district: p.district,
+      village: p.village,
+      region: p.region,
+      kelas: p.subKelas?.kelas.name as string,
+      subKelas: p.subKelas?.name as string,
+      statusCenter: p.statusCenter,
+      statusRegion: p.statusRegion,
+      photo: p.photoUrl,
+      checkIn: p.checkIn,
+      fatherName: p.fatherName,
+      motherName: p.motherName,
+      parentPhone: p.parentPhone,
+      address: p.address
+    };
+  });
+
+  return result;
+};
+
+export const checkInParticipant = async (id: string) => {
+  try {
+    const participant = await prisma.participant.findUnique({ where: { id } });
+    // Validasi: Jika peserta tidak ditemukan
+    if (!participant) {
+      throw new Error(`Peserta tidak ditemukan`);
+    }
+
+    // Validasi: Jika peserta sudah check-in (opsional, tergantung kebutuhan)
+    if (participant.checkIn) {
+      throw new Error(
+        `Peserta ${participant.fullName} sudah melakukan registrasi!`
+      );
+    }
+
+    const updatedParticipant = await prisma.participant.update({
+      where: { id },
+      data: {
+        checkIn: true
+      }
+    });
+
+    // Kembalikan data peserta yang sudah check-in
+    return {
+      success: true,
+      message: `Check-in berhasil untuk ${updatedParticipant.fullName}`,
+      data: updatedParticipant
+    };
+  } catch (error: any) {
+    // return {
+    //   success: false,
+    //   message: error.message || 'Gagal melakukan check-in'
+    // };
+    throw new Error(error.message || 'Gagal melakukan check-in');
+  }
+};
+
+// export const getCecap = async () => {
+//   const [countCheckin, countNotCheckin] = await Promise.all([
+//     prisma.participant.count({
+//       where: {
+//         statusRegion: true,
+//         checkIn: true
+//       }
+//     }),
+//     prisma.participant.count({
+//       where: {
+//         statusRegion: true,
+//         checkIn: false
+//       }
+//     })
+//   ]);
+
+//   return {
+//     countCheckin,
+//     countNotCheckin
+//   };
+// };
+
+type GenderCount = {
+  PUTRA: number;
+  PUTRI: number;
+  total: number;
+};
+
+type FinalResult = {
+  grouped: {
+    checkin: GroupedData;
+    notCheckIn: GroupedData;
+  };
+};
+
+type GroupedData = {
+  [kelasName: string]: {
+    [subKelasName: string]: {
+      count: number;
+      data: GenderCount;
+    };
+  };
+};
+
+export type TRecapResponse = {
+  global: {
+    totalCheckin: number;
+    totalNotCheckin: number;
+    total: number;
+  };
+  grouped: {
+    checkin: {
+      count: number;
+      data: Record<
+        string,
+        {
+          count: number;
+          data: Record<
+            string,
+            {
+              count: number;
+              data: Record<'PUTRA' | 'PUTRI' | 'total', number>;
+            }
+          >;
+        }
+      >;
+    };
+    notCheckIn: {
+      count: number;
+      data: Record<
+        string,
+        {
+          count: number;
+          data: Record<
+            string,
+            {
+              count: number;
+              data: Record<'PUTRA' | 'PUTRI' | 'total', number>;
+            }
+          >;
+        }
+      >;
+    };
+  };
+};
+export const getRecap = async () => {
+  const allSubKelas = await prisma.subKelas.findMany({
+    include: {
+      kelas: true
+    }
+  });
+
+  const participants = await prisma.participant.findMany({
+    where: {
+      statusRegion: true
+    },
+    include: {
+      subKelas: {
+        include: {
+          kelas: true
+        }
+      }
+    }
+  });
+
+  const result = {
+    global: {
+      totalCheckin: 0,
+      totalNotCheckin: 0,
+      total: 0
+    },
+    grouped: {
+      checkin: {
+        count: 0,
+        data: {}
+      },
+      notCheckIn: {
+        count: 0,
+        data: {}
+      }
+    }
+  } as TRecapResponse;
+
+  // Inisialisasi struktur per kelas dan subkelas
+  for (const sub of allSubKelas) {
+    const kelasName = sub.kelas.name;
+    const subKelasName = sub.name;
+
+    for (const type of ['checkin', 'notCheckIn'] as const) {
+      const typeData = result.grouped[type];
+
+      if (!typeData.data[kelasName]) {
+        typeData.data[kelasName] = {
+          count: 0,
+          data: {}
+        };
+      }
+
+      if (!typeData.data[kelasName].data[subKelasName]) {
+        typeData.data[kelasName].data[subKelasName] = {
+          count: 0,
+          data: {
+            PUTRA: 0,
+            PUTRI: 0,
+            total: 0
+          }
+        };
+      }
+    }
+  }
+
+  // Mengisi data peserta
+  for (const p of participants) {
+    const kelasName = p.subKelas?.kelas?.name;
+    const subKelasName = p.subKelas?.name;
+    const gender = p.gender;
+    const checkType = p.checkIn ? 'checkin' : 'notCheckIn';
+
+    if (
+      kelasName &&
+      subKelasName &&
+      (gender === 'PUTRA' || gender === 'PUTRI')
+    ) {
+      const typeData = result.grouped[checkType];
+
+      typeData.count++;
+      typeData.data[kelasName].count++;
+      typeData.data[kelasName].data[subKelasName].count++;
+      typeData.data[kelasName].data[subKelasName].data[gender]++;
+      typeData.data[kelasName].data[subKelasName].data.total++;
+
+      // Update global
+      if (checkType === 'checkin') {
+        result.global.totalCheckin++;
+      } else {
+        result.global.totalNotCheckin++;
+      }
+      result.global.total++;
+    }
+  }
+
+  console.log(JSON.stringify(result, null, 2));
+
+  return result;
 };
