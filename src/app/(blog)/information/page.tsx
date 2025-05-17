@@ -54,6 +54,14 @@ export default function ContactPage() {
       contacts: [{ number: '6285894288426' }]
     },
     {
+      title: 'Humas',
+      contacts: [{ number: '6282291424341' }]
+    },
+    {
+      title: 'Mobil Pelayanan Tamu',
+      contacts: [{ number: '62882007534377' }]
+    },
+    {
       title: 'Pj Lomba Dakwah Kontemporer',
       contacts: [{ number: '6285725734277' }]
     },
