@@ -49,11 +49,13 @@ const uploadPhoto = async (file: File): Promise<string> => {
     let compressedBuffer;
     if (format === 'png') {
       compressedBuffer = await sharp(buffer)
+        .rotate()
         .resize({ width: 1024 }) // Resize jika lebih besar dari 1024px
         .png({ quality: 80 }) // Kompres PNG
         .toBuffer();
     } else {
       compressedBuffer = await sharp(buffer)
+        .rotate()
         .resize({ width: 1024 }) // Resize jika lebih besar dari 1024px
         .jpeg({ quality: 70 }) // Kompres JPG
         .toBuffer();
@@ -170,6 +172,7 @@ export type Official = {
   phone: string;
   aggree: boolean;
   photo: string | null | undefined;
+  checkIn: boolean;
 };
 
 export async function getOfficials(
@@ -184,3 +187,83 @@ export async function getOfficials(
     orderBy: { fullName: 'asc' }
   });
 }
+
+export const updateCheckinOfficial = async (officalId: string) => {
+  try {
+    const result = prisma.official.findUnique({
+      where: { id: officalId }
+    });
+
+    if (!result) {
+      throw new Error('Official tidak ditemukan');
+    }
+
+    const update = await prisma.official.update({
+      where: { id: officalId },
+      data: {
+        checkIn: true
+      }
+    });
+
+    return {
+      message: `update berhasil`,
+      update
+    };
+  } catch (error) {}
+};
+
+export type AllOfficials = Official & {
+  region: Region;
+};
+
+export const getAllOfficial = async (): Promise<AllOfficials[]> => {
+  const data = await prisma.official.findMany({
+    include: {
+      region: true
+    }
+  });
+
+  return data as AllOfficials[];
+};
+
+export const checkInOfficial = async (id: string) => {
+  try {
+    const official = await prisma.official.findUnique({
+      where: { id },
+      include: {
+        region: true
+      }
+    });
+    // Validasi: Jika peserta tidak ditemukan
+    if (!official) {
+      throw new Error(`official tidak ditemukan`);
+    }
+
+    // Validasi: Jika peserta sudah check-in (opsional, tergantung kebutuhan)
+    if (official.checkIn) {
+      throw new Error(
+        `Peserta ${official.fullName} sudah melakukan registrasi!`
+      );
+    }
+
+    const updatedOfficial = await prisma.official.update({
+      where: { id },
+      data: {
+        checkIn: true
+      }
+    });
+
+    // Kembalikan data peserta yang sudah check-in
+    return {
+      success: true,
+      message: `Check-in berhasil untuk ${updatedOfficial.fullName}`,
+      data: updatedOfficial
+    };
+  } catch (error: any) {
+    // return {
+    //   success: false,
+    //   message: error.message || 'Gagal melakukan check-in'
+    // };
+    throw new Error(error.message || 'Gagal melakukan check-in');
+  }
+};

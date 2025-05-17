@@ -65,12 +65,20 @@ export const getRegionsWithoutPusat = async () => {
 export const getAllRegionsWithCount = async () => {
   const regions = await prisma.region.findMany({
     where: {
-      NOT: { name: 'Pusat' }
+      NOT: { name: 'Pusat' },
+      participants: {
+        some: {
+          statusRegion: true
+        }
+      }
     },
     select: {
       id: true,
       name: true,
       participants: {
+        where: {
+          statusRegion: true // ini penting agar data yang dihitung sesuai filter
+        },
         select: {
           gender: true,
           subKelas: {

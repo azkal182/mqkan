@@ -64,6 +64,7 @@ export default function PageClient({ participant }: PageClientProps) {
           setSelectedParticipant(null);
           setOpen(false);
           router.refresh();
+          window.open(`/print?id=${data.data.id}`, '_blank');
           return data.message;
         },
         error: (data) => {
@@ -78,6 +79,10 @@ export default function PageClient({ participant }: PageClientProps) {
       <div className='mx-auto max-w-6xl'>
         {/* Selektor Peserta */}
         <div className='mb-6'>
+          <h1 className='mb-4 text-center text-xl font-bold'>
+            Registrasi Peserta
+          </h1>
+
           <Label>Cari Peserta</Label>
           <UserAutoSelect
             users={participant}
@@ -100,7 +105,7 @@ export default function PageClient({ participant }: PageClientProps) {
             <div className='p-8'>
               <div className='mb-6 flex justify-between border-b border-gray-200 pb-3'>
                 <div className='pb-4'>
-                  <h2 className='text-xl font-semibold text-gray-800'>
+                  <h2 className='text-xl font-semibold text-gray-800 uppercase'>
                     {selectedParticipan.fullName}
                   </h2>
                   <p className='text-sm text-gray-600'>

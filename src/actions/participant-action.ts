@@ -476,6 +476,9 @@ export type TRecapResponse = {
     totalCheckin: number;
     totalNotCheckin: number;
     total: number;
+    totalOfficial: number;
+    officialCheckIn: number;
+    officialNotCheckIn: number;
   };
   grouped: {
     checkin: {
@@ -518,6 +521,10 @@ export const getRecap = async () => {
       kelas: true
     }
   });
+  const official = await prisma.official.findMany({});
+  const totalOfficial = official.length;
+  const officialCheckIn = official.filter((o) => o.checkIn === true).length;
+  const officialNotCheckIn = official.filter((o) => o.checkIn === false).length;
 
   const participants = await prisma.participant.findMany({
     where: {
@@ -536,7 +543,10 @@ export const getRecap = async () => {
     global: {
       totalCheckin: 0,
       totalNotCheckin: 0,
-      total: 0
+      total: 0,
+      totalOfficial,
+      officialCheckIn,
+      officialNotCheckIn
     },
     grouped: {
       checkin: {

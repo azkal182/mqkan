@@ -261,3 +261,46 @@ model Official {
     region   Region? @relation(fields: [regionId], references: [id])
     regionId String?
 }
+
+model Transaction {
+    id          String          @id @default(uuid())
+    type        TransactionType
+    amount      Int // Total untuk transaksi
+    description String
+    date        DateTime        @default(now())
+    balance     Int // Saldo setelah transaksi
+    divisionId  String? // Hanya untuk pengeluaran
+    receiptUrl  String? // Nota (opsional, hanya untuk pengeluaran)
+
+    expenseItems ExpenseItem[] // Hanya jika EXPENSE
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    division  Division? @relation(fields: [divisionId], references: [id])
+}
+
+model ExpenseItem {
+    id            String      @id @default(uuid())
+    transactionId String
+    transaction   Transaction @relation(fields: [transactionId], references: [id])
+    name          String // Nama barang/jasa
+    quantity      Int
+    unitPrice     Int
+    total         Int // quantity * unitPrice
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum TransactionType {
+    INCOME
+    EXPENSE
+}
+
+model Division {
+    id          String        @id @default(uuid())
+    name        String        @unique
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    Transaction Transaction[]
+}

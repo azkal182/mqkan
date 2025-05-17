@@ -13,9 +13,9 @@ function formatToLocalDatetime(date: Date): string {
 export async function GET(req: NextRequest) {
   try {
     const key = await req.headers.get('x-api-key');
-    if (!key || key !== '5c0acbf1-8696-4429-ae17-9fc11b41896d') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // if (!key || key !== '5c0acbf1-8696-4429-ae17-9fc11b41896d') {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // }
 
     const participants = await prisma.participant.findMany({
       orderBy: {

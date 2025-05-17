@@ -88,7 +88,7 @@ export const sideMenu: SideMenu[] = [
       },
       {
         title: 'Registrasi Official',
-        url: '/dashboard/roles',
+        url: '/dashboard/registrasi-official',
         icon: 'key',
         isActive: false,
         items: [],

@@ -24,7 +24,33 @@ export default function CheckinDashboard({ data }: CheckinDashboardProps) {
       }
     >
       <div className='min-h-screen bg-gray-50 p-6'>
+        <div className='mb-4 text-lg font-bold'>Total Dana</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className={`rounded-2xl border-l-4 border-green-500 bg-white p-6 shadow-lg`}
+            role='region'
+          >
+            <h2 className='text-sm font-medium text-gray-500'>
+              Total Dana Peserta
+            </h2>
+            <p className='mt-2 text-2xl font-bold text-gray-900'>
+              Rp.{' '}
+              {new Intl.NumberFormat('id-ID').format(
+                data.global.totalCheckin * 50000
+              )}
+            </p>
+          </motion.div>
+        </motion.div>
         {/* Global Summary */}
+        <div className='mb-4 text-lg font-bold'>Peserta</div>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -44,6 +70,29 @@ export default function CheckinDashboard({ data }: CheckinDashboardProps) {
           <SummaryCard
             title='Total Peserta'
             value={data.global.total}
+            color='border-blue-500'
+          />
+        </motion.div>
+        <div className='mb-4 text-lg font-bold'>Official</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
+        >
+          <SummaryCard
+            title='Total Official sudah registrasi'
+            value={data.global.officialCheckIn}
+            color='border-green-500'
+          />
+          <SummaryCard
+            title='Total Official belum registrasi'
+            value={data.global.officialNotCheckIn}
+            color='border-red-500'
+          />
+          <SummaryCard
+            title='Total Official'
+            value={data.global.totalOfficial}
             color='border-blue-500'
           />
         </motion.div>
