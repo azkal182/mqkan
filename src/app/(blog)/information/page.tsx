@@ -62,6 +62,10 @@ export default function ContactPage() {
       contacts: [{ number: '62882007534377' }]
     },
     {
+      title: 'reservasi futsal',
+      contacts: [{ number: '6285647885598' }]
+    },
+    {
       title: 'Pj Lomba Dakwah Kontemporer',
       contacts: [{ number: '6285725734277' }]
     },
