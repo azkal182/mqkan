@@ -239,6 +239,12 @@ body {
     visibility: hidden;
   }
 
+  @page {
+    size: 58mm auto;
+    margin: 0;
+    padding-bottom: 50mm;
+  }
+
   .receipt,
   .receipt * {
     visibility: visible;

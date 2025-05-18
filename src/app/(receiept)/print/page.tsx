@@ -375,6 +375,17 @@ export default function Receipt() {
           <p className='border-t border-dashed pt-2 text-[9px]'>
             Terima kasih sudah melakukan registrasi peserta
           </p>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <p className='text-[9px] italic'>-</p>
         </div>
       </div>
     </div>
