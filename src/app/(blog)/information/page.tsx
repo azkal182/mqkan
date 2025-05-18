@@ -67,7 +67,7 @@ export default function ContactPage() {
     },
     {
       title: 'Pj Lomba Dakwah Kontemporer',
-      contacts: [{ number: '6285725734277' }]
+      contacts: [{ number: '6285725734277' }, { number: '6281327274558' }]
     },
     {
       title: 'Pj Lomba MQK',
@@ -75,7 +75,7 @@ export default function ContactPage() {
     },
     {
       title: 'Pj Lomba Olimpiade Amtsilati',
-      contacts: [{ number: '6281215950244' }]
+      contacts: [{ number: '6281215950244' }, { number: '62882008084115' }]
     }
   ];
 
