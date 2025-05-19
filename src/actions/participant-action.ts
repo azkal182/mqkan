@@ -21,6 +21,7 @@ export interface ParticipantResponse {
   statusCenter: boolean;
   statusRegion: boolean;
   photo?: String;
+  checkIn: boolean;
 }
 
 export interface ParticipantsResponse {
@@ -125,7 +126,8 @@ export async function getParticipants(
     kelas: p.subKelas?.kelas.name as string,
     subKelas: p.subKelas?.name as string,
     statusCenter: p.statusCenter,
-    statusRegion: p.statusRegion
+    statusRegion: p.statusRegion,
+    checkIn: p.checkIn
   }));
 
   return {
@@ -179,7 +181,8 @@ export const getParticipantById = async (
       kelas: participant.subKelas?.kelas.name as string,
       subKelas: participant.subKelas?.name as string,
       statusCenter: participant.statusCenter,
-      statusRegion: participant.statusRegion
+      statusRegion: participant.statusRegion,
+      checkIn: participant.checkIn
     };
   } else {
     return null;
