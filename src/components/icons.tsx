@@ -7,6 +7,7 @@ import {
   CircuitBoardIcon,
   Command,
   CreditCard,
+  DollarSign,
   File,
   FileText,
   HelpCircle,
@@ -66,6 +67,7 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  dollar: DollarSign,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden='true'

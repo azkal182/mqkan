@@ -96,6 +96,20 @@ export const sideMenu: SideMenu[] = [
         permission: 'registrasi:all'
       }
     ]
+  },
+  {
+    title: 'Keuangan Manager',
+    navItems: [
+      {
+        title: 'Keuangan',
+        url: '/dashboard/keuangan',
+        icon: 'dollar',
+        isActive: false,
+        items: [],
+        shortcut: ['r', 'k'],
+        permission: 'keuangan:all'
+      }
+    ]
   }
 ];
 

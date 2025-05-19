@@ -20,8 +20,15 @@ export default function ClientParticipantTable({
       columns={columns}
       data={data}
       totalItems={totalItems}
+      // getRowClassName={(row) =>
+      //   row.original.statusRegion ? 'bg-green-100' : ''
+      // }
       getRowClassName={(row) =>
-        row.original.statusRegion ? 'bg-green-100' : ''
+        row.original.statusRegion
+          ? row.original.checkIn === true
+            ? 'bg-blue-300'
+            : 'bg-green-100'
+          : ''
       }
     />
   );

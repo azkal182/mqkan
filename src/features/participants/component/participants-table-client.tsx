@@ -17,7 +17,7 @@ export default function ParticipantsTableClient({ data, totalItems }: Props) {
       totalItems={totalItems}
       getRowClassName={(row) =>
         row.original.statusCenter
-          ? row.original.checkIn === true
+          ? row.original.checkIn
             ? 'bg-blue-100'
             : 'bg-green-100'
           : ''
