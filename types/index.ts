@@ -1,6 +1,7 @@
 import { Icons } from '@/components/icons';
 
 export interface SideMenu {
+  permission?: string;
   title: string;
   navItems: NavItem[];
 }

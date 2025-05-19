@@ -44,6 +44,7 @@ export const sideMenu: SideMenu[] = [
   },
   {
     title: 'User Manager',
+    permission: 'user:view',
     navItems: [
       {
         title: 'Users',
@@ -67,6 +68,7 @@ export const sideMenu: SideMenu[] = [
   },
   {
     title: 'Registration Manager',
+    permission: 'registrasi:all',
     navItems: [
       {
         title: 'Rekap Kehadiran',
@@ -99,6 +101,7 @@ export const sideMenu: SideMenu[] = [
   },
   {
     title: 'Keuangan Manager',
+    permission: 'keuangan:all',
     navItems: [
       {
         title: 'Keuangan',
