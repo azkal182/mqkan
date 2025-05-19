@@ -45,6 +45,7 @@ export default function PageClient({ participant }: PageClientProps) {
       setSelectedParticipant(participant);
     } else {
       toast.error(`Peserta ${participant.fullName} sudah melakukan registrasi`);
+      window.open(`/print?id=${participant!.id}`, '_blank');
       setSelectedParticipant(null);
     }
   };
