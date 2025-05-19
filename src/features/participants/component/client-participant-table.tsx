@@ -26,8 +26,8 @@ export default function ClientParticipantTable({
       getRowClassName={(row) =>
         row.original.statusRegion
           ? row.original.checkIn === true
-            ? 'bg-blue-300'
-            : 'bg-green-100'
+            ? 'bg-blue-200 hover:bg-blue-300'
+            : 'bg-green-100 hover:bg-green-300'
           : ''
       }
     />

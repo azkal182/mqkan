@@ -81,7 +81,7 @@ function UserAutoSelect({
                   key={user.id}
                   value={user.fullName}
                   onSelect={() => handleSelect(user)}
-                  className={`${user.checkIn ? 'bg-green-200' : ''}`}
+                  className={`${user.checkIn ? 'bg-green-200 [&&]:hover:bg-green-300' : ''}`}
                 >
                   <Check
                     className={cn(
