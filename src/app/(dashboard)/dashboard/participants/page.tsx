@@ -42,7 +42,7 @@ const ParticipantsPage = async (props: pageProps) => {
             {region && region?.length > 0 ? (
               <Link
                 target='_blank'
-                href={`http://localhost:3000/api/region-pdf/${region[0]}`}
+                href={`/api/region-pdf/${region[0]}`}
                 className={cn(buttonVariants(), 'text-xs md:text-sm')}
               >
                 <Newspaper className='mr-2 h-4 w-4' /> Export Pdf
@@ -50,7 +50,7 @@ const ParticipantsPage = async (props: pageProps) => {
             ) : (
               <Link
                 target='_blank'
-                href={`http://localhost:3000/api/region-pdf`}
+                href={`/api/region-pdf`}
                 className={cn(buttonVariants(), 'text-xs md:text-sm')}
               >
                 <Newspaper className='mr-2 h-4 w-4' /> Export all

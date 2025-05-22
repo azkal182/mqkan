@@ -537,7 +537,8 @@ export async function GET(req: NextRequest) {
     where: {
       participants: {
         some: {
-          statusRegion: true
+          statusRegion: true,
+          checkIn: true
         }
       }
     },
